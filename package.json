@@ -1,0 +1,18 @@
+{
+  "name": "reverse-engineered-nodebox",
+  "version": "0.0.0",
+  "description": "",
+  "type": "module",
+  "author": "Brian Jenkins",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "npx http-server public/ -p 8000"
+  },
+  "devDependencies": {
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "sideEffects": false
+}
