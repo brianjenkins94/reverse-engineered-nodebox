@@ -1,105 +1,497 @@
-// CodeSandbox, B.V. End User License Agreement
-// 
-// 
-// By downloading the Licensed Software (defined below) you agree to be bound by the terms of this Agreement. BY CLICKING ON THE
-// "AGREE" BUTTON OR DOWNLOADING THE LICENSED SOFTWARE (AS DEFINED BELOW), YOU ACKNOWLEDGE THAT YOU HAVE READ, UNDERSTAND, AND
-// AGREE TO BE BOUND BY THIS AGREEMENT. IF YOU DO NOT AGREE TO ALL TERMS AND CONDITIONS OF THIS AGREEMENT, OR IF YOU DO NOT HAVE
-// SUCH AUTHORITY, YOU SHOULD CLICK ON THE " DISAGREE" BUTTON TO DISCONTINUE THE DOWNLOAD OF THE SOFTWARE, OR IMMEDIATELY
-// DISCONTINUE USE AND DESTROY ANY REMAINING COPIES OF THE SOFTWARE TO PREVENT FURTHER USE.
-// 
-// 
-// This End User License Agreement ("Agreement") is a legal agreement between you and CodeSandbox, B.V., ("CodeSandbox") for
-// CodeSandbox's that accompanies this Agreement ("Licensed Software").
-// 
-// 
-// 1. License. Subject to the terms of this Agreement, CodeSandbox grants you a nontransferable, nonexclusive, royalty-free, fully
-// paid, worldwide license (without the right to sublicense) to install and execute the Licensed Software, in executable object
-// code format only, solely on your computer that you own or control and solely for your use of the CodeSandbox service for your
-// internal personal or internal business purposes.
-// 
-// 2. Restrictions. The rights granted to you in this Agreement are subject to the following restrictions: (a) you shall not
-// license, sell, rent, lease, transfer, assign, distribute, host, outsource, disclose or otherwise commercially exploit the
-// Licensed Software or make the Licensed Software available to any third party; (b) you shall not modify, make derivative works
-// of, disassemble, reverse compile or reverse engineer any part of the Licensed Software; (c) you shall not access the Licensed
-// Software in order to build a similar or competitive product or service; (d) except as expressly stated herein, no part of the
-// Licensed Software may be copied, reproduced, distributed, republished, downloaded, displayed, posted or transmitted in any form
-// or by any means, including but not limited to electronic, mechanical, photocopying, recording or other means; and (e) any future
-// release, update, or other addition to functionality of the Licensed Software provided by CodeSandbox (if any) shall be subject
-// to the terms of this Agreement unless CodeSandbox expressly states otherwise. You shall preserve all copyright and other
-// proprietary rights notices on the Licensed Software and all copies thereof.
-// 
-// 3. Ownership. The Licensed Software and all worldwide copyrights, trade secrets, and other intellectual property rights therein,
-// are the exclusive property of CodeSandbox and its suppliers. All rights in and to the Licensed Software not expressly granted to
-// you in this Agreement are reserved by CodeSandbox and its suppliers.
-// 
-// 4. Third Party Software. Certain items of software included with the Software are licensed from third parties and subject to the
-// terms and conditions provided by such third parties ("Third Party Software"). The Third Party Software is not subject to the
-// terms and conditions of Sections 1 and 2. Instead, each item of Third Party Software is licensed under the terms of the license
-// that accompanies such Third Party Software. Nothing in this document limits your rights under, or grants you rights that
-// supersede, the terms and conditions of any applicable license for the Third Party Software.
-// 
-// 5. Disclaimer of Warranties. The Licensed Software SOFTWARE IS provided TO YOU FREE OF CHARGE, AND ON AN "AS-IS" BASIS.
-// CodeSandbox PROVIDES NO TECHNICAL SUPPORT, WARRANTIES OR REMEDIES FOR THE LICENSED SOFTWARE OR ANY OPEN SOURCE SOFTWARE UNDER
-// THIS AGREEMENT. CodeSandbox AND ITS SUPPLIERS disclaim all express, implied or statutory warranties relating to the Licensed
-// Software AND ANY OPEN SOURCE SOFTWARE, including but not limited to, merchantability, fitness for a particular purpose, TITLE,
-// and non-infringement. CodeSandbox does not warrant that use of the Licensed Software OR OPEN SOURCE SOFTWARE will be
-// uninterrupted, or error-free, that defects will be corrected, or that the Licensed Software OR OPEN SOURCE SOFTWARE is free of
-// viruses or other harmful components. if applicable law requires any warranties with respect to the licensed software OR OPEN
-// SOURCE SOFTWARE, all such warranties are limited in duration to ninety (90) days from the date of download. This warranty
-// disclaimer inures to the benefit of CodeSandbox's suppliers.
-// 
-// 6. Limitation of Liability. In no event will CodeSandbox be liable for any consequential, indirect, exemplary, special, or
-// incidental damages, including any lost data and lost profits, arising from or relating to this Agreement even if CodeSandbox has
-// been advised of the possibility of such damages. CodeSandbox's total cumulative liability in connection with this Agreement and
-// the Licensed Software, whether in contract or tort or otherwise, will not exceed $100.
-// 
-// 7. Term and Termination. This Agreement and the licenses granted hereunder are effective on the date you download the Licensed
-// Software and shall continue unless this Agreement is terminated by either party pursuant to this section. CodeSandbox may
-// terminate this Agreement immediately upon notice to you in the event that you materially breach any of the terms hereof. Either
-// party may terminate this Agreement at any time, with or without cause. You may terminate this Agreement by sending either an
-// email to legal@codesandbox.io with your name and the subject "REMOVE" or a letter by United States mail to: CodeSandbox BV,
-// Singel 542 1017AZ, Amsterdam, Netherlands or to such other address as CodeSandbox may specify in writing by posting the new
-// address on the CodeSandbox website. Upon termination, the license granted hereunder shall terminate and you shall immediately
-// destroy any copies of the Licensed Software in its possession, but the terms of Sections 2-15 will remain in effect.
-// 
-// 8. For U.S. Government End Users. The Licensed Software is a "commercial item," as that term is defined at 48 C.F.R. 2.101 (OCT
-// 1995), and more specifically is "commercial computer software" and "commercial computer software documentation," as such terms
-// are used in 48 C.F.R. 12.212 (SEPT 1995). Consistent with 48 C.F.R. 12.212 and 48 C.F.R. 227.7202-1 through 227.7202-4 (JUNE
-// 1995), the Software is provided to U.S. Government End Users (a) only as a commercial end item and (b) with only those rights as
-// are granted to all other customers pursuant to the terms and conditions herein.
-// 
-// 9. Export. The Licensed Software and related technology are subject to U.S. export control laws and may be subject to export or
-// import regulations in other countries. You agree to strictly comply with all such laws and regulations and acknowledges that it
-// has the responsibility to obtain authorization to export, re-export, or import the Licensed Software and related technology, as
-// may be required. You will indemnify and hold CodeSandbox harmless from any and all claims, losses, liabilities, damages, fines,
-// penalties, costs and expenses (including attorney's fees) arising from or relating to any breach by you of your obligations
-// under this section.
-// 
-// 10. Assignments. You may not assign or transfer, by operation of law or otherwise, any of its rights under this Agreement
-// (including its licenses with respect to the Licensed Software) to any third party without CodeSandbox's prior written consent.
-// Any attempted assignment or transfer in violation of the foregoing will be void.
-// 
-// 11. Notices. All notices, consents, and approvals under this Agreement must be delivered in writing by courier, by electronic
-// mail (e-mail) specifically referencing this Agreement, or by certified or registered mail, (postage prepaid and return receipt
-// requested) to the other party at the address set forth beneath such party's signature, and will be effective upon receipt or
-// three (3) business days after being deposited in the mail as required above, whichever occurs sooner. Either party may change
-// its address by giving notice of the new address to the other party.
-// 
-// 12. Governing Law. This Agreement will be governed by the laws and courts of the State of New York. The United Nations
-// Convention on Contracts for the International Sale of Goods does not apply to this Agreement.
-// 
-// 13. Remedies. Except as provided in Section 5 and 6, the parties' rights and remedies under this Agreement are cumulative.
-// Licensee acknowledges that the Licensed Software contains valuable trade secrets and proprietary information of CodeSandbox,
-// that any actual or threatened breach of Section 2 will constitute immediate, irreparable harm to CodeSandbox for which monetary
-// damages would be an inadequate remedy, and that injunctive relief is an appropriate remedy for such breach.
-// 
-// 14. Waivers. All waivers must be in writing. Any waiver or failure to enforce any provision of this Agreement on one occasion
-// will not be deemed a waiver of any other provision or of such provision on any other occasion.
-// 
-// 15. Severability. If any provision of this Agreement is unenforceable, such provision will be changed and interpreted to
-// accomplish the objectives of such provision to the greatest extent possible under applicable law and the remaining provisions
-// will continue in full force and effect.
-// 
-// 
+'use strict';
 
-'use strict';(function(_0xd878bc,_0xc5cde2){var _0x31b3bf=_0x34e2,_0x2724c7=_0xd878bc();while(!![]){try{var _0x398e5e=parseInt(_0x31b3bf(0x240))/0x1*(parseInt(_0x31b3bf(0x22b))/0x2)+parseInt(_0x31b3bf(0x207))/0x3+-parseInt(_0x31b3bf(0x20f))/0x4+-parseInt(_0x31b3bf(0x20d))/0x5*(parseInt(_0x31b3bf(0x201))/0x6)+parseInt(_0x31b3bf(0x20a))/0x7*(-parseInt(_0x31b3bf(0x1d9))/0x8)+parseInt(_0x31b3bf(0x205))/0x9+parseInt(_0x31b3bf(0x23c))/0xa;if(_0x398e5e===_0xc5cde2)break;else _0x2724c7['push'](_0x2724c7['shift']());}catch(_0x44da85){_0x2724c7['push'](_0x2724c7['shift']());}}}(_0x50c2,0x6eb7d));function _0x34e2(_0x526b59,_0x49c241){var _0x50c261=_0x50c2();return _0x34e2=function(_0x34e21a,_0x33cbd8){_0x34e21a=_0x34e21a-0x1d5;var _0x466c66=_0x50c261[_0x34e21a];return _0x466c66;},_0x34e2(_0x526b59,_0x49c241);}function _0x50c2(){var _0x2e0d7a=['keys','fulfilled','headers','prototype','substr','result','then','8hYVxST','__esModule','waitUntil','reject','slug','pending','$type','crypto','slice','set','fingerprint','message','Failed\x20to\x20send\x20message\x20to\x20the\x20bridge:\x20bridge\x20message\x20port\x20is\x20not\x20defined','type','defineProperties','string','preview/response','resolve','claim','skipWaiting','rejectionReason','DeferredPromise','toString','get','preview/runtime-response','hasOwnProperty','userAgent','getTime','postMessage','getPrototypeOf','create','onmessage','mimeTypes','fetch','default','msCrypto','status','getOwnPropertyDescriptor','/__csb_runtime.js','object','138jcCDcz','pong','random','name','1171224ROXWKc','source','2560128PWiINN','isCuid','abs','5903037eFhuVo','activate','clone','170215xEHZya','pow','3437608BMgcmk','clients','Failed\x20to\x20handle\x20','install','function','rejected','localhost:','startsWith','length','Failed\x20to\x20handle\x20\x22PREVIEW_RESPONSE_TYPE\x22\x20message\x20from\x20the\x20bridge:\x20unknown\x20request\x20ID\x20\x22%s\x22','getRandomValues','localhost','test','runtime-init','getOwnPropertyNames','exports','replace','stack','split','call','createDeferredExecutor','preview/request','defineProperty','delete','respondWith','catch','splice','pathname','1661020GRtTrK','addEventListener','state','response','ping','runtimeId','includes','\x20request:\x20no\x20response\x20received\x20from\x20the\x20BroadcastChannel\x20within\x20timeout.\x20There\x27s\x20likely\x20an\x20issue\x20with\x20the\x20bridge/worker\x20communication.','port','000000000','enumerable','ports','body','preview/runtime-request','stringify','method','__createBinding','11251610ozKfAx','finally','url','isSlug','1eHYVUb','Invariant\x20Violation','ready','data','hostname'];_0x50c2=function(){return _0x2e0d7a;};return _0x50c2();}((()=>{var _0x233648=_0x34e2,_0x28baf9=Object[_0x233648(0x1f7)],_0x4b1441=Object['defineProperty'],_0x4f1eb6=Object[_0x233648(0x1fe)],_0x4b83c4=Object[_0x233648(0x21d)],_0x56703a=Object[_0x233648(0x1f6)],_0xc19d89=Object['prototype'][_0x233648(0x1f2)],_0x380570=(_0xc598ba,_0x26a876)=>()=>(_0x26a876||_0xc598ba((_0x26a876={'exports':{}})[_0x233648(0x21e)],_0x26a876),_0x26a876[_0x233648(0x21e)]),_0x226a92=(_0x5b3e28,_0x163fd1,_0x8c3afe,_0x44e61f)=>{var _0x100ae6=_0x233648;if(_0x163fd1&&typeof _0x163fd1==_0x100ae6(0x200)||typeof _0x163fd1==_0x100ae6(0x213)){for(let _0x5c5d2c of _0x4b83c4(_0x163fd1))!_0xc19d89[_0x100ae6(0x222)](_0x5b3e28,_0x5c5d2c)&&_0x5c5d2c!==_0x8c3afe&&_0x4b1441(_0x5b3e28,_0x5c5d2c,{'get':()=>_0x163fd1[_0x5c5d2c],'enumerable':!(_0x44e61f=_0x4f1eb6(_0x163fd1,_0x5c5d2c))||_0x44e61f[_0x100ae6(0x235)]});}return _0x5b3e28;},_0x4b76cc=(_0x275454,_0x2bf8c5,_0x1e1809)=>(_0x1e1809=_0x275454!=null?_0x28baf9(_0x56703a(_0x275454)):{},_0x226a92(_0x2bf8c5||!_0x275454||!_0x275454[_0x233648(0x1da)]?_0x4b1441(_0x1e1809,_0x233648(0x1fb),{'value':_0x275454,'enumerable':!0x0}):_0x1e1809,_0x275454)),_0x1090cb=_0x380570((_0x5cdf0f,_0x5ba90e)=>{var _0x1d1d7a=_0x233648;_0x5ba90e[_0x1d1d7a(0x21e)]=function(_0x4f60a8,_0x42325c){var _0x1e4f84=_0x1d1d7a,_0x33b056=_0x1e4f84(0x234)+_0x4f60a8;return _0x33b056[_0x1e4f84(0x1d6)](_0x33b056['length']-_0x42325c);};}),_0x12ec75=_0x380570((_0x40fcad,_0x5537bf)=>{var _0x3bd606=_0x233648,_0x2e62b5=_0x1090cb(),_0x43b929=typeof window=='object'?window:self,_0x2f3cbc=Object[_0x3bd606(0x245)](_0x43b929)[_0x3bd606(0x217)],_0x39eaa5=navigator['mimeTypes']?navigator[_0x3bd606(0x1f9)][_0x3bd606(0x217)]:0x0,_0x549992=_0x2e62b5((_0x39eaa5+navigator[_0x3bd606(0x1f3)][_0x3bd606(0x217)])['toString'](0x24)+_0x2f3cbc[_0x3bd606(0x1ef)](0x24),0x4);_0x5537bf[_0x3bd606(0x21e)]=function(){return _0x549992;};}),_0x95b56d=_0x380570((_0x57e5a6,_0xc87373)=>{var _0x2078a6=_0x233648,_0x4f86c8,_0x6c0439=typeof window<'u'&&(window[_0x2078a6(0x1e0)]||window[_0x2078a6(0x1fc)])||typeof self<'u'&&self[_0x2078a6(0x1e0)];_0x6c0439?(_0x120237=Math[_0x2078a6(0x20e)](0x2,0x20)-0x1,_0x4f86c8=function(){var _0x58c5ab=_0x2078a6;return Math[_0x58c5ab(0x209)](_0x6c0439[_0x58c5ab(0x219)](new Uint32Array(0x1))[0x0]/_0x120237);}):_0x4f86c8=Math[_0x2078a6(0x203)];var _0x120237;_0xc87373[_0x2078a6(0x21e)]=_0x4f86c8;}),_0x5274e5=_0x380570((_0x47bfab,_0x3ca148)=>{var _0x743c98=_0x233648,_0x154ceb=_0x12ec75(),_0x324bfe=_0x1090cb(),_0x6fbac1=_0x95b56d(),_0x13d16f=0x0,_0x5bd001=0x4,_0x2bd3ae=0x24,_0x2e13f6=Math[_0x743c98(0x20e)](_0x2bd3ae,_0x5bd001);function _0x26e319(){var _0x44f9d8=_0x743c98;return _0x324bfe((_0x6fbac1()*_0x2e13f6<<0x0)[_0x44f9d8(0x1ef)](_0x2bd3ae),_0x5bd001);}function _0x5ab581(){return _0x13d16f=_0x13d16f<_0x2e13f6?_0x13d16f:0x0,_0x13d16f++,_0x13d16f-0x1;}function _0x11c4d8(){var _0x2a081c=_0x743c98,_0x324fc6='c',_0x3df8ca=new Date()['getTime']()[_0x2a081c(0x1ef)](_0x2bd3ae),_0xb082b4=_0x324bfe(_0x5ab581()[_0x2a081c(0x1ef)](_0x2bd3ae),_0x5bd001),_0x3dfd92=_0x154ceb(),_0x466603=_0x26e319()+_0x26e319();return _0x324fc6+_0x3df8ca+_0xb082b4+_0x3dfd92+_0x466603;}_0x11c4d8[_0x743c98(0x1dd)]=function(){var _0x46a6df=_0x743c98,_0x2dc0a5=new Date()[_0x46a6df(0x1f4)]()[_0x46a6df(0x1ef)](0x24),_0x4bff46=_0x5ab581()[_0x46a6df(0x1ef)](0x24)[_0x46a6df(0x1e1)](-0x4),_0x175665=_0x154ceb()['slice'](0x0,0x1)+_0x154ceb()[_0x46a6df(0x1e1)](-0x1),_0xe7fb5b=_0x26e319()[_0x46a6df(0x1e1)](-0x2);return _0x2dc0a5[_0x46a6df(0x1e1)](-0x2)+_0x4bff46+_0x175665+_0xe7fb5b;},_0x11c4d8[_0x743c98(0x208)]=function(_0x11f4fd){var _0x46e924=_0x743c98;return typeof _0x11f4fd!=_0x46e924(0x1e8)?!0x1:!!_0x11f4fd[_0x46e924(0x216)]('c');},_0x11c4d8[_0x743c98(0x23f)]=function(_0xbc5958){var _0x3de8a2=_0x743c98;if(typeof _0xbc5958!=_0x3de8a2(0x1e8))return!0x1;var _0x3d69a2=_0xbc5958['length'];return _0x3d69a2>=0x7&&_0x3d69a2<=0xa;},_0x11c4d8[_0x743c98(0x1e3)]=_0x154ceb,_0x3ca148[_0x743c98(0x21e)]=_0x11c4d8;}),_0x17bcb4=_0x380570(_0xc886d1=>{'use strict';var _0x27572a=_0x233648;Object[_0x27572a(0x225)](_0xc886d1,_0x27572a(0x1da),{'value':!0x0}),_0xc886d1[_0x27572a(0x223)]=void 0x0;function _0x524580(){let _0x16a701=(_0x4e5c0f,_0x2cad81)=>{var _0x155bf7=_0x34e2;_0x16a701[_0x155bf7(0x22d)]=_0x155bf7(0x1de),_0x16a701[_0x155bf7(0x1ea)]=_0x32fe0a=>{var _0x39c194=_0x155bf7;if(_0x16a701['state']!==_0x39c194(0x1de))return;_0x16a701[_0x39c194(0x1d7)]=_0x32fe0a;let _0x148508=_0x31eedb=>(_0x16a701['state']=_0x39c194(0x246),_0x31eedb);return _0x4e5c0f(_0x32fe0a instanceof Promise?_0x32fe0a:Promise[_0x39c194(0x1ea)](_0x32fe0a)[_0x39c194(0x1d8)](_0x148508));},_0x16a701[_0x155bf7(0x1dc)]=_0x343ab0=>{var _0x34793a=_0x155bf7;if(_0x16a701[_0x34793a(0x22d)]===_0x34793a(0x1de))return queueMicrotask(()=>{var _0x31538e=_0x34793a;_0x16a701[_0x31538e(0x22d)]=_0x31538e(0x214);}),_0x2cad81(_0x16a701['rejectionReason']=_0x343ab0);};};return _0x16a701;}_0xc886d1['createDeferredExecutor']=_0x524580;}),_0x2abdb0=_0x380570(_0x5c9033=>{'use strict';var _0x2fb959=_0x233648;Object[_0x2fb959(0x225)](_0x5c9033,_0x2fb959(0x1da),{'value':!0x0}),_0x5c9033[_0x2fb959(0x1ee)]=void 0x0;var _0x2a0364=_0x17bcb4(),_0x50360a=class extends Promise{#e;[_0x2fb959(0x1ea)];[_0x2fb959(0x1dc)];constructor(_0x5236d3=null){var _0x289db3=_0x2fb959;let _0x25156f=(0x0,_0x2a0364[_0x289db3(0x223)])();super((_0x343c15,_0x2df64c)=>{var _0x51ec60=_0x289db3;_0x25156f(_0x343c15,_0x2df64c),_0x5236d3?.(_0x25156f[_0x51ec60(0x1ea)],_0x25156f['reject']);}),this.#e=_0x25156f,this[_0x289db3(0x1ea)]=this.#e[_0x289db3(0x1ea)],this[_0x289db3(0x1dc)]=this.#e[_0x289db3(0x1dc)];}get[_0x2fb959(0x22d)](){var _0x525cca=_0x2fb959;return this.#e[_0x525cca(0x22d)];}get[_0x2fb959(0x1ed)](){var _0x17ebc3=_0x2fb959;return this.#e[_0x17ebc3(0x1ed)];}[_0x2fb959(0x1d8)](_0x4b28b4,_0x40806e){return this.#t(super['then'](_0x4b28b4,_0x40806e));}['catch'](_0xbdc522){var _0x21e380=_0x2fb959;return this.#t(super[_0x21e380(0x228)](_0xbdc522));}['finally'](_0xa5c3b){var _0x2cd518=_0x2fb959;return this.#t(super[_0x2cd518(0x23d)](_0xa5c3b));}#t(_0x2ef0bb){var _0x330951=_0x2fb959;return Object[_0x330951(0x1e7)](_0x2ef0bb,{'resolve':{'configurable':!0x0,'value':this[_0x330951(0x1ea)]},'reject':{'configurable':!0x0,'value':this['reject']}});}};_0x5c9033[_0x2fb959(0x1ee)]=_0x50360a;}),_0x3f4bbb=_0x380570(_0x3d51a4=>{'use strict';var _0x27f8fa=_0x233648;var _0x420d80=_0x3d51a4&&_0x3d51a4[_0x27f8fa(0x23b)]||(Object[_0x27f8fa(0x1f7)]?function(_0x4b8ec9,_0x2a82fd,_0x1b8ca8,_0x5b2580){var _0x27954c=_0x27f8fa;_0x5b2580===void 0x0&&(_0x5b2580=_0x1b8ca8);var _0x2618c0=Object[_0x27954c(0x1fe)](_0x2a82fd,_0x1b8ca8);(!_0x2618c0||('get'in _0x2618c0?!_0x2a82fd[_0x27954c(0x1da)]:_0x2618c0['writable']||_0x2618c0['configurable']))&&(_0x2618c0={'enumerable':!0x0,'get':function(){return _0x2a82fd[_0x1b8ca8];}}),Object[_0x27954c(0x225)](_0x4b8ec9,_0x5b2580,_0x2618c0);}:function(_0x249025,_0x1b8619,_0x1e9a2e,_0x4a06dd){_0x4a06dd===void 0x0&&(_0x4a06dd=_0x1e9a2e),_0x249025[_0x4a06dd]=_0x1b8619[_0x1e9a2e];}),_0x5c4b1e=_0x3d51a4&&_0x3d51a4['__exportStar']||function(_0x380bf6,_0x12abce){var _0x24ccb2=_0x27f8fa;for(var _0x150846 in _0x380bf6)_0x150846!=='default'&&!Object['prototype'][_0x24ccb2(0x1f2)][_0x24ccb2(0x222)](_0x12abce,_0x150846)&&_0x420d80(_0x12abce,_0x380bf6,_0x150846);};Object[_0x27f8fa(0x225)](_0x3d51a4,_0x27f8fa(0x1da),{'value':!0x0}),_0x5c4b1e(_0x17bcb4(),_0x3d51a4),_0x5c4b1e(_0x2abdb0(),_0x3d51a4);}),_0x2ddbf3=_0x4b76cc(_0x5274e5()),_0x2c02cb=/(%?)(%([sdjo]))/g;function _0x11e3d6(_0x3bbbee,_0x28dd5f){var _0x12fdb8=_0x233648;switch(_0x28dd5f){case's':return _0x3bbbee;case'd':case'i':return Number(_0x3bbbee);case'j':return JSON[_0x12fdb8(0x239)](_0x3bbbee);case'o':{if(typeof _0x3bbbee==_0x12fdb8(0x1e8))return _0x3bbbee;let _0x4bbbe8=JSON[_0x12fdb8(0x239)](_0x3bbbee);return _0x4bbbe8==='{}'||_0x4bbbe8==='[]'||/^\[object .+?\]$/[_0x12fdb8(0x21b)](_0x4bbbe8)?_0x3bbbee:_0x4bbbe8;}}}function _0x1d880a(_0x25192f,..._0x225ce6){var _0x184838=_0x233648;if(_0x225ce6[_0x184838(0x217)]===0x0)return _0x25192f;let _0x2b8d14=0x0,_0x39f91a=_0x25192f['replace'](_0x2c02cb,(_0x1308b5,_0x2546f6,_0x54a524,_0x1e145d)=>{let _0x409b5e=_0x225ce6[_0x2b8d14],_0xd70f05=_0x11e3d6(_0x409b5e,_0x1e145d);return _0x2546f6?_0x1308b5:(_0x2b8d14++,_0xd70f05);});return _0x2b8d14<_0x225ce6['length']&&(_0x39f91a+='\x20'+_0x225ce6[_0x184838(0x1e1)](_0x2b8d14)['join']('\x20')),_0x39f91a=_0x39f91a[_0x184838(0x21f)](/%{2,2}/g,'%'),_0x39f91a;}var _0x175ae6=0x2;function _0x386949(_0x2b7508){var _0x2b7f48=_0x233648;if(!_0x2b7508[_0x2b7f48(0x220)])return;let _0x5b6fa3=_0x2b7508[_0x2b7f48(0x220)][_0x2b7f48(0x221)]('\x0a');_0x5b6fa3[_0x2b7f48(0x229)](0x1,_0x175ae6),_0x2b7508['stack']=_0x5b6fa3['join']('\x0a');}var _0xd0f444=class extends Error{constructor(_0x37226f,..._0x247327){var _0x3969eb=_0x233648;super(_0x37226f),this[_0x3969eb(0x1e4)]=_0x37226f,this['name']=_0x3969eb(0x241),this[_0x3969eb(0x1e4)]=_0x1d880a(_0x37226f,..._0x247327),_0x386949(this);}},_0xc7bacf=(_0x523c02,_0x5e43a7,..._0x133a6b)=>{if(!_0x523c02)throw new _0xd0f444(_0x5e43a7,..._0x133a6b);};_0xc7bacf['as']=(_0x5948a5,_0x55eecd,_0x29d6a5,..._0x5eab1c)=>{var _0x53bca5=_0x233648;if(!_0x55eecd)throw _0x5948a5[_0x53bca5(0x1d5)][_0x53bca5(0x204)]!=null?new _0x5948a5(_0x1d880a(_0x29d6a5,_0x5eab1c)):_0x5948a5(_0x1d880a(_0x29d6a5,_0x5eab1c));};var _0x542342=_0x4b76cc(_0x3f4bbb()),_0x2e733f='preview-manager',_0x2cd38f=_0x233648(0x224),_0xf7814=_0x233648(0x1e9),_0x597316=_0x233648(0x238),_0xa6c1fc=_0x233648(0x1f1),_0x2c3268='bridge/close';function _0x28f084(_0x146fc0){var _0x392ba2=_0x233648;let _0x1389ae=8000;if(isNaN(_0x1389ae))throw new Error('Invalid\x20port');return _0x1389ae;}function _0x4ae4b1(_0x22dd17){var _0x22dc93=_0x233648;let _0x39648c=_0x22dd17[_0x22dc93(0x221)]('.');return _0x39648c['shift'](),_0x39648c['join']('.');}self[_0x233648(0x22c)](_0x233648(0x212),function(){var _0x365b56=_0x233648;self[_0x365b56(0x1ec)]();}),self['addEventListener'](_0x233648(0x20b),async _0x64bf96=>{var _0x183843=_0x233648;_0x64bf96[_0x183843(0x1db)](self['clients'][_0x183843(0x1eb)]());});var _0x40cdbd=new Map(),_0x22db9d=new Map();function _0x3ab58f(_0x40030b){var _0x40227d=_0x233648;if(_0x40030b[_0x40227d(0x230)]){let _0x45f921=_0x22db9d[_0x40227d(0x1f0)](_0x40030b[_0x40227d(0x230)]);_0x45f921&&_0x45f921[_0x40227d(0x1f5)](_0x40030b);}}function _0x388cd4(_0x4f8d50){var _0x4889ea=_0x233648;_0x4f8d50[_0x4889ea(0x1f8)]=_0x49f004=>{var _0x5d4959=_0x4889ea;let {data:_0x432ead}=_0x49f004;switch(_0x432ead[_0x5d4959(0x1df)]){case _0xf7814:{let _0x22fee8=_0x432ead,_0x1e6ad5=_0x40cdbd[_0x5d4959(0x1f0)](_0x22fee8['id']);_0xc7bacf(_0x1e6ad5,_0x5d4959(0x218),_0x22fee8['id']),_0x40cdbd[_0x5d4959(0x226)](_0x22fee8['id']),_0x1e6ad5[_0x5d4959(0x1ea)](_0x22fee8[_0x5d4959(0x22e)]);break;}case _0xa6c1fc:{_0x3ab58f(_0x432ead);break;}case _0x2c3268:{_0xa0484=_0x2961c3();break;}}};}function _0x2961c3(){var _0x14c2c8=_0x233648;let _0x56eca0=new _0x542342[(_0x14c2c8(0x1ee))]();return _0x56eca0[_0x14c2c8(0x1d8)](_0x4b6ad5=>(_0x388cd4(_0x4b6ad5),_0x4b6ad5)),_0x56eca0;}var _0xa0484=_0x2961c3();async function _0x570d1a(_0x1bac2f){var _0x6364fe=_0x233648;let _0x162226=await _0xa0484;_0xc7bacf(_0x162226,_0x6364fe(0x1e5),_0x1bac2f),_0x162226[_0x6364fe(0x1f5)](_0x1bac2f);}self['addEventListener'](_0x233648(0x1e4),async _0x35909f=>{var _0x83e898=_0x233648;if(!_0x35909f[_0x83e898(0x243)]?.[_0x83e898(0x1e6)])return;switch(_0x35909f['data'][_0x83e898(0x1e6)]){case'bridge-channel-init':{let _0x4ac9c2=_0x35909f[_0x83e898(0x236)][0x0];_0xc7bacf(_0xa0484[_0x83e898(0x22d)]===_0x83e898(0x1de),'Failed\x20to\x20initialize\x20bridge:\x20bridge\x20port\x20promise\x20already\x20fulfilled\x20from\x20previous\x20evaluation.'),_0xa0484[_0x83e898(0x1ea)](_0x4ac9c2);break;}case _0x83e898(0x21c):{let _0x127330=_0x35909f['ports'][0x0],_0x23b1f5=(0x0,_0x2ddbf3[_0x83e898(0x1fb)])();_0x22db9d['set'](_0x23b1f5,_0x127330),_0x127330[_0x83e898(0x22c)]('message',_0x3a5782=>{var _0x4e7e4d=_0x83e898;let _0x259b54={'$channel_name':_0x2e733f,'$type':_0x597316,'runtimeId':_0x23b1f5,'data':_0x3a5782[_0x4e7e4d(0x243)]};_0x570d1a(_0x259b54);}),_0x127330['start'](),_0x127330[_0x83e898(0x1f5)]({'type':_0x83e898(0x242)});break;}case _0x83e898(0x22f):{if(!(_0x35909f[_0x83e898(0x206)]instanceof Client))return;let _0x241e37=await self[_0x83e898(0x210)][_0x83e898(0x1f0)](_0x35909f[_0x83e898(0x206)]['id']);_0x241e37&&_0x241e37[_0x83e898(0x1f5)]({'type':_0x83e898(0x202)});break;}}});var _0x4bf62f=['127.0.0.1',_0x233648(0x21a)];function _0x4e47d6(_0x57f53c,_0x42aa3f){var _0x431192=_0x233648;if(_0x4bf62f[_0x431192(0x231)](_0x57f53c[_0x431192(0x244)]))return+_0x57f53c[_0x431192(0x233)];let _0x2fc193=_0x4ae4b1(_0x42aa3f[_0x431192(0x244)]),_0xbb1b64=_0x4ae4b1(_0x57f53c['hostname']);return _0x2fc193===_0xbb1b64?_0x28f084(_0x57f53c['hostname']):null;}function _0x5db7ad(_0xa1e5d5,_0x41dcb6){var _0x2fc7e3=_0x233648;let _0x2fe680=(0x0,_0x2ddbf3['default'])(),_0x914bc9=new _0x542342['DeferredPromise'](),_0x57195d=setTimeout(()=>{var _0x52eb4a=_0x34e2;_0x40cdbd[_0x52eb4a(0x226)](_0x2fe680),_0x914bc9[_0x52eb4a(0x1dc)](new Error(_0x52eb4a(0x211)+_0x41dcb6[_0x52eb4a(0x23a)]+'\x20'+_0x41dcb6[_0x52eb4a(0x23e)]+_0x52eb4a(0x232)));},0x4e20),_0x28cc43={'$channel_name':_0x2e733f,'$type':_0x2cd38f,'port':_0xa1e5d5,'id':_0x2fe680,'request':_0x41dcb6};return _0x40cdbd[_0x2fc7e3(0x1e2)](_0x2fe680,_0x914bc9),_0x570d1a(_0x28cc43),_0x914bc9['finally'](()=>clearTimeout(_0x57195d));}self[_0x233648(0x22c)](_0x233648(0x1fa),_0x4cc68f=>{var _0x562096=_0x233648;let _0x1eaded=_0x4cc68f['request'][_0x562096(0x20c)](),_0x2a7861=new URL(_0x1eaded[_0x562096(0x23e)]);if(_0x2a7861[_0x562096(0x22a)][_0x562096(0x216)]('/__csb'))return _0x2a7861['pathname']===_0x562096(0x1ff)?_0x4cc68f[_0x562096(0x227)](fetch('/__csb_runtime.96gp8zty2gkcf4hdn7xcmzya14gluf9.js')):void 0x0;let _0x49f084=_0x4e47d6(_0x2a7861,location);if(_0x2a7861.pathname.includes('/escape-hatch/')||_0x49f084==null||isNaN(_0x49f084))return;let _0x125959=async _0x5d265a=>{var _0x1d0fa4=_0x562096;let _0x1f7a5a={'host':_0x1d0fa4(0x215)+_0x5d265a};_0x1eaded[_0x1d0fa4(0x247)]['forEach']((_0x373d56,_0x1ff38e)=>{_0x1f7a5a[_0x1ff38e]=_0x373d56;});let _0x3f1993={'url':_0x1eaded[_0x1d0fa4(0x23e)],'method':_0x1eaded['method'],'body':_0x1eaded[_0x1d0fa4(0x237)],'headers':_0x1f7a5a},_0x4643ec=await _0x5db7ad(_0x5d265a,_0x3f1993);return _0xc7bacf(_0x4643ec,'Failed\x20to\x20respond\x20to\x20%s\x20%s:\x20no\x20response\x20received',_0x3f1993[_0x1d0fa4(0x23a)],_0x3f1993['url']),new Response(_0x4643ec[_0x1d0fa4(0x237)],{'headers':_0x4643ec['headers'],'status':_0x4643ec[_0x1d0fa4(0x1fd)]});};return _0x4cc68f[_0x562096(0x227)](_0x125959(_0x49f084));});})());
+(() => {
+  var v = Object.create;
+  var v2 = Object.defineProperty;
+  var v3 = Object.getOwnPropertyDescriptor;
+  var v4 = Object.getOwnPropertyNames;
+  var v5 = Object.getPrototypeOf;
+  var v6 = Object.prototype.hasOwnProperty;
+  var vF = (p, p2) => () => {
+    if (!p2) {
+      p((p2 = {
+        exports: {}
+      }).exports, p2);
+    }
+    return p2.exports;
+  };
+  var vF2 = (p3, p4, p5, p6) => {
+    if (p4 && typeof p4 == "object" || typeof p4 == "function") {
+      for (let v7 of v4(p4)) {
+        if (!v6.call(p3, v7) && v7 !== p5) {
+          v2(p3, v7, {
+            get: () => p4[v7],
+            enumerable: !(p6 = v3(p4, v7)) || p6.enumerable
+          });
+        }
+      }
+    }
+    return p3;
+  };
+  var vF3 = (p7, p8, p9) => {
+    p9 = p7 != null ? v(v5(p7)) : {};
+    return vF2(p8 || !p7 || !p7.__esModule ? v2(p9, "default", {
+      value: p7,
+      enumerable: true
+    }) : p9, p7);
+  };
+  var vVF = vF((p10, p11) => {
+    p11.exports = function (p12, p13) {
+      var v8 = "000000000" + p12;
+      return v8.substr(v8.length - p13);
+    };
+  });
+  var vVF2 = vF((p14, p15) => {
+    var vVVF = vVF();
+    var v9 = typeof window == "object" ? window : self;
+    var v10 = Object.keys(v9).length;
+    var v11 = navigator.mimeTypes ? navigator.mimeTypes.length : 0;
+    var vVVVF = vVVF((v11 + navigator.userAgent.length).toString(36) + v10.toString(36), 4);
+    p15.exports = function () {
+      return vVVVF;
+    };
+  });
+  var vVF3 = vF((p16, p17) => {
+    var v12;
+    var v13 = typeof window !== "undefined" && (window.crypto || window.msCrypto) || typeof self !== "undefined" && self.crypto;
+    if (v13) {
+      v14 = Math.pow(2, 32) - 1;
+      v12 = function () {
+        return Math.abs(v13.getRandomValues(new Uint32Array(1))[0] / v14);
+      };
+    } else {
+      v12 = Math.random;
+    }
+    var v14;
+    p17.exports = v12;
+  });
+  var vVF4 = vF((p18, p19) => {
+    var vVVF2 = vVF2();
+    var vVVF3 = vVF();
+    var vVVF32 = vVF3();
+    var v15 = 0;
+    var v16 = 4;
+    var v17 = 36;
+    var v18 = Math.pow(v17, v16);
+    function f() {
+      return vVVF3((vVVF32() * v18 << 0).toString(v17), v16);
+    }
+    function f2() {
+      v15 = v15 < v18 ? v15 : 0;
+      v15++;
+      return v15 - 1;
+    }
+    function f3() {
+      var v19 = "c";
+      var v20 = new Date().getTime().toString(v17);
+      var vVVVF3 = vVVF3(f2().toString(v17), v16);
+      var vVVVF2 = vVVF2();
+      var v21 = f() + f();
+      return v19 + v20 + vVVVF3 + vVVVF2 + v21;
+    }
+    f3.slug = function () {
+      var v22 = new Date().getTime().toString(36);
+      var v23 = f2().toString(36).slice(-4);
+      var v24 = vVVF2().slice(0, 1) + vVVF2().slice(-1);
+      var v25 = f().slice(-2);
+      return v22.slice(-2) + v23 + v24 + v25;
+    };
+    f3.isCuid = function (p20) {
+      if (typeof p20 != "string") {
+        return false;
+      } else {
+        return !!p20.startsWith("c");
+      }
+    };
+    f3.isSlug = function (p21) {
+      if (typeof p21 != "string") {
+        return false;
+      }
+      var v26 = p21.length;
+      return v26 >= 7 && v26 <= 10;
+    };
+    f3.fingerprint = vVVF2;
+    p19.exports = f3;
+  });
+  var vVF5 = vF(p22 => {
+    'use strict';
+
+    Object.defineProperty(p22, "__esModule", {
+      value: true
+    });
+    p22.createDeferredExecutor = undefined;
+    function f4() {
+      let vF4 = (p23, p24) => {
+        vF4.state = "pending";
+        vF4.resolve = p25 => {
+          if (vF4.state !== "pending") {
+            return;
+          }
+          vF4.result = p25;
+          let vF5 = p26 => {
+            vF4.state = "fulfilled";
+            return p26;
+          };
+          return p23(p25 instanceof Promise ? p25 : Promise.resolve(p25).then(vF5));
+        };
+        vF4.reject = p27 => {
+          if (vF4.state === "pending") {
+            queueMicrotask(() => {
+              vF4.state = "rejected";
+            });
+            return p24(vF4.rejectionReason = p27);
+          }
+        };
+      };
+      return vF4;
+    }
+    p22.createDeferredExecutor = f4;
+  });
+  var vVF6 = vF(p28 => {
+    'use strict';
+
+    Object.defineProperty(p28, "__esModule", {
+      value: true
+    });
+    p28.DeferredPromise = undefined;
+    var vVVF5 = vVF5();
+    var vC = class extends Promise {
+      #e;
+      resolve;
+      reject;
+      constructor(p29 = null) {
+        let v27 = (0, vVVF5.createDeferredExecutor)();
+        super((p30, p31) => {
+          v27(p30, p31);
+          p29?.(v27.resolve, v27.reject);
+        });
+        this.#e = v27;
+        this.resolve = this.#e.resolve;
+        this.reject = this.#e.reject;
+      }
+      get state() {
+        return this.#e.state;
+      }
+      get rejectionReason() {
+        return this.#e.rejectionReason;
+      }
+      then(p32, p33) {
+        return this.#t(super.then(p32, p33));
+      }
+      catch(p34) {
+        return this.#t(super.catch(p34));
+      }
+      finally(p35) {
+        return this.#t(super.finally(p35));
+      }
+      #t(p36) {
+        return Object.defineProperties(p36, {
+          resolve: {
+            configurable: true,
+            value: this.resolve
+          },
+          reject: {
+            configurable: true,
+            value: this.reject
+          }
+        });
+      }
+    };
+    p28.DeferredPromise = vC;
+  });
+  var vVF7 = vF(p37 => {
+    'use strict';
+
+    var v28 = p37 && p37.__createBinding || (Object.create ? function (p38, p39, p40, p41 = p40) {
+      var v29 = Object.getOwnPropertyDescriptor(p39, p40);
+      if (!v29 || ("get" in v29 ? !p39.__esModule : v29.writable || v29.configurable)) {
+        v29 = {
+          enumerable: true,
+          get: function () {
+            return p39[p40];
+          }
+        };
+      }
+      Object.defineProperty(p38, p41, v29);
+    } : function (p42, p43, p44, p45 = p44) {
+      p42[p45] = p43[p44];
+    });
+    var v30 = p37 && p37.__exportStar || function (p46, p47) {
+      for (var v31 in p46) {
+        if (v31 !== "default" && !Object.prototype.hasOwnProperty.call(p47, v31)) {
+          v28(p47, p46, v31);
+        }
+      }
+    };
+    Object.defineProperty(p37, "__esModule", {
+      value: true
+    });
+    v30(vVF5(), p37);
+    v30(vVF6(), p37);
+  });
+  var vVF32 = vF3(vVF4());
+  var v32 = /(%?)(%([sdjo]))/g;
+  function f5(p48, p49) {
+    switch (p49) {
+      case "s":
+        return p48;
+      case "d":
+      case "i":
+        return Number(p48);
+      case "j":
+        return JSON.stringify(p48);
+      case "o":
+        {
+          if (typeof p48 == "string") {
+            return p48;
+          }
+          let v33 = JSON.stringify(p48);
+          if (v33 === "{}" || v33 === "[]" || /^\[object .+?\]$/.test(v33)) {
+            return p48;
+          } else {
+            return v33;
+          }
+        }
+    }
+  }
+  function f6(p50, ..._0x225ce6) {
+    if (_0x225ce6.length === 0) {
+      return p50;
+    }
+    let v34 = 0;
+    let v35 = p50.replace(v32, (p51, p52, p53, p54) => {
+      let v36 = _0x225ce6[v34];
+      let vF52 = f5(v36, p54);
+      if (p52) {
+        return p51;
+      } else {
+        v34++;
+        return vF52;
+      }
+    });
+    if (v34 < _0x225ce6.length) {
+      v35 += " " + _0x225ce6.slice(v34).join(" ");
+    }
+    v35 = v35.replace(/%{2,2}/g, "%");
+    return v35;
+  }
+  var v37 = 2;
+  function f7(p55) {
+    if (!p55.stack) {
+      return;
+    }
+    let v38 = p55.stack.split("\n");
+    v38.splice(1, v37);
+    p55.stack = v38.join("\n");
+  }
+  var vC2 = class extends Error {
+    constructor(p56, ..._0x247327) {
+      super(p56);
+      this.message = p56;
+      this.name = "Invariant Violation";
+      this.message = f6(p56, ..._0x247327);
+      f7(this);
+    }
+  };
+  var vF6 = (p57, p58, ..._0x133a6b) => {
+    if (!p57) {
+      throw new vC2(p58, ..._0x133a6b);
+    }
+  };
+  vF6.as = (p59, p60, p61, ..._0x5eab1c) => {
+    if (!p60) {
+      throw p59.prototype.name != null ? new p59(f6(p61, _0x5eab1c)) : p59(f6(p61, _0x5eab1c));
+    }
+  };
+  var vVF33 = vF3(vVF7());
+  var v39 = "preview-manager";
+  var v40 = "preview/request";
+  var v41 = "preview/response";
+  var v42 = "preview/runtime-request";
+  var v43 = "preview/runtime-response";
+  var v44 = "bridge/close";
+  function f8(p62) {
+    let v45 = 8000;
+    if (isNaN(v45)) {
+      throw new Error("Invalid port");
+    }
+    return v45;
+  }
+  function f9(p63) {
+    let v46 = p63.split(".");
+    v46.shift();
+    return v46.join(".");
+  }
+  self.addEventListener("install", function () {
+    self.skipWaiting();
+  });
+  self.addEventListener("activate", async p64 => {
+    p64.waitUntil(self.clients.claim());
+  });
+  var v47 = new Map();
+  var v48 = new Map();
+  function f10(p65) {
+    if (p65.runtimeId) {
+      let v49 = v48.get(p65.runtimeId);
+      if (v49) {
+        v49.postMessage(p65);
+      }
+    }
+  }
+  function f11(p66) {
+    p66.onmessage = p67 => {
+      let {
+        data: _0x432ead
+      } = p67;
+      switch (_0x432ead.$type) {
+        case v41:
+          {
+            let v_0x432ead = _0x432ead;
+            let v50 = v47.get(v_0x432ead.id);
+            vF6(v50, "Failed to handle \"PREVIEW_RESPONSE_TYPE\" message from the bridge: unknown request ID \"%s\"", v_0x432ead.id);
+            v47.delete(v_0x432ead.id);
+            v50.resolve(v_0x432ead.response);
+            break;
+          }
+        case v43:
+          {
+            f10(_0x432ead);
+            break;
+          }
+        case v44:
+          {
+            vF12 = f12();
+            break;
+          }
+      }
+    };
+  }
+  function f12() {
+    let v51 = new vVF33.DeferredPromise();
+    v51.then(p68 => {
+      f11(p68);
+      return p68;
+    });
+    return v51;
+  }
+  var vF12 = f12();
+  async function f13(p69) {
+    let v52 = await vF12;
+    vF6(v52, "Failed to send message to the bridge: bridge message port is not defined", p69);
+    v52.postMessage(p69);
+  }
+  self.addEventListener("message", async p70 => {
+    if (!p70.data?.type) {
+      return;
+    }
+    switch (p70.data.type) {
+      case "bridge-channel-init":
+        {
+          let v53 = p70.ports[0];
+          vF6(vF12.state === "pending", "Failed to initialize bridge: bridge port promise already fulfilled from previous evaluation.");
+          vF12.resolve(v53);
+          break;
+        }
+      case "runtime-init":
+        {
+          let v54 = p70.ports[0];
+          let v55 = (0, vVF32.default)();
+          v48.set(v55, v54);
+          v54.addEventListener("message", p71 => {
+            let v56 = {
+              $channel_name: v39,
+              $type: v42,
+              runtimeId: v55,
+              data: p71.data
+            };
+            f13(v56);
+          });
+          v54.start();
+          v54.postMessage({
+            type: "ready"
+          });
+          break;
+        }
+      case "ping":
+        {
+          if (!(p70.source instanceof Client)) {
+            return;
+          }
+          let v57 = await self.clients.get(p70.source.id);
+          if (v57) {
+            v57.postMessage({
+              type: "pong"
+            });
+          }
+          break;
+        }
+    }
+  });
+  var v58 = ["127.0.0.1", "localhost"];
+  function f14(p72, p73) {
+    if (v58.includes(p72.hostname)) {
+      return +p72.port;
+    }
+    let vF9 = f9(p73.hostname);
+    let vF92 = f9(p72.hostname);
+    if (vF9 === vF92) {
+      return f8(p72.hostname);
+    } else {
+      return null;
+    }
+  }
+  function f15(p74, p75) {
+    let v59 = (0, vVF32.default)();
+    let v60 = new vVF33.DeferredPromise();
+    let vSetTimeout = setTimeout(() => {
+      v47.delete(v59);
+      v60.reject(new Error("Failed to handle " + p75.method + " " + p75.url + " request: no response received from the BroadcastChannel within timeout. There's likely an issue with the bridge/worker communication."));
+    }, 20000);
+    let v61 = {
+      $channel_name: v39,
+      $type: v40,
+      port: p74,
+      id: v59,
+      request: p75
+    };
+    v47.set(v59, v60);
+    f13(v61);
+    return v60.finally(() => clearTimeout(vSetTimeout));
+  }
+  self.addEventListener("fetch", p76 => {
+    let v62 = p76.request.clone();
+    let v63 = new URL(v62.url);
+    if (v63.pathname.startsWith("/__csb")) {
+      if (v63.pathname === "/__csb_runtime.js") {
+        return p76.respondWith(fetch("/__csb_runtime.96gp8zty2gkcf4hdn7xcmzya14gluf9.js"));
+      } else {
+        return undefined;
+      }
+    }
+    let vF14 = f14(v63, location);
+    if (v63.pathname.includes("/escape-hatch/") || vF14 == null || isNaN(vF14)) {
+      return;
+    }
+    let vF7 = async p77 => {
+      let v64 = {
+        host: "localhost:" + p77
+      };
+      v62.headers.forEach((p78, p79) => {
+        v64[p79] = p78;
+      });
+      let v65 = {
+        url: v62.url,
+        method: v62.method,
+        body: v62.body,
+        headers: v64
+      };
+      let v66 = await f15(p77, v65);
+      vF6(v66, "Failed to respond to %s %s: no response received", v65.method, v65.url);
+      return new Response(v66.body, {
+        headers: v66.headers,
+        status: v66.status
+      });
+    };
+    return p76.respondWith(vF7(vF14));
+  });
+})();

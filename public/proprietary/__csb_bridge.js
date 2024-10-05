@@ -1,105 +1,2223 @@
-// CodeSandbox, B.V. End User License Agreement
-// 
-// 
-// By downloading the Licensed Software (defined below) you agree to be bound by the terms of this Agreement. BY CLICKING ON THE
-// "AGREE" BUTTON OR DOWNLOADING THE LICENSED SOFTWARE (AS DEFINED BELOW), YOU ACKNOWLEDGE THAT YOU HAVE READ, UNDERSTAND, AND
-// AGREE TO BE BOUND BY THIS AGREEMENT. IF YOU DO NOT AGREE TO ALL TERMS AND CONDITIONS OF THIS AGREEMENT, OR IF YOU DO NOT HAVE
-// SUCH AUTHORITY, YOU SHOULD CLICK ON THE " DISAGREE" BUTTON TO DISCONTINUE THE DOWNLOAD OF THE SOFTWARE, OR IMMEDIATELY
-// DISCONTINUE USE AND DESTROY ANY REMAINING COPIES OF THE SOFTWARE TO PREVENT FURTHER USE.
-// 
-// 
-// This End User License Agreement ("Agreement") is a legal agreement between you and CodeSandbox, B.V., ("CodeSandbox") for
-// CodeSandbox's that accompanies this Agreement ("Licensed Software").
-// 
-// 
-// 1. License. Subject to the terms of this Agreement, CodeSandbox grants you a nontransferable, nonexclusive, royalty-free, fully
-// paid, worldwide license (without the right to sublicense) to install and execute the Licensed Software, in executable object
-// code format only, solely on your computer that you own or control and solely for your use of the CodeSandbox service for your
-// internal personal or internal business purposes.
-// 
-// 2. Restrictions. The rights granted to you in this Agreement are subject to the following restrictions: (a) you shall not
-// license, sell, rent, lease, transfer, assign, distribute, host, outsource, disclose or otherwise commercially exploit the
-// Licensed Software or make the Licensed Software available to any third party; (b) you shall not modify, make derivative works
-// of, disassemble, reverse compile or reverse engineer any part of the Licensed Software; (c) you shall not access the Licensed
-// Software in order to build a similar or competitive product or service; (d) except as expressly stated herein, no part of the
-// Licensed Software may be copied, reproduced, distributed, republished, downloaded, displayed, posted or transmitted in any form
-// or by any means, including but not limited to electronic, mechanical, photocopying, recording or other means; and (e) any future
-// release, update, or other addition to functionality of the Licensed Software provided by CodeSandbox (if any) shall be subject
-// to the terms of this Agreement unless CodeSandbox expressly states otherwise. You shall preserve all copyright and other
-// proprietary rights notices on the Licensed Software and all copies thereof.
-// 
-// 3. Ownership. The Licensed Software and all worldwide copyrights, trade secrets, and other intellectual property rights therein,
-// are the exclusive property of CodeSandbox and its suppliers. All rights in and to the Licensed Software not expressly granted to
-// you in this Agreement are reserved by CodeSandbox and its suppliers.
-// 
-// 4. Third Party Software. Certain items of software included with the Software are licensed from third parties and subject to the
-// terms and conditions provided by such third parties ("Third Party Software"). The Third Party Software is not subject to the
-// terms and conditions of Sections 1 and 2. Instead, each item of Third Party Software is licensed under the terms of the license
-// that accompanies such Third Party Software. Nothing in this document limits your rights under, or grants you rights that
-// supersede, the terms and conditions of any applicable license for the Third Party Software.
-// 
-// 5. Disclaimer of Warranties. The Licensed Software SOFTWARE IS provided TO YOU FREE OF CHARGE, AND ON AN "AS-IS" BASIS.
-// CodeSandbox PROVIDES NO TECHNICAL SUPPORT, WARRANTIES OR REMEDIES FOR THE LICENSED SOFTWARE OR ANY OPEN SOURCE SOFTWARE UNDER
-// THIS AGREEMENT. CodeSandbox AND ITS SUPPLIERS disclaim all express, implied or statutory warranties relating to the Licensed
-// Software AND ANY OPEN SOURCE SOFTWARE, including but not limited to, merchantability, fitness for a particular purpose, TITLE,
-// and non-infringement. CodeSandbox does not warrant that use of the Licensed Software OR OPEN SOURCE SOFTWARE will be
-// uninterrupted, or error-free, that defects will be corrected, or that the Licensed Software OR OPEN SOURCE SOFTWARE is free of
-// viruses or other harmful components. if applicable law requires any warranties with respect to the licensed software OR OPEN
-// SOURCE SOFTWARE, all such warranties are limited in duration to ninety (90) days from the date of download. This warranty
-// disclaimer inures to the benefit of CodeSandbox's suppliers.
-// 
-// 6. Limitation of Liability. In no event will CodeSandbox be liable for any consequential, indirect, exemplary, special, or
-// incidental damages, including any lost data and lost profits, arising from or relating to this Agreement even if CodeSandbox has
-// been advised of the possibility of such damages. CodeSandbox's total cumulative liability in connection with this Agreement and
-// the Licensed Software, whether in contract or tort or otherwise, will not exceed $100.
-// 
-// 7. Term and Termination. This Agreement and the licenses granted hereunder are effective on the date you download the Licensed
-// Software and shall continue unless this Agreement is terminated by either party pursuant to this section. CodeSandbox may
-// terminate this Agreement immediately upon notice to you in the event that you materially breach any of the terms hereof. Either
-// party may terminate this Agreement at any time, with or without cause. You may terminate this Agreement by sending either an
-// email to legal@codesandbox.io with your name and the subject "REMOVE" or a letter by United States mail to: CodeSandbox BV,
-// Singel 542 1017AZ, Amsterdam, Netherlands or to such other address as CodeSandbox may specify in writing by posting the new
-// address on the CodeSandbox website. Upon termination, the license granted hereunder shall terminate and you shall immediately
-// destroy any copies of the Licensed Software in its possession, but the terms of Sections 2-15 will remain in effect.
-// 
-// 8. For U.S. Government End Users. The Licensed Software is a "commercial item," as that term is defined at 48 C.F.R. 2.101 (OCT
-// 1995), and more specifically is "commercial computer software" and "commercial computer software documentation," as such terms
-// are used in 48 C.F.R. 12.212 (SEPT 1995). Consistent with 48 C.F.R. 12.212 and 48 C.F.R. 227.7202-1 through 227.7202-4 (JUNE
-// 1995), the Software is provided to U.S. Government End Users (a) only as a commercial end item and (b) with only those rights as
-// are granted to all other customers pursuant to the terms and conditions herein.
-// 
-// 9. Export. The Licensed Software and related technology are subject to U.S. export control laws and may be subject to export or
-// import regulations in other countries. You agree to strictly comply with all such laws and regulations and acknowledges that it
-// has the responsibility to obtain authorization to export, re-export, or import the Licensed Software and related technology, as
-// may be required. You will indemnify and hold CodeSandbox harmless from any and all claims, losses, liabilities, damages, fines,
-// penalties, costs and expenses (including attorney's fees) arising from or relating to any breach by you of your obligations
-// under this section.
-// 
-// 10. Assignments. You may not assign or transfer, by operation of law or otherwise, any of its rights under this Agreement
-// (including its licenses with respect to the Licensed Software) to any third party without CodeSandbox's prior written consent.
-// Any attempted assignment or transfer in violation of the foregoing will be void.
-// 
-// 11. Notices. All notices, consents, and approvals under this Agreement must be delivered in writing by courier, by electronic
-// mail (e-mail) specifically referencing this Agreement, or by certified or registered mail, (postage prepaid and return receipt
-// requested) to the other party at the address set forth beneath such party's signature, and will be effective upon receipt or
-// three (3) business days after being deposited in the mail as required above, whichever occurs sooner. Either party may change
-// its address by giving notice of the new address to the other party.
-// 
-// 12. Governing Law. This Agreement will be governed by the laws and courts of the State of New York. The United Nations
-// Convention on Contracts for the International Sale of Goods does not apply to this Agreement.
-// 
-// 13. Remedies. Except as provided in Section 5 and 6, the parties' rights and remedies under this Agreement are cumulative.
-// Licensee acknowledges that the Licensed Software contains valuable trade secrets and proprietary information of CodeSandbox,
-// that any actual or threatened breach of Section 2 will constitute immediate, irreparable harm to CodeSandbox for which monetary
-// damages would be an inadequate remedy, and that injunctive relief is an appropriate remedy for such breach.
-// 
-// 14. Waivers. All waivers must be in writing. Any waiver or failure to enforce any provision of this Agreement on one occasion
-// will not be deemed a waiver of any other provision or of such provision on any other occasion.
-// 
-// 15. Severability. If any provision of this Agreement is unenforceable, such provision will be changed and interpreted to
-// accomplish the objectives of such provision to the greatest extent possible under applicable law and the remaining provisions
-// will continue in full force and effect.
-// 
-// 
+'use strict';
 
-'use strict';function _0xef6d(_0x46eeeb,_0x3ae6c7){var _0x2305ac=_0x2305();return _0xef6d=function(_0xef6d52,_0x5551eb){_0xef6d52=_0xef6d52-0xfb;var _0x44242a=_0x2305ac[_0xef6d52];return _0x44242a;},_0xef6d(_0x46eeeb,_0x3ae6c7);}(function(_0x986ba2,_0x405b6d){var _0xf2aab6=_0xef6d,_0x12a167=_0x986ba2();while(!![]){try{var _0xcded76=-parseInt(_0xf2aab6(0x11a))/0x1*(parseInt(_0xf2aab6(0x222))/0x2)+parseInt(_0xf2aab6(0x15c))/0x3+-parseInt(_0xf2aab6(0x1aa))/0x4*(-parseInt(_0xf2aab6(0x14e))/0x5)+-parseInt(_0xf2aab6(0x161))/0x6+-parseInt(_0xf2aab6(0x1e9))/0x7*(parseInt(_0xf2aab6(0x22f))/0x8)+-parseInt(_0xf2aab6(0x120))/0x9*(-parseInt(_0xf2aab6(0x1c1))/0xa)+parseInt(_0xf2aab6(0x113))/0xb;if(_0xcded76===_0x405b6d)break;else _0x12a167['push'](_0x12a167['shift']());}catch(_0x275112){_0x12a167['push'](_0x12a167['shift']());}}}(_0x2305,0x763dd));((()=>{var _0x1d3169=_0xef6d,_0x4435a8=Object[_0x1d3169(0x1b8)],_0x5013ea=Object[_0x1d3169(0x219)],_0x45d2ea=Object[_0x1d3169(0x1bb)],_0x17294d=Object[_0x1d3169(0x149)],_0x1707e9=Object[_0x1d3169(0x227)],_0xaf7849=Object[_0x1d3169(0x11b)]['hasOwnProperty'],_0x55dd81=(_0x46bbae,_0x4b78be)=>()=>(_0x4b78be||_0x46bbae((_0x4b78be={'exports':{}})[_0x1d3169(0x1a7)],_0x4b78be),_0x4b78be[_0x1d3169(0x1a7)]),_0x250571=(_0x59eb2b,_0x2cd263,_0x57495e,_0x5bb355)=>{var _0x49c3cd=_0x1d3169;if(_0x2cd263&&typeof _0x2cd263==_0x49c3cd(0x115)||typeof _0x2cd263==_0x49c3cd(0x228)){for(let _0xd58a80 of _0x17294d(_0x2cd263))!_0xaf7849[_0x49c3cd(0x134)](_0x59eb2b,_0xd58a80)&&_0xd58a80!==_0x57495e&&_0x5013ea(_0x59eb2b,_0xd58a80,{'get':()=>_0x2cd263[_0xd58a80],'enumerable':!(_0x5bb355=_0x45d2ea(_0x2cd263,_0xd58a80))||_0x5bb355[_0x49c3cd(0x158)]});}return _0x59eb2b;},_0x21bf0c=(_0x4d02f5,_0x789f80,_0x1cebab)=>(_0x1cebab=_0x4d02f5!=null?_0x4435a8(_0x1707e9(_0x4d02f5)):{},_0x250571(_0x789f80||!_0x4d02f5||!_0x4d02f5['__esModule']?_0x5013ea(_0x1cebab,_0x1d3169(0x20d),{'value':_0x4d02f5,'enumerable':!0x0}):_0x1cebab,_0x4d02f5)),_0x4ae62c=_0x55dd81(_0x1efab4=>{'use strict';var _0x5bf56f=_0x1d3169;Object[_0x5bf56f(0x219)](_0x1efab4,_0x5bf56f(0x106),{'value':!0x0}),_0x1efab4[_0x5bf56f(0x1b4)]=void 0x0;function _0xb74f34(){let _0x1c73aa=(_0x327f78,_0x3b1eda)=>{var _0x4877de=_0xef6d;_0x1c73aa[_0x4877de(0x1b7)]=_0x4877de(0x1fd),_0x1c73aa[_0x4877de(0x23f)]=_0x31dc53=>{var _0xe9bd8a=_0x4877de;if(_0x1c73aa[_0xe9bd8a(0x1b7)]!==_0xe9bd8a(0x1fd))return;_0x1c73aa[_0xe9bd8a(0x17b)]=_0x31dc53;let _0x3d66ee=_0x49c546=>(_0x1c73aa[_0xe9bd8a(0x1b7)]=_0xe9bd8a(0x1a3),_0x49c546);return _0x327f78(_0x31dc53 instanceof Promise?_0x31dc53:Promise[_0xe9bd8a(0x23f)](_0x31dc53)[_0xe9bd8a(0x202)](_0x3d66ee));},_0x1c73aa[_0x4877de(0x1ff)]=_0x40aa5d=>{var _0x10aeea=_0x4877de;if(_0x1c73aa[_0x10aeea(0x1b7)]===_0x10aeea(0x1fd))return queueMicrotask(()=>{var _0x16b866=_0x10aeea;_0x1c73aa[_0x16b866(0x1b7)]='rejected';}),_0x3b1eda(_0x1c73aa[_0x10aeea(0x1f6)]=_0x40aa5d);};};return _0x1c73aa;}_0x1efab4['createDeferredExecutor']=_0xb74f34;}),_0xe133a5=_0x55dd81(_0xafa3b8=>{'use strict';var _0x1a50eb=_0x1d3169;Object[_0x1a50eb(0x219)](_0xafa3b8,_0x1a50eb(0x106),{'value':!0x0}),_0xafa3b8[_0x1a50eb(0x1f9)]=void 0x0;var _0x3f4b3f=_0x4ae62c(),_0x149e11=class extends Promise{#e;[_0x1a50eb(0x23f)];[_0x1a50eb(0x1ff)];constructor(_0x57e002=null){var _0x136aef=_0x1a50eb;let _0x4c150e=(0x0,_0x3f4b3f[_0x136aef(0x1b4)])();super((_0x53e337,_0x16bf84)=>{var _0x7d1f4=_0x136aef;_0x4c150e(_0x53e337,_0x16bf84),_0x57e002?.(_0x4c150e[_0x7d1f4(0x23f)],_0x4c150e[_0x7d1f4(0x1ff)]);}),this.#e=_0x4c150e,this[_0x136aef(0x23f)]=this.#e[_0x136aef(0x23f)],this[_0x136aef(0x1ff)]=this.#e['reject'];}get[_0x1a50eb(0x1b7)](){return this.#e['state'];}get[_0x1a50eb(0x1f6)](){var _0x474d1a=_0x1a50eb;return this.#e[_0x474d1a(0x1f6)];}[_0x1a50eb(0x202)](_0x12353d,_0x514e34){var _0x46baa4=_0x1a50eb;return this.#t(super[_0x46baa4(0x202)](_0x12353d,_0x514e34));}[_0x1a50eb(0xfc)](_0x21c8a4){return this.#t(super['catch'](_0x21c8a4));}[_0x1a50eb(0x13c)](_0x416957){var _0x2b0775=_0x1a50eb;return this.#t(super[_0x2b0775(0x13c)](_0x416957));}#t(_0x4d6e42){var _0x2e052b=_0x1a50eb;return Object[_0x2e052b(0x1ad)](_0x4d6e42,{'resolve':{'configurable':!0x0,'value':this['resolve']},'reject':{'configurable':!0x0,'value':this[_0x2e052b(0x1ff)]}});}};_0xafa3b8[_0x1a50eb(0x1f9)]=_0x149e11;}),_0x48fac3=_0x55dd81(_0x2e91f5=>{'use strict';var _0x3627f1=_0x1d3169;var _0x669ed7=_0x2e91f5&&_0x2e91f5['__createBinding']||(Object['create']?function(_0x426037,_0x15441a,_0x446370,_0x5a2967){var _0x2f66f6=_0xef6d;_0x5a2967===void 0x0&&(_0x5a2967=_0x446370);var _0x453369=Object[_0x2f66f6(0x1bb)](_0x15441a,_0x446370);(!_0x453369||(_0x2f66f6(0x1c6)in _0x453369?!_0x15441a[_0x2f66f6(0x106)]:_0x453369['writable']||_0x453369[_0x2f66f6(0x195)]))&&(_0x453369={'enumerable':!0x0,'get':function(){return _0x15441a[_0x446370];}}),Object['defineProperty'](_0x426037,_0x5a2967,_0x453369);}:function(_0x89bd01,_0x2d3690,_0x16bc74,_0x8d7f5e){_0x8d7f5e===void 0x0&&(_0x8d7f5e=_0x16bc74),_0x89bd01[_0x8d7f5e]=_0x2d3690[_0x16bc74];}),_0x3424a7=_0x2e91f5&&_0x2e91f5[_0x3627f1(0xff)]||function(_0x517f99,_0x561877){var _0x28635d=_0x3627f1;for(var _0x2d97f8 in _0x517f99)_0x2d97f8!==_0x28635d(0x20d)&&!Object['prototype'][_0x28635d(0x1ef)]['call'](_0x561877,_0x2d97f8)&&_0x669ed7(_0x561877,_0x517f99,_0x2d97f8);};Object['defineProperty'](_0x2e91f5,'__esModule',{'value':!0x0}),_0x3424a7(_0x4ae62c(),_0x2e91f5),_0x3424a7(_0xe133a5(),_0x2e91f5);}),_0x10d374=_0x55dd81((_0x1ea9b2,_0x1c5859)=>{var _0x459f98=_0x1d3169;_0x1c5859[_0x459f98(0x1a7)]=function(_0x508dd7,_0x4b25f9){var _0x38ef5a=_0x459f98,_0x4d70d9=_0x38ef5a(0x146)+_0x508dd7;return _0x4d70d9[_0x38ef5a(0x187)](_0x4d70d9['length']-_0x4b25f9);};}),_0x604b16=_0x55dd81((_0x942042,_0x6f6568)=>{var _0x3312cc=_0x1d3169,_0x3e932f=_0x10d374(),_0x45fc48=typeof window==_0x3312cc(0x115)?window:self,_0x104339=Object['keys'](_0x45fc48)['length'],_0x50d211=navigator[_0x3312cc(0x182)]?navigator[_0x3312cc(0x182)][_0x3312cc(0x191)]:0x0,_0x11564f=_0x3e932f((_0x50d211+navigator[_0x3312cc(0x214)][_0x3312cc(0x191)])[_0x3312cc(0x1a0)](0x24)+_0x104339[_0x3312cc(0x1a0)](0x24),0x4);_0x6f6568[_0x3312cc(0x1a7)]=function(){return _0x11564f;};}),_0x14abb9=_0x55dd81((_0xf388ed,_0x290205)=>{var _0x103e32=_0x1d3169,_0x5539eb,_0x33c19f=typeof window<'u'&&(window[_0x103e32(0x21d)]||window[_0x103e32(0x216)])||typeof self<'u'&&self[_0x103e32(0x21d)];_0x33c19f?(_0x40740b=Math[_0x103e32(0x1ba)](0x2,0x20)-0x1,_0x5539eb=function(){var _0x586519=_0x103e32;return Math[_0x586519(0x1dc)](_0x33c19f['getRandomValues'](new Uint32Array(0x1))[0x0]/_0x40740b);}):_0x5539eb=Math[_0x103e32(0x184)];var _0x40740b;_0x290205[_0x103e32(0x1a7)]=_0x5539eb;}),_0x28cba4=_0x55dd81((_0x36bfd3,_0x1953bc)=>{var _0x3bb99b=_0x1d3169,_0x209093=_0x604b16(),_0x41d9dd=_0x10d374(),_0x154b3c=_0x14abb9(),_0xa09c67=0x0,_0x56dfbb=0x4,_0x137509=0x24,_0x4bd25d=Math[_0x3bb99b(0x1ba)](_0x137509,_0x56dfbb);function _0xdb9b81(){return _0x41d9dd((_0x154b3c()*_0x4bd25d<<0x0)['toString'](_0x137509),_0x56dfbb);}function _0x283797(){return _0xa09c67=_0xa09c67<_0x4bd25d?_0xa09c67:0x0,_0xa09c67++,_0xa09c67-0x1;}function _0xdd669c(){var _0xd23794=_0x3bb99b,_0x122a47='c',_0x4eeaa7=new Date()[_0xd23794(0x1af)]()['toString'](_0x137509),_0x48a352=_0x41d9dd(_0x283797()[_0xd23794(0x1a0)](_0x137509),_0x56dfbb),_0x274b5b=_0x209093(),_0x481f00=_0xdb9b81()+_0xdb9b81();return _0x122a47+_0x4eeaa7+_0x48a352+_0x274b5b+_0x481f00;}_0xdd669c['slug']=function(){var _0x4e88a8=_0x3bb99b,_0xfa0927=new Date()['getTime']()[_0x4e88a8(0x1a0)](0x24),_0x27d9c1=_0x283797()[_0x4e88a8(0x1a0)](0x24)[_0x4e88a8(0x13d)](-0x4),_0x14182c=_0x209093()[_0x4e88a8(0x13d)](0x0,0x1)+_0x209093()[_0x4e88a8(0x13d)](-0x1),_0x334aab=_0xdb9b81()[_0x4e88a8(0x13d)](-0x2);return _0xfa0927[_0x4e88a8(0x13d)](-0x2)+_0x27d9c1+_0x14182c+_0x334aab;},_0xdd669c[_0x3bb99b(0x14d)]=function(_0x250877){var _0x3b58c8=_0x3bb99b;return typeof _0x250877!=_0x3b58c8(0x148)?!0x1:!!_0x250877[_0x3b58c8(0x12e)]('c');},_0xdd669c[_0x3bb99b(0x145)]=function(_0x21234c){var _0x3bc816=_0x3bb99b;if(typeof _0x21234c!='string')return!0x1;var _0x2b4a0d=_0x21234c[_0x3bc816(0x191)];return _0x2b4a0d>=0x7&&_0x2b4a0d<=0xa;},_0xdd669c['fingerprint']=_0x209093,_0x1953bc[_0x3bb99b(0x1a7)]=_0xdd669c;}),_0x5bfc8b=/(%?)(%([sdjo]))/g;function _0x1859cb(_0x4a7722,_0x47fdaa){var _0x16698e=_0x1d3169;switch(_0x47fdaa){case's':return _0x4a7722;case'd':case'i':return Number(_0x4a7722);case'j':return JSON[_0x16698e(0x139)](_0x4a7722);case'o':{if(typeof _0x4a7722=='string')return _0x4a7722;let _0xcdf7b8=JSON[_0x16698e(0x139)](_0x4a7722);return _0xcdf7b8==='{}'||_0xcdf7b8==='[]'||/^\[object .+?\]$/[_0x16698e(0x144)](_0xcdf7b8)?_0x4a7722:_0xcdf7b8;}}}function _0x5056c0(_0x10ecc1,..._0x22494b){var _0xd34b3a=_0x1d3169;if(_0x22494b['length']===0x0)return _0x10ecc1;let _0x3e1dd7=0x0,_0x4ac0a0=_0x10ecc1[_0xd34b3a(0x1bf)](_0x5bfc8b,(_0x76f772,_0x84fb16,_0xe95027,_0x13749f)=>{let _0x47d53e=_0x22494b[_0x3e1dd7],_0x154526=_0x1859cb(_0x47d53e,_0x13749f);return _0x84fb16?_0x76f772:(_0x3e1dd7++,_0x154526);});return _0x3e1dd7<_0x22494b['length']&&(_0x4ac0a0+='\x20'+_0x22494b['slice'](_0x3e1dd7)[_0xd34b3a(0x188)]('\x20')),_0x4ac0a0=_0x4ac0a0[_0xd34b3a(0x1bf)](/%{2,2}/g,'%'),_0x4ac0a0;}var _0x38d93b=0x2;function _0xbb9131(_0x21132f){var _0x10963b=_0x1d3169;if(!_0x21132f[_0x10963b(0x1c4)])return;let _0x108ca3=_0x21132f[_0x10963b(0x1c4)]['split']('\x0a');_0x108ca3[_0x10963b(0xfe)](0x1,_0x38d93b),_0x21132f[_0x10963b(0x1c4)]=_0x108ca3[_0x10963b(0x188)]('\x0a');}var _0x336386=class extends Error{constructor(_0x148780,..._0x50ee51){var _0x184fcd=_0x1d3169;super(_0x148780),this['message']=_0x148780,this[_0x184fcd(0x244)]=_0x184fcd(0x239),this[_0x184fcd(0x16a)]=_0x5056c0(_0x148780,..._0x50ee51),_0xbb9131(this);}},_0x1e9b2c=(_0x1f4858,_0x12aaa0,..._0x3c771e)=>{if(!_0x1f4858)throw new _0x336386(_0x12aaa0,..._0x3c771e);};_0x1e9b2c['as']=(_0x3f9cbf,_0x385f13,_0x2f1a8d,..._0x474a34)=>{var _0x4bf9e5=_0x1d3169;if(!_0x385f13)throw _0x3f9cbf['prototype'][_0x4bf9e5(0x244)]!=null?new _0x3f9cbf(_0x5056c0(_0x2f1a8d,_0x474a34)):_0x3f9cbf(_0x5056c0(_0x2f1a8d,_0x474a34));};var _0x37f37b=_0x21bf0c(_0x48fac3()),_0x46fa81=window[_0x1d3169(0x215)][_0x1d3169(0x1ce)];function _0x15693e(_0x21028f){return function(_0x10417b,..._0x41272f){};}var _0xa72f7a='preview-manager',_0x4b4005=_0x1d3169(0x143),_0x409595=_0x1d3169(0x124),_0x54a3e2=_0x1d3169(0x13e),_0x560028=_0x1d3169(0x194),_0x4cccf9='preview/runtime-response',_0x193f41=_0x1d3169(0x117),_0x59c109=_0x21bf0c(_0x28cba4()),_0xe2001a=0xffffffff;function _0x42b14c(_0x4c22c3,_0x473cbc,_0x26180){var _0x5a5ef=_0x1d3169,_0x3cae82=_0x26180/0x100000000,_0x97879c=_0x26180;_0x4c22c3[_0x5a5ef(0x1b9)](_0x473cbc,_0x3cae82),_0x4c22c3[_0x5a5ef(0x1b9)](_0x473cbc+0x4,_0x97879c);}function _0x295a38(_0x180970,_0x55eddd,_0x16a98b){var _0x1ceb8b=_0x1d3169,_0x25c35f=Math['floor'](_0x16a98b/0x100000000),_0x1acf49=_0x16a98b;_0x180970[_0x1ceb8b(0x1b9)](_0x55eddd,_0x25c35f),_0x180970['setUint32'](_0x55eddd+0x4,_0x1acf49);}function _0x565b2b(_0x38c443,_0x53dbd1){var _0xe5d064=_0x1d3169,_0x2ddab8=_0x38c443[_0xe5d064(0x208)](_0x53dbd1),_0x5f56dd=_0x38c443[_0xe5d064(0x229)](_0x53dbd1+0x4);return _0x2ddab8*0x100000000+_0x5f56dd;}function _0x3e81be(_0x2260bb,_0x51ac95){var _0x4ce494=_0x1d3169,_0x38799c=_0x2260bb[_0x4ce494(0x229)](_0x51ac95),_0x290b6d=_0x2260bb['getUint32'](_0x51ac95+0x4);return _0x38799c*0x100000000+_0x290b6d;}var _0x498cc2,_0x4d7787,_0x2d72b8,_0x1aeebc=(typeof process>'u'||((_0x498cc2=process==null?void 0x0:process['env'])===null||_0x498cc2===void 0x0?void 0x0:_0x498cc2['TEXT_ENCODING'])!==_0x1d3169(0x12b))&&typeof TextEncoder<'u'&&typeof TextDecoder<'u';function _0xd1d24(_0x546388){var _0x39a9ce=_0x1d3169;for(var _0x2ee7f2=_0x546388[_0x39a9ce(0x191)],_0xa7ce73=0x0,_0x36606a=0x0;_0x36606a<_0x2ee7f2;){var _0x485d1e=_0x546388[_0x39a9ce(0x129)](_0x36606a++);if((_0x485d1e&0xffffff80)===0x0){_0xa7ce73++;continue;}else{if((_0x485d1e&0xfffff800)===0x0)_0xa7ce73+=0x2;else{if(_0x485d1e>=0xd800&&_0x485d1e<=0xdbff&&_0x36606a<_0x2ee7f2){var _0x54838f=_0x546388[_0x39a9ce(0x129)](_0x36606a);(_0x54838f&0xfc00)===0xdc00&&(++_0x36606a,_0x485d1e=((_0x485d1e&0x3ff)<<0xa)+(_0x54838f&0x3ff)+0x10000);}(_0x485d1e&0xffff0000)===0x0?_0xa7ce73+=0x3:_0xa7ce73+=0x4;}}}return _0xa7ce73;}function _0x5b560d(_0x52c721,_0x281c80,_0x114240){var _0x16e974=_0x1d3169;for(var _0x4cc073=_0x52c721['length'],_0x500fae=_0x114240,_0x3144f4=0x0;_0x3144f4<_0x4cc073;){var _0x4c6d40=_0x52c721[_0x16e974(0x129)](_0x3144f4++);if((_0x4c6d40&0xffffff80)===0x0){_0x281c80[_0x500fae++]=_0x4c6d40;continue;}else{if((_0x4c6d40&0xfffff800)===0x0)_0x281c80[_0x500fae++]=_0x4c6d40>>0x6&0x1f|0xc0;else{if(_0x4c6d40>=0xd800&&_0x4c6d40<=0xdbff&&_0x3144f4<_0x4cc073){var _0x2407c0=_0x52c721['charCodeAt'](_0x3144f4);(_0x2407c0&0xfc00)===0xdc00&&(++_0x3144f4,_0x4c6d40=((_0x4c6d40&0x3ff)<<0xa)+(_0x2407c0&0x3ff)+0x10000);}(_0x4c6d40&0xffff0000)===0x0?(_0x281c80[_0x500fae++]=_0x4c6d40>>0xc&0xf|0xe0,_0x281c80[_0x500fae++]=_0x4c6d40>>0x6&0x3f|0x80):(_0x281c80[_0x500fae++]=_0x4c6d40>>0x12&0x7|0xf0,_0x281c80[_0x500fae++]=_0x4c6d40>>0xc&0x3f|0x80,_0x281c80[_0x500fae++]=_0x4c6d40>>0x6&0x3f|0x80);}}_0x281c80[_0x500fae++]=_0x4c6d40&0x3f|0x80;}}var _0x5ef450=_0x1aeebc?new TextEncoder():void 0x0,_0x5ef4de=_0x1aeebc?typeof process<'u'&&((_0x4d7787=process==null?void 0x0:process[_0x1d3169(0x1de)])===null||_0x4d7787===void 0x0?void 0x0:_0x4d7787[_0x1d3169(0x178)])!=='force'?0xc8:0x0:_0xe2001a;function _0x166b4f(_0x271052,_0x4e8575,_0x1e32eb){var _0x4aebbe=_0x1d3169;_0x4e8575[_0x4aebbe(0x1a9)](_0x5ef450[_0x4aebbe(0x22d)](_0x271052),_0x1e32eb);}function _0x1ba274(_0x3a418d,_0x5df196,_0x2d2b91){var _0x1288fa=_0x1d3169;_0x5ef450[_0x1288fa(0x18c)](_0x3a418d,_0x5df196[_0x1288fa(0x12a)](_0x2d2b91));}var _0x4d1b0f=_0x5ef450?.[_0x1d3169(0x18c)]?_0x1ba274:_0x166b4f,_0x10d950=0x1000;function _0x29ee75(_0x3f3694,_0x74a645,_0xf4eb61){var _0x9ee0fe=_0x1d3169;for(var _0x3926b7=_0x74a645,_0x1d4329=_0x3926b7+_0xf4eb61,_0xc990a9=[],_0x245bb7='';_0x3926b7<_0x1d4329;){var _0x599f6f=_0x3f3694[_0x3926b7++];if((_0x599f6f&0x80)===0x0)_0xc990a9[_0x9ee0fe(0xfb)](_0x599f6f);else{if((_0x599f6f&0xe0)===0xc0){var _0x45192f=_0x3f3694[_0x3926b7++]&0x3f;_0xc990a9['push']((_0x599f6f&0x1f)<<0x6|_0x45192f);}else{if((_0x599f6f&0xf0)===0xe0){var _0x45192f=_0x3f3694[_0x3926b7++]&0x3f,_0x59e4b3=_0x3f3694[_0x3926b7++]&0x3f;_0xc990a9[_0x9ee0fe(0xfb)]((_0x599f6f&0x1f)<<0xc|_0x45192f<<0x6|_0x59e4b3);}else{if((_0x599f6f&0xf8)===0xf0){var _0x45192f=_0x3f3694[_0x3926b7++]&0x3f,_0x59e4b3=_0x3f3694[_0x3926b7++]&0x3f,_0x53f3e2=_0x3f3694[_0x3926b7++]&0x3f,_0xcb2d67=(_0x599f6f&0x7)<<0x12|_0x45192f<<0xc|_0x59e4b3<<0x6|_0x53f3e2;_0xcb2d67>0xffff&&(_0xcb2d67-=0x10000,_0xc990a9[_0x9ee0fe(0xfb)](_0xcb2d67>>>0xa&0x3ff|0xd800),_0xcb2d67=0xdc00|_0xcb2d67&0x3ff),_0xc990a9['push'](_0xcb2d67);}else _0xc990a9[_0x9ee0fe(0xfb)](_0x599f6f);}}}_0xc990a9[_0x9ee0fe(0x191)]>=_0x10d950&&(_0x245bb7+=String[_0x9ee0fe(0x104)]['apply'](String,_0xc990a9),_0xc990a9[_0x9ee0fe(0x191)]=0x0);}return _0xc990a9[_0x9ee0fe(0x191)]>0x0&&(_0x245bb7+=String[_0x9ee0fe(0x104)][_0x9ee0fe(0x15e)](String,_0xc990a9)),_0x245bb7;}var _0x1bef4d=_0x1aeebc?new TextDecoder():null,_0x171222=_0x1aeebc?typeof process<'u'&&((_0x2d72b8=process==null?void 0x0:process[_0x1d3169(0x1de)])===null||_0x2d72b8===void 0x0?void 0x0:_0x2d72b8['TEXT_DECODER'])!==_0x1d3169(0x1a2)?0xc8:0x0:_0xe2001a;function _0x4a79bc(_0x2617a5,_0x11cd5a,_0x546cbc){var _0x146a73=_0x1d3169,_0x191218=_0x2617a5['subarray'](_0x11cd5a,_0x11cd5a+_0x546cbc);return _0x1bef4d[_0x146a73(0x1f7)](_0x191218);}var _0x21cd4c=(function(){function _0x3b1201(_0x51b588,_0x399277){var _0x6268a1=_0xef6d;this['type']=_0x51b588,this[_0x6268a1(0x1dd)]=_0x399277;}return _0x3b1201;}()),_0x1d2ed4=(function(){var _0x5aae75=function(_0x55f981,_0x3298d1){var _0x2f2caf=_0xef6d;return _0x5aae75=Object[_0x2f2caf(0x21e)]||{'__proto__':[]}instanceof Array&&function(_0x28a5f7,_0x4e6448){_0x28a5f7['__proto__']=_0x4e6448;}||function(_0x399e0e,_0x4957cc){var _0x3b175a=_0x2f2caf;for(var _0x832965 in _0x4957cc)Object[_0x3b175a(0x11b)][_0x3b175a(0x1ef)][_0x3b175a(0x134)](_0x4957cc,_0x832965)&&(_0x399e0e[_0x832965]=_0x4957cc[_0x832965]);},_0x5aae75(_0x55f981,_0x3298d1);};return function(_0x5237b9,_0xe653b3){var _0xb8f558=_0xef6d;if(typeof _0xe653b3!=_0xb8f558(0x228)&&_0xe653b3!==null)throw new TypeError(_0xb8f558(0x159)+String(_0xe653b3)+_0xb8f558(0x210));_0x5aae75(_0x5237b9,_0xe653b3);function _0x1a2017(){var _0xbe3bdf=_0xb8f558;this[_0xbe3bdf(0x107)]=_0x5237b9;}_0x5237b9[_0xb8f558(0x11b)]=_0xe653b3===null?Object[_0xb8f558(0x1b8)](_0xe653b3):(_0x1a2017[_0xb8f558(0x11b)]=_0xe653b3[_0xb8f558(0x11b)],new _0x1a2017());};}()),_0x161764=function(_0x351a51){_0x1d2ed4(_0x25e01f,_0x351a51);function _0x25e01f(_0x4361ba){var _0x207c1e=_0xef6d,_0x2d97bd=_0x351a51['call'](this,_0x4361ba)||this,_0x3767be=Object[_0x207c1e(0x1b8)](_0x25e01f[_0x207c1e(0x11b)]);return Object['setPrototypeOf'](_0x2d97bd,_0x3767be),Object['defineProperty'](_0x2d97bd,_0x207c1e(0x244),{'configurable':!0x0,'enumerable':!0x1,'value':_0x25e01f['name']}),_0x2d97bd;}return _0x25e01f;}(Error),_0x590ce4=-0x1,_0x2d0f02=0x100000000-0x1,_0x50d11b=0x400000000-0x1;function _0x2b24d3(_0x5eaa4b){var _0x3e6715=_0x1d3169,_0x447673=_0x5eaa4b[_0x3e6715(0x19e)],_0x8501cb=_0x5eaa4b['nsec'];if(_0x447673>=0x0&&_0x8501cb>=0x0&&_0x447673<=_0x50d11b){if(_0x8501cb===0x0&&_0x447673<=_0x2d0f02){var _0x394f82=new Uint8Array(0x4),_0x480893=new DataView(_0x394f82[_0x3e6715(0x237)]);return _0x480893[_0x3e6715(0x1b9)](0x0,_0x447673),_0x394f82;}else{var _0x3d3fcb=_0x447673/0x100000000,_0x220a3d=_0x447673&0xffffffff,_0x394f82=new Uint8Array(0x8),_0x480893=new DataView(_0x394f82[_0x3e6715(0x237)]);return _0x480893[_0x3e6715(0x1b9)](0x0,_0x8501cb<<0x2|_0x3d3fcb&0x3),_0x480893[_0x3e6715(0x1b9)](0x4,_0x220a3d),_0x394f82;}}else{var _0x394f82=new Uint8Array(0xc),_0x480893=new DataView(_0x394f82[_0x3e6715(0x237)]);return _0x480893[_0x3e6715(0x1b9)](0x0,_0x8501cb),_0x295a38(_0x480893,0x4,_0x447673),_0x394f82;}}function _0x36901d(_0x833fb1){var _0x1a2d55=_0x1d3169,_0x367551=_0x833fb1[_0x1a2d55(0x1af)](),_0x372ee0=Math['floor'](_0x367551/0x3e8),_0x1e4d67=(_0x367551-_0x372ee0*0x3e8)*0xf4240,_0x27a844=Math[_0x1a2d55(0x122)](_0x1e4d67/0x3b9aca00);return{'sec':_0x372ee0+_0x27a844,'nsec':_0x1e4d67-_0x27a844*0x3b9aca00};}function _0x1c8d35(_0x59b795){if(_0x59b795 instanceof Date){var _0x52c00d=_0x36901d(_0x59b795);return _0x2b24d3(_0x52c00d);}else return null;}function _0xbe5b06(_0x4ce9fd){var _0x3a63ef=_0x1d3169,_0x138fb8=new DataView(_0x4ce9fd[_0x3a63ef(0x237)],_0x4ce9fd[_0x3a63ef(0x231)],_0x4ce9fd[_0x3a63ef(0x18f)]);switch(_0x4ce9fd[_0x3a63ef(0x18f)]){case 0x4:{var _0x415437=_0x138fb8['getUint32'](0x0),_0x3fc129=0x0;return{'sec':_0x415437,'nsec':_0x3fc129};}case 0x8:{var _0x5a231a=_0x138fb8[_0x3a63ef(0x229)](0x0),_0x25c1a7=_0x138fb8[_0x3a63ef(0x229)](0x4),_0x415437=(_0x5a231a&0x3)*0x100000000+_0x25c1a7,_0x3fc129=_0x5a231a>>>0x2;return{'sec':_0x415437,'nsec':_0x3fc129};}case 0xc:{var _0x415437=_0x565b2b(_0x138fb8,0x4),_0x3fc129=_0x138fb8[_0x3a63ef(0x229)](0x0);return{'sec':_0x415437,'nsec':_0x3fc129};}default:throw new _0x161764(_0x3a63ef(0xfd)[_0x3a63ef(0x196)](_0x4ce9fd[_0x3a63ef(0x191)]));}}function _0x4551a3(_0x50e5f7){var _0x417386=_0x1d3169,_0x493c40=_0xbe5b06(_0x50e5f7);return new Date(_0x493c40[_0x417386(0x19e)]*0x3e8+_0x493c40[_0x417386(0x116)]/0xf4240);}var _0x1bbca9={'type':_0x590ce4,'encode':_0x1c8d35,'decode':_0x4551a3},_0x11a643=(function(){var _0x558c15=_0x1d3169;function _0x44e073(){var _0x2feee3=_0xef6d;this[_0x2feee3(0x1bd)]=[],this['builtInDecoders']=[],this['encoders']=[],this[_0x2feee3(0x15b)]=[],this[_0x2feee3(0x165)](_0x1bbca9);}return _0x44e073[_0x558c15(0x11b)][_0x558c15(0x165)]=function(_0x22c570){var _0x5d4f5c=_0x558c15,_0x971adc=_0x22c570[_0x5d4f5c(0x1f8)],_0x5304f5=_0x22c570['encode'],_0x174507=_0x22c570[_0x5d4f5c(0x1f7)];if(_0x971adc>=0x0)this[_0x5d4f5c(0x1d2)][_0x971adc]=_0x5304f5,this['decoders'][_0x971adc]=_0x174507;else{var _0x4ce4e4=0x1+_0x971adc;this[_0x5d4f5c(0x1bd)][_0x4ce4e4]=_0x5304f5,this[_0x5d4f5c(0x1ee)][_0x4ce4e4]=_0x174507;}},_0x44e073[_0x558c15(0x11b)][_0x558c15(0x224)]=function(_0x9c09bb,_0xea86df){var _0x27ffd7=_0x558c15;for(var _0x4d8e4b=0x0;_0x4d8e4b<this['builtInEncoders'][_0x27ffd7(0x191)];_0x4d8e4b++){var _0x4e1267=this[_0x27ffd7(0x1bd)][_0x4d8e4b];if(_0x4e1267!=null){var _0x248228=_0x4e1267(_0x9c09bb,_0xea86df);if(_0x248228!=null){var _0x24d73f=-0x1-_0x4d8e4b;return new _0x21cd4c(_0x24d73f,_0x248228);}}}for(var _0x4d8e4b=0x0;_0x4d8e4b<this['encoders'][_0x27ffd7(0x191)];_0x4d8e4b++){var _0x4e1267=this[_0x27ffd7(0x1d2)][_0x4d8e4b];if(_0x4e1267!=null){var _0x248228=_0x4e1267(_0x9c09bb,_0xea86df);if(_0x248228!=null){var _0x24d73f=_0x4d8e4b;return new _0x21cd4c(_0x24d73f,_0x248228);}}}return _0x9c09bb instanceof _0x21cd4c?_0x9c09bb:null;},_0x44e073[_0x558c15(0x11b)][_0x558c15(0x1f7)]=function(_0x15c853,_0x16d31a,_0x24a706){var _0x261f03=_0x558c15,_0x329a57=_0x16d31a<0x0?this[_0x261f03(0x1ee)][-0x1-_0x16d31a]:this[_0x261f03(0x15b)][_0x16d31a];return _0x329a57?_0x329a57(_0x15c853,_0x16d31a,_0x24a706):new _0x21cd4c(_0x16d31a,_0x15c853);},_0x44e073[_0x558c15(0x226)]=new _0x44e073(),_0x44e073;}());function _0x4365f6(_0x439e79){var _0x929b4b=_0x1d3169;return _0x439e79 instanceof Uint8Array?_0x439e79:ArrayBuffer[_0x929b4b(0x11f)](_0x439e79)?new Uint8Array(_0x439e79['buffer'],_0x439e79[_0x929b4b(0x231)],_0x439e79[_0x929b4b(0x18f)]):_0x439e79 instanceof ArrayBuffer?new Uint8Array(_0x439e79):Uint8Array[_0x929b4b(0x198)](_0x439e79);}function _0x35f2fb(_0x2929db){var _0x210142=_0x1d3169;if(_0x2929db instanceof ArrayBuffer)return new DataView(_0x2929db);var _0x2bc668=_0x4365f6(_0x2929db);return new DataView(_0x2bc668['buffer'],_0x2bc668[_0x210142(0x231)],_0x2bc668[_0x210142(0x18f)]);}var _0x5b81b8=0x64,_0x393beb=0x800,_0x37d4e7=(function(){var _0x282dda=_0x1d3169;function _0x14c9ce(_0x1cbe67,_0x53c046,_0xeb1eb4,_0x27aa47,_0x331dad,_0x5d578b,_0xe2d2be,_0x3653b8){var _0x3efb54=_0xef6d;_0x1cbe67===void 0x0&&(_0x1cbe67=_0x11a643[_0x3efb54(0x226)]),_0x53c046===void 0x0&&(_0x53c046=void 0x0),_0xeb1eb4===void 0x0&&(_0xeb1eb4=_0x5b81b8),_0x27aa47===void 0x0&&(_0x27aa47=_0x393beb),_0x331dad===void 0x0&&(_0x331dad=!0x1),_0x5d578b===void 0x0&&(_0x5d578b=!0x1),_0xe2d2be===void 0x0&&(_0xe2d2be=!0x1),_0x3653b8===void 0x0&&(_0x3653b8=!0x1),this[_0x3efb54(0x105)]=_0x1cbe67,this['context']=_0x53c046,this[_0x3efb54(0x121)]=_0xeb1eb4,this[_0x3efb54(0x135)]=_0x27aa47,this[_0x3efb54(0x1da)]=_0x331dad,this[_0x3efb54(0x100)]=_0x5d578b,this[_0x3efb54(0x1c8)]=_0xe2d2be,this['forceIntegerToFloat']=_0x3653b8,this[_0x3efb54(0x1c0)]=0x0,this[_0x3efb54(0x141)]=new DataView(new ArrayBuffer(this[_0x3efb54(0x135)])),this['bytes']=new Uint8Array(this[_0x3efb54(0x141)]['buffer']);}return _0x14c9ce[_0x282dda(0x11b)]['reinitializeState']=function(){this['pos']=0x0;},_0x14c9ce[_0x282dda(0x11b)][_0x282dda(0x23e)]=function(_0x4bc57e){var _0x596e94=_0x282dda;return this[_0x596e94(0x18d)](),this[_0x596e94(0x1d7)](_0x4bc57e,0x1),this[_0x596e94(0x173)][_0x596e94(0x12a)](0x0,this['pos']);},_0x14c9ce[_0x282dda(0x11b)][_0x282dda(0x22d)]=function(_0x388cc2){var _0x2a0014=_0x282dda;return this['reinitializeState'](),this[_0x2a0014(0x1d7)](_0x388cc2,0x1),this['bytes'][_0x2a0014(0x13d)](0x0,this[_0x2a0014(0x1c0)]);},_0x14c9ce[_0x282dda(0x11b)]['doEncode']=function(_0x4cbf24,_0x40dd80){var _0xceb9ee=_0x282dda;if(_0x40dd80>this['maxDepth'])throw new Error(_0xceb9ee(0x23d)[_0xceb9ee(0x196)](_0x40dd80));_0x4cbf24==null?this[_0xceb9ee(0x109)]():typeof _0x4cbf24==_0xceb9ee(0x1d5)?this[_0xceb9ee(0x1bc)](_0x4cbf24):typeof _0x4cbf24==_0xceb9ee(0x1a4)?this[_0xceb9ee(0x131)](_0x4cbf24):typeof _0x4cbf24==_0xceb9ee(0x148)?this[_0xceb9ee(0x10f)](_0x4cbf24):this[_0xceb9ee(0x183)](_0x4cbf24,_0x40dd80);},_0x14c9ce[_0x282dda(0x11b)][_0x282dda(0x154)]=function(_0x49f66b){var _0x4e4395=_0x282dda,_0x3652e7=this['pos']+_0x49f66b;this[_0x4e4395(0x141)][_0x4e4395(0x18f)]<_0x3652e7&&this[_0x4e4395(0x17e)](_0x3652e7*0x2);},_0x14c9ce[_0x282dda(0x11b)]['resizeBuffer']=function(_0x261908){var _0x5e4eff=_0x282dda,_0x400641=new ArrayBuffer(_0x261908),_0x524349=new Uint8Array(_0x400641),_0x1d395d=new DataView(_0x400641);_0x524349[_0x5e4eff(0x1a9)](this[_0x5e4eff(0x173)]),this[_0x5e4eff(0x141)]=_0x1d395d,this[_0x5e4eff(0x173)]=_0x524349;},_0x14c9ce[_0x282dda(0x11b)][_0x282dda(0x109)]=function(){var _0x442caa=_0x282dda;this[_0x442caa(0x151)](0xc0);},_0x14c9ce[_0x282dda(0x11b)][_0x282dda(0x1bc)]=function(_0x97b155){_0x97b155===!0x1?this['writeU8'](0xc2):this['writeU8'](0xc3);},_0x14c9ce[_0x282dda(0x11b)][_0x282dda(0x131)]=function(_0x4d479d){var _0x320ccb=_0x282dda;Number['isSafeInteger'](_0x4d479d)&&!this[_0x320ccb(0x152)]?_0x4d479d>=0x0?_0x4d479d<0x80?this[_0x320ccb(0x151)](_0x4d479d):_0x4d479d<0x100?(this[_0x320ccb(0x151)](0xcc),this[_0x320ccb(0x151)](_0x4d479d)):_0x4d479d<0x10000?(this[_0x320ccb(0x151)](0xcd),this['writeU16'](_0x4d479d)):_0x4d479d<0x100000000?(this[_0x320ccb(0x151)](0xce),this[_0x320ccb(0x10e)](_0x4d479d)):(this[_0x320ccb(0x151)](0xcf),this[_0x320ccb(0x163)](_0x4d479d)):_0x4d479d>=-0x20?this[_0x320ccb(0x151)](0xe0|_0x4d479d+0x20):_0x4d479d>=-0x80?(this['writeU8'](0xd0),this['writeI8'](_0x4d479d)):_0x4d479d>=-0x8000?(this[_0x320ccb(0x151)](0xd1),this[_0x320ccb(0x1f2)](_0x4d479d)):_0x4d479d>=-0x80000000?(this[_0x320ccb(0x151)](0xd2),this[_0x320ccb(0x1e4)](_0x4d479d)):(this[_0x320ccb(0x151)](0xd3),this[_0x320ccb(0x180)](_0x4d479d)):this['forceFloat32']?(this[_0x320ccb(0x151)](0xca),this[_0x320ccb(0x189)](_0x4d479d)):(this[_0x320ccb(0x151)](0xcb),this[_0x320ccb(0x230)](_0x4d479d));},_0x14c9ce['prototype'][_0x282dda(0x1eb)]=function(_0x3e3b67){var _0x167d0c=_0x282dda;if(_0x3e3b67<0x20)this[_0x167d0c(0x151)](0xa0+_0x3e3b67);else{if(_0x3e3b67<0x100)this[_0x167d0c(0x151)](0xd9),this[_0x167d0c(0x151)](_0x3e3b67);else{if(_0x3e3b67<0x10000)this['writeU8'](0xda),this[_0x167d0c(0x118)](_0x3e3b67);else{if(_0x3e3b67<0x100000000)this[_0x167d0c(0x151)](0xdb),this['writeU32'](_0x3e3b67);else throw new Error('Too\x20long\x20string:\x20'[_0x167d0c(0x196)](_0x3e3b67,_0x167d0c(0x1e6)));}}}},_0x14c9ce['prototype'][_0x282dda(0x10f)]=function(_0x54d69c){var _0x5c65ea=_0x282dda,_0x107a9e=0x5,_0x40ad10=_0x54d69c['length'];if(_0x40ad10>_0x5ef4de){var _0x5e5b50=_0xd1d24(_0x54d69c);this[_0x5c65ea(0x154)](_0x107a9e+_0x5e5b50),this['writeStringHeader'](_0x5e5b50),_0x4d1b0f(_0x54d69c,this[_0x5c65ea(0x173)],this[_0x5c65ea(0x1c0)]),this[_0x5c65ea(0x1c0)]+=_0x5e5b50;}else{var _0x5e5b50=_0xd1d24(_0x54d69c);this['ensureBufferSizeToWrite'](_0x107a9e+_0x5e5b50),this['writeStringHeader'](_0x5e5b50),_0x5b560d(_0x54d69c,this[_0x5c65ea(0x173)],this['pos']),this['pos']+=_0x5e5b50;}},_0x14c9ce[_0x282dda(0x11b)][_0x282dda(0x183)]=function(_0x3cd975,_0x1e519c){var _0x24a46b=_0x282dda,_0x320dd3=this[_0x24a46b(0x105)][_0x24a46b(0x224)](_0x3cd975,this['context']);if(_0x320dd3!=null)this[_0x24a46b(0x201)](_0x320dd3);else{if(Array[_0x24a46b(0x15d)](_0x3cd975))this['encodeArray'](_0x3cd975,_0x1e519c);else{if(ArrayBuffer[_0x24a46b(0x11f)](_0x3cd975))this['encodeBinary'](_0x3cd975);else{if(typeof _0x3cd975==_0x24a46b(0x115))this[_0x24a46b(0x1a5)](_0x3cd975,_0x1e519c);else throw new Error(_0x24a46b(0x1f5)['concat'](Object[_0x24a46b(0x11b)][_0x24a46b(0x1a0)][_0x24a46b(0x15e)](_0x3cd975)));}}}},_0x14c9ce[_0x282dda(0x11b)][_0x282dda(0x22b)]=function(_0x25097f){var _0x23f10c=_0x282dda,_0x56feb1=_0x25097f[_0x23f10c(0x18f)];if(_0x56feb1<0x100)this[_0x23f10c(0x151)](0xc4),this[_0x23f10c(0x151)](_0x56feb1);else{if(_0x56feb1<0x10000)this[_0x23f10c(0x151)](0xc5),this[_0x23f10c(0x118)](_0x56feb1);else{if(_0x56feb1<0x100000000)this[_0x23f10c(0x151)](0xc6),this[_0x23f10c(0x10e)](_0x56feb1);else throw new Error(_0x23f10c(0x240)[_0x23f10c(0x196)](_0x56feb1));}}var _0x2afb6d=_0x4365f6(_0x25097f);this[_0x23f10c(0x212)](_0x2afb6d);},_0x14c9ce['prototype'][_0x282dda(0x17f)]=function(_0x4cd1b5,_0xf0e3aa){var _0x68debb=_0x282dda,_0x52f8b4=_0x4cd1b5['length'];if(_0x52f8b4<0x10)this[_0x68debb(0x151)](0x90+_0x52f8b4);else{if(_0x52f8b4<0x10000)this[_0x68debb(0x151)](0xdc),this[_0x68debb(0x118)](_0x52f8b4);else{if(_0x52f8b4<0x100000000)this[_0x68debb(0x151)](0xdd),this[_0x68debb(0x10e)](_0x52f8b4);else throw new Error('Too\x20large\x20array:\x20'[_0x68debb(0x196)](_0x52f8b4));}}for(var _0x3b0aea=0x0,_0x2589d6=_0x4cd1b5;_0x3b0aea<_0x2589d6[_0x68debb(0x191)];_0x3b0aea++){var _0x464fc2=_0x2589d6[_0x3b0aea];this[_0x68debb(0x1d7)](_0x464fc2,_0xf0e3aa+0x1);}},_0x14c9ce['prototype']['countWithoutUndefined']=function(_0x44064f,_0x275bc6){var _0x2bf02f=_0x282dda;for(var _0x4482c1=0x0,_0x396984=0x0,_0x269686=_0x275bc6;_0x396984<_0x269686[_0x2bf02f(0x191)];_0x396984++){var _0x57dddc=_0x269686[_0x396984];_0x44064f[_0x57dddc]!==void 0x0&&_0x4482c1++;}return _0x4482c1;},_0x14c9ce['prototype'][_0x282dda(0x1a5)]=function(_0x4013d7,_0x30b5ae){var _0x35866f=_0x282dda,_0x4fb6f8=Object[_0x35866f(0x12d)](_0x4013d7);this[_0x35866f(0x1da)]&&_0x4fb6f8['sort']();var _0x990e2=this[_0x35866f(0x1c8)]?this[_0x35866f(0x166)](_0x4013d7,_0x4fb6f8):_0x4fb6f8[_0x35866f(0x191)];if(_0x990e2<0x10)this[_0x35866f(0x151)](0x80+_0x990e2);else{if(_0x990e2<0x10000)this['writeU8'](0xde),this[_0x35866f(0x118)](_0x990e2);else{if(_0x990e2<0x100000000)this[_0x35866f(0x151)](0xdf),this[_0x35866f(0x10e)](_0x990e2);else throw new Error(_0x35866f(0x200)[_0x35866f(0x196)](_0x990e2));}}for(var _0x2f21d3=0x0,_0x4fb4=_0x4fb6f8;_0x2f21d3<_0x4fb4[_0x35866f(0x191)];_0x2f21d3++){var _0x51c631=_0x4fb4[_0x2f21d3],_0x126ed0=_0x4013d7[_0x51c631];this[_0x35866f(0x1c8)]&&_0x126ed0===void 0x0||(this[_0x35866f(0x10f)](_0x51c631),this[_0x35866f(0x1d7)](_0x126ed0,_0x30b5ae+0x1));}},_0x14c9ce['prototype']['encodeExtension']=function(_0x59a9bd){var _0x5b9ca2=_0x282dda,_0x1ab3b3=_0x59a9bd[_0x5b9ca2(0x1dd)][_0x5b9ca2(0x191)];if(_0x1ab3b3===0x1)this[_0x5b9ca2(0x151)](0xd4);else{if(_0x1ab3b3===0x2)this[_0x5b9ca2(0x151)](0xd5);else{if(_0x1ab3b3===0x4)this['writeU8'](0xd6);else{if(_0x1ab3b3===0x8)this[_0x5b9ca2(0x151)](0xd7);else{if(_0x1ab3b3===0x10)this['writeU8'](0xd8);else{if(_0x1ab3b3<0x100)this[_0x5b9ca2(0x151)](0xc7),this['writeU8'](_0x1ab3b3);else{if(_0x1ab3b3<0x10000)this['writeU8'](0xc8),this[_0x5b9ca2(0x118)](_0x1ab3b3);else{if(_0x1ab3b3<0x100000000)this[_0x5b9ca2(0x151)](0xc9),this[_0x5b9ca2(0x10e)](_0x1ab3b3);else throw new Error(_0x5b9ca2(0x162)['concat'](_0x1ab3b3));}}}}}}}this[_0x5b9ca2(0x15f)](_0x59a9bd[_0x5b9ca2(0x1f8)]),this[_0x5b9ca2(0x212)](_0x59a9bd[_0x5b9ca2(0x1dd)]);},_0x14c9ce[_0x282dda(0x11b)][_0x282dda(0x151)]=function(_0x4b7c69){var _0x3f8b48=_0x282dda;this['ensureBufferSizeToWrite'](0x1),this[_0x3f8b48(0x141)]['setUint8'](this[_0x3f8b48(0x1c0)],_0x4b7c69),this[_0x3f8b48(0x1c0)]++;},_0x14c9ce['prototype'][_0x282dda(0x212)]=function(_0x5554d5){var _0x13ef18=_0x282dda,_0x56d615=_0x5554d5['length'];this[_0x13ef18(0x154)](_0x56d615),this['bytes'][_0x13ef18(0x1a9)](_0x5554d5,this[_0x13ef18(0x1c0)]),this[_0x13ef18(0x1c0)]+=_0x56d615;},_0x14c9ce[_0x282dda(0x11b)][_0x282dda(0x15f)]=function(_0x166e98){var _0x7e5aea=_0x282dda;this[_0x7e5aea(0x154)](0x1),this[_0x7e5aea(0x141)][_0x7e5aea(0x22a)](this[_0x7e5aea(0x1c0)],_0x166e98),this[_0x7e5aea(0x1c0)]++;},_0x14c9ce[_0x282dda(0x11b)]['writeU16']=function(_0x7cb3dc){var _0x1304c6=_0x282dda;this[_0x1304c6(0x154)](0x2),this['view'][_0x1304c6(0x1be)](this[_0x1304c6(0x1c0)],_0x7cb3dc),this['pos']+=0x2;},_0x14c9ce['prototype'][_0x282dda(0x1f2)]=function(_0x23be5f){var _0x297170=_0x282dda;this['ensureBufferSizeToWrite'](0x2),this[_0x297170(0x141)][_0x297170(0x172)](this[_0x297170(0x1c0)],_0x23be5f),this['pos']+=0x2;},_0x14c9ce[_0x282dda(0x11b)]['writeU32']=function(_0x578ca1){var _0x36cb26=_0x282dda;this[_0x36cb26(0x154)](0x4),this[_0x36cb26(0x141)][_0x36cb26(0x1b9)](this['pos'],_0x578ca1),this[_0x36cb26(0x1c0)]+=0x4;},_0x14c9ce[_0x282dda(0x11b)][_0x282dda(0x1e4)]=function(_0xd05d76){var _0x13ab42=_0x282dda;this[_0x13ab42(0x154)](0x4),this[_0x13ab42(0x141)][_0x13ab42(0x108)](this[_0x13ab42(0x1c0)],_0xd05d76),this[_0x13ab42(0x1c0)]+=0x4;},_0x14c9ce['prototype'][_0x282dda(0x189)]=function(_0x2aafa9){var _0x341ab6=_0x282dda;this['ensureBufferSizeToWrite'](0x4),this['view'][_0x341ab6(0x111)](this[_0x341ab6(0x1c0)],_0x2aafa9),this[_0x341ab6(0x1c0)]+=0x4;},_0x14c9ce['prototype'][_0x282dda(0x230)]=function(_0x399da7){var _0x3074c2=_0x282dda;this['ensureBufferSizeToWrite'](0x8),this[_0x3074c2(0x141)]['setFloat64'](this[_0x3074c2(0x1c0)],_0x399da7),this['pos']+=0x8;},_0x14c9ce[_0x282dda(0x11b)]['writeU64']=function(_0x33b744){var _0x12c808=_0x282dda;this[_0x12c808(0x154)](0x8),_0x42b14c(this[_0x12c808(0x141)],this[_0x12c808(0x1c0)],_0x33b744),this[_0x12c808(0x1c0)]+=0x8;},_0x14c9ce[_0x282dda(0x11b)][_0x282dda(0x180)]=function(_0x4ff4d4){var _0x1d81b7=_0x282dda;this['ensureBufferSizeToWrite'](0x8),_0x295a38(this[_0x1d81b7(0x141)],this[_0x1d81b7(0x1c0)],_0x4ff4d4),this['pos']+=0x8;},_0x14c9ce;}()),_0x3c5e60={};function _0x1a6735(_0x5c605c,_0x4b55e6){var _0x447bed=_0x1d3169;_0x4b55e6===void 0x0&&(_0x4b55e6=_0x3c5e60);var _0x5a20c9=new _0x37d4e7(_0x4b55e6[_0x447bed(0x105)],_0x4b55e6['context'],_0x4b55e6[_0x447bed(0x121)],_0x4b55e6['initialBufferSize'],_0x4b55e6[_0x447bed(0x1da)],_0x4b55e6[_0x447bed(0x100)],_0x4b55e6['ignoreUndefined'],_0x4b55e6[_0x447bed(0x152)]);return _0x5a20c9[_0x447bed(0x23e)](_0x5c605c);}function _0x1ead54(_0x4aca99){var _0x1b7f09=_0x1d3169;return''[_0x1b7f09(0x196)](_0x4aca99<0x0?'-':'','0x')[_0x1b7f09(0x196)](Math['abs'](_0x4aca99)[_0x1b7f09(0x1a0)](0x10)[_0x1b7f09(0x170)](0x2,'0'));}var _0x451733=0x10,_0x42751d=0x10,_0x1270e5=(function(){var _0x328e44=_0x1d3169;function _0x3fd74a(_0x2aa71a,_0x34e8c1){var _0xa03d4e=_0xef6d;_0x2aa71a===void 0x0&&(_0x2aa71a=_0x451733),_0x34e8c1===void 0x0&&(_0x34e8c1=_0x42751d),this[_0xa03d4e(0x22c)]=_0x2aa71a,this[_0xa03d4e(0x175)]=_0x34e8c1,this[_0xa03d4e(0x220)]=0x0,this[_0xa03d4e(0x1fc)]=0x0,this[_0xa03d4e(0x1a6)]=[];for(var _0x2489f8=0x0;_0x2489f8<this[_0xa03d4e(0x22c)];_0x2489f8++)this[_0xa03d4e(0x1a6)]['push']([]);}return _0x3fd74a['prototype']['canBeCached']=function(_0x5b63dd){var _0x107467=_0xef6d;return _0x5b63dd>0x0&&_0x5b63dd<=this[_0x107467(0x22c)];},_0x3fd74a[_0x328e44(0x11b)][_0x328e44(0x14f)]=function(_0x4f25f8,_0x82eea3,_0x32a8dc){var _0x4ff868=_0x328e44,_0x5a28ad=this[_0x4ff868(0x1a6)][_0x32a8dc-0x1];_0x2d51f0:for(var _0x583ea7=0x0,_0x309bc5=_0x5a28ad;_0x583ea7<_0x309bc5['length'];_0x583ea7++){for(var _0x23bfe0=_0x309bc5[_0x583ea7],_0xe5c02d=_0x23bfe0[_0x4ff868(0x173)],_0x52cba7=0x0;_0x52cba7<_0x32a8dc;_0x52cba7++)if(_0xe5c02d[_0x52cba7]!==_0x4f25f8[_0x82eea3+_0x52cba7])continue _0x2d51f0;return _0x23bfe0[_0x4ff868(0x137)];}return null;},_0x3fd74a['prototype'][_0x328e44(0x1b6)]=function(_0x48049e,_0x13cd14){var _0x40ead8=_0x328e44,_0x2ff594=this['caches'][_0x48049e['length']-0x1],_0x54643e={'bytes':_0x48049e,'str':_0x13cd14};_0x2ff594['length']>=this[_0x40ead8(0x175)]?_0x2ff594[Math[_0x40ead8(0x184)]()*_0x2ff594[_0x40ead8(0x191)]|0x0]=_0x54643e:_0x2ff594['push'](_0x54643e);},_0x3fd74a['prototype']['decode']=function(_0xcd8369,_0xa45a6b,_0x2c3bd9){var _0x474c2a=_0x328e44,_0x18dbc5=this[_0x474c2a(0x14f)](_0xcd8369,_0xa45a6b,_0x2c3bd9);if(_0x18dbc5!=null)return this['hit']++,_0x18dbc5;this[_0x474c2a(0x1fc)]++;var _0x22aa9c=_0x29ee75(_0xcd8369,_0xa45a6b,_0x2c3bd9),_0x7780de=Uint8Array[_0x474c2a(0x11b)][_0x474c2a(0x13d)][_0x474c2a(0x134)](_0xcd8369,_0xa45a6b,_0xa45a6b+_0x2c3bd9);return this[_0x474c2a(0x1b6)](_0x7780de,_0x22aa9c),_0x22aa9c;},_0x3fd74a;}()),_0xbfa1e1=function(_0x1ce2b6,_0x48e872,_0x55d73b,_0x4e5498){function _0x5b7ec5(_0x4353cb){return _0x4353cb instanceof _0x55d73b?_0x4353cb:new _0x55d73b(function(_0x2a5d29){_0x2a5d29(_0x4353cb);});}return new(_0x55d73b||(_0x55d73b=Promise))(function(_0x2e2356,_0x2afc71){var _0x1fd8a2=_0xef6d;function _0x1fb91b(_0x7361b3){var _0x1276d8=_0xef6d;try{_0x47654c(_0x4e5498[_0x1276d8(0x20e)](_0x7361b3));}catch(_0x58ac72){_0x2afc71(_0x58ac72);}}function _0x409c15(_0x20a060){var _0x3ac8a7=_0xef6d;try{_0x47654c(_0x4e5498[_0x3ac8a7(0x1cb)](_0x20a060));}catch(_0x417050){_0x2afc71(_0x417050);}}function _0x47654c(_0x374772){var _0x3995f6=_0xef6d;_0x374772['done']?_0x2e2356(_0x374772['value']):_0x5b7ec5(_0x374772[_0x3995f6(0x10a)])['then'](_0x1fb91b,_0x409c15);}_0x47654c((_0x4e5498=_0x4e5498['apply'](_0x1ce2b6,_0x48e872||[]))[_0x1fd8a2(0x20e)]());});},_0x35a1a4=function(_0x2d2ea0,_0x148e28){var _0x523cf7=_0x1d3169,_0xd50957={'label':0x0,'sent':function(){if(_0x425caa[0x0]&0x1)throw _0x425caa[0x1];return _0x425caa[0x1];},'trys':[],'ops':[]},_0x2acd44,_0x359627,_0x425caa,_0x49fbca;return _0x49fbca={'next':_0x291707(0x0),'throw':_0x291707(0x1),'return':_0x291707(0x2)},typeof Symbol==_0x523cf7(0x228)&&(_0x49fbca[Symbol[_0x523cf7(0x153)]]=function(){return this;}),_0x49fbca;function _0x291707(_0x3a1a41){return function(_0x5d0c9e){return _0x4863bb([_0x3a1a41,_0x5d0c9e]);};}function _0x4863bb(_0x2ab966){var _0xc971bb=_0x523cf7;if(_0x2acd44)throw new TypeError(_0xc971bb(0x1e8));for(;_0xd50957;)try{if(_0x2acd44=0x1,_0x359627&&(_0x425caa=_0x2ab966[0x0]&0x2?_0x359627['return']:_0x2ab966[0x0]?_0x359627['throw']||((_0x425caa=_0x359627[_0xc971bb(0x236)])&&_0x425caa[_0xc971bb(0x134)](_0x359627),0x0):_0x359627[_0xc971bb(0x20e)])&&!(_0x425caa=_0x425caa[_0xc971bb(0x134)](_0x359627,_0x2ab966[0x1]))[_0xc971bb(0x207)])return _0x425caa;switch(_0x359627=0x0,_0x425caa&&(_0x2ab966=[_0x2ab966[0x0]&0x2,_0x425caa[_0xc971bb(0x10a)]]),_0x2ab966[0x0]){case 0x0:case 0x1:_0x425caa=_0x2ab966;break;case 0x4:return _0xd50957[_0xc971bb(0x21a)]++,{'value':_0x2ab966[0x1],'done':!0x1};case 0x5:_0xd50957[_0xc971bb(0x21a)]++,_0x359627=_0x2ab966[0x1],_0x2ab966=[0x0];continue;case 0x7:_0x2ab966=_0xd50957[_0xc971bb(0x241)][_0xc971bb(0x1e1)](),_0xd50957[_0xc971bb(0x1cd)]['pop']();continue;default:if(_0x425caa=_0xd50957['trys'],!(_0x425caa=_0x425caa['length']>0x0&&_0x425caa[_0x425caa[_0xc971bb(0x191)]-0x1])&&(_0x2ab966[0x0]===0x6||_0x2ab966[0x0]===0x2)){_0xd50957=0x0;continue;}if(_0x2ab966[0x0]===0x3&&(!_0x425caa||_0x2ab966[0x1]>_0x425caa[0x0]&&_0x2ab966[0x1]<_0x425caa[0x3])){_0xd50957[_0xc971bb(0x21a)]=_0x2ab966[0x1];break;}if(_0x2ab966[0x0]===0x6&&_0xd50957[_0xc971bb(0x21a)]<_0x425caa[0x1]){_0xd50957['label']=_0x425caa[0x1],_0x425caa=_0x2ab966;break;}if(_0x425caa&&_0xd50957[_0xc971bb(0x21a)]<_0x425caa[0x2]){_0xd50957[_0xc971bb(0x21a)]=_0x425caa[0x2],_0xd50957[_0xc971bb(0x241)][_0xc971bb(0xfb)](_0x2ab966);break;}_0x425caa[0x2]&&_0xd50957[_0xc971bb(0x241)][_0xc971bb(0x1e1)](),_0xd50957['trys'][_0xc971bb(0x1e1)]();continue;}_0x2ab966=_0x148e28['call'](_0x2d2ea0,_0xd50957);}catch(_0x1f512d){_0x2ab966=[0x6,_0x1f512d],_0x359627=0x0;}finally{_0x2acd44=_0x425caa=0x0;}if(_0x2ab966[0x0]&0x5)throw _0x2ab966[0x1];return{'value':_0x2ab966[0x0]?_0x2ab966[0x1]:void 0x0,'done':!0x0};}},_0x785d7d=function(_0x170bc2){var _0x5aa30a=_0x1d3169;if(!Symbol[_0x5aa30a(0x17a)])throw new TypeError(_0x5aa30a(0x179));var _0x25bc87=_0x170bc2[Symbol[_0x5aa30a(0x17a)]],_0x39b554;return _0x25bc87?_0x25bc87[_0x5aa30a(0x134)](_0x170bc2):(_0x170bc2=typeof __values==_0x5aa30a(0x228)?__values(_0x170bc2):_0x170bc2[Symbol[_0x5aa30a(0x153)]](),_0x39b554={},_0x4cb8f3(_0x5aa30a(0x20e)),_0x4cb8f3('throw'),_0x4cb8f3(_0x5aa30a(0x236)),_0x39b554[Symbol['asyncIterator']]=function(){return this;},_0x39b554);function _0x4cb8f3(_0x8c09a7){_0x39b554[_0x8c09a7]=_0x170bc2[_0x8c09a7]&&function(_0x90bce9){return new Promise(function(_0x179901,_0x21bf75){var _0x23157b=_0xef6d;_0x90bce9=_0x170bc2[_0x8c09a7](_0x90bce9),_0x6084cd(_0x179901,_0x21bf75,_0x90bce9[_0x23157b(0x207)],_0x90bce9['value']);});};}function _0x6084cd(_0x35a7ac,_0x8702d1,_0x52dd27,_0x2769b6){var _0x219e90=_0x5aa30a;Promise[_0x219e90(0x23f)](_0x2769b6)[_0x219e90(0x202)](function(_0x3db865){_0x35a7ac({'value':_0x3db865,'done':_0x52dd27});},_0x8702d1);}},_0x176993=function(_0x2d73ba){return this instanceof _0x176993?(this['v']=_0x2d73ba,this):new _0x176993(_0x2d73ba);},_0x951d9f=function(_0x1bb958,_0xd2904f,_0x400997){var _0x2f7bc2=_0x1d3169;if(!Symbol[_0x2f7bc2(0x17a)])throw new TypeError('Symbol.asyncIterator\x20is\x20not\x20defined.');var _0x389ff1=_0x400997[_0x2f7bc2(0x15e)](_0x1bb958,_0xd2904f||[]),_0x2dee78,_0xa8edd=[];return _0x2dee78={},_0x2eacc4(_0x2f7bc2(0x20e)),_0x2eacc4('throw'),_0x2eacc4(_0x2f7bc2(0x236)),_0x2dee78[Symbol[_0x2f7bc2(0x17a)]]=function(){return this;},_0x2dee78;function _0x2eacc4(_0x53b672){_0x389ff1[_0x53b672]&&(_0x2dee78[_0x53b672]=function(_0x430893){return new Promise(function(_0x1c0e86,_0x477950){var _0x13b267=_0xef6d;_0xa8edd[_0x13b267(0xfb)]([_0x53b672,_0x430893,_0x1c0e86,_0x477950])>0x1||_0x11cf87(_0x53b672,_0x430893);});});}function _0x11cf87(_0x3b3075,_0x49a42b){try{_0xf217e6(_0x389ff1[_0x3b3075](_0x49a42b));}catch(_0x4057d1){_0x141cee(_0xa8edd[0x0][0x3],_0x4057d1);}}function _0xf217e6(_0x579411){var _0x5ef90a=_0x2f7bc2;_0x579411[_0x5ef90a(0x10a)]instanceof _0x176993?Promise[_0x5ef90a(0x23f)](_0x579411[_0x5ef90a(0x10a)]['v'])[_0x5ef90a(0x202)](_0x3cbee6,_0x4f361d):_0x141cee(_0xa8edd[0x0][0x2],_0x579411);}function _0x3cbee6(_0x173d5a){var _0x471889=_0x2f7bc2;_0x11cf87(_0x471889(0x20e),_0x173d5a);}function _0x4f361d(_0x1c0643){_0x11cf87('throw',_0x1c0643);}function _0x141cee(_0x14d63e,_0x30123d){var _0x4a0e89=_0x2f7bc2;_0x14d63e(_0x30123d),_0xa8edd[_0x4a0e89(0x15a)](),_0xa8edd[_0x4a0e89(0x191)]&&_0x11cf87(_0xa8edd[0x0][0x0],_0xa8edd[0x0][0x1]);}},_0x452561=function(_0x75f8cb){var _0x5aab1e=_0x1d3169,_0x2d1f8d=typeof _0x75f8cb;return _0x2d1f8d===_0x5aab1e(0x148)||_0x2d1f8d==='number';},_0x5b167b=-0x1,_0x510502=new DataView(new ArrayBuffer(0x0)),_0x5e29e0=new Uint8Array(_0x510502[_0x1d3169(0x237)]),_0x444d87=(function(){var _0x138b86=_0x1d3169;try{_0x510502['getInt8'](0x0);}catch(_0x5e3736){return _0x5e3736['constructor'];}throw new Error(_0x138b86(0x193));}()),_0x534e6b=new _0x444d87('Insufficient\x20data'),_0x31a158=new _0x1270e5(),_0x3e3d8e=(function(){var _0x5cd694=_0x1d3169;function _0x233ae0(_0xb87c99,_0x56c15a,_0x528d59,_0x4287f8,_0x7ea550,_0x46be40,_0x2256dc,_0xac10c8){var _0x2984d3=_0xef6d;_0xb87c99===void 0x0&&(_0xb87c99=_0x11a643[_0x2984d3(0x226)]),_0x56c15a===void 0x0&&(_0x56c15a=void 0x0),_0x528d59===void 0x0&&(_0x528d59=_0xe2001a),_0x4287f8===void 0x0&&(_0x4287f8=_0xe2001a),_0x7ea550===void 0x0&&(_0x7ea550=_0xe2001a),_0x46be40===void 0x0&&(_0x46be40=_0xe2001a),_0x2256dc===void 0x0&&(_0x2256dc=_0xe2001a),_0xac10c8===void 0x0&&(_0xac10c8=_0x31a158),this['extensionCodec']=_0xb87c99,this['context']=_0x56c15a,this[_0x2984d3(0x1e0)]=_0x528d59,this[_0x2984d3(0x1d0)]=_0x4287f8,this[_0x2984d3(0x17d)]=_0x7ea550,this['maxMapLength']=_0x46be40,this['maxExtLength']=_0x2256dc,this[_0x2984d3(0x247)]=_0xac10c8,this[_0x2984d3(0x213)]=0x0,this[_0x2984d3(0x1c0)]=0x0,this[_0x2984d3(0x141)]=_0x510502,this[_0x2984d3(0x173)]=_0x5e29e0,this[_0x2984d3(0x204)]=_0x5b167b,this[_0x2984d3(0x1c4)]=[];}return _0x233ae0[_0x5cd694(0x11b)]['reinitializeState']=function(){var _0x2bee32=_0x5cd694;this['totalPos']=0x0,this[_0x2bee32(0x204)]=_0x5b167b,this[_0x2bee32(0x1c4)]['length']=0x0;},_0x233ae0[_0x5cd694(0x11b)][_0x5cd694(0x1b5)]=function(_0x45fe9d){var _0x340981=_0x5cd694;this[_0x340981(0x173)]=_0x4365f6(_0x45fe9d),this[_0x340981(0x141)]=_0x35f2fb(this[_0x340981(0x173)]),this[_0x340981(0x1c0)]=0x0;},_0x233ae0[_0x5cd694(0x11b)][_0x5cd694(0x242)]=function(_0x34ba73){var _0x2c8152=_0x5cd694;if(this['headByte']===_0x5b167b&&!this[_0x2c8152(0x127)](0x1))this['setBuffer'](_0x34ba73);else{var _0x10eecc=this[_0x2c8152(0x173)][_0x2c8152(0x12a)](this['pos']),_0x42e4f8=_0x4365f6(_0x34ba73),_0x24dfd0=new Uint8Array(_0x10eecc['length']+_0x42e4f8['length']);_0x24dfd0[_0x2c8152(0x1a9)](_0x10eecc),_0x24dfd0[_0x2c8152(0x1a9)](_0x42e4f8,_0x10eecc['length']),this['setBuffer'](_0x24dfd0);}},_0x233ae0['prototype'][_0x5cd694(0x127)]=function(_0xe1e4ef){var _0x40d283=_0x5cd694;return this['view'][_0x40d283(0x18f)]-this['pos']>=_0xe1e4ef;},_0x233ae0[_0x5cd694(0x11b)][_0x5cd694(0x21b)]=function(_0x3be0d8){var _0x57b4ce=_0x5cd694,_0x71a5fa=this,_0x91be5b=_0x71a5fa['view'],_0x2841a5=_0x71a5fa[_0x57b4ce(0x1c0)];return new RangeError(_0x57b4ce(0x164)['concat'](_0x91be5b[_0x57b4ce(0x18f)]-_0x2841a5,'\x20of\x20')[_0x57b4ce(0x196)](_0x91be5b[_0x57b4ce(0x18f)],_0x57b4ce(0x136))[_0x57b4ce(0x196)](_0x3be0d8,']'));},_0x233ae0[_0x5cd694(0x11b)][_0x5cd694(0x1f7)]=function(_0x23b2dc){var _0x46b883=_0x5cd694;this['reinitializeState'](),this[_0x46b883(0x1b5)](_0x23b2dc);var _0x20db0d=this[_0x46b883(0x223)]();if(this[_0x46b883(0x127)](0x1))throw this['createExtraByteError'](this[_0x46b883(0x1c0)]);return _0x20db0d;},_0x233ae0['prototype']['decodeMulti']=function(_0x560560){return _0x35a1a4(this,function(_0x6d3a79){var _0x4c7e78=_0xef6d;switch(_0x6d3a79[_0x4c7e78(0x21a)]){case 0x0:this['reinitializeState'](),this[_0x4c7e78(0x1b5)](_0x560560),_0x6d3a79[_0x4c7e78(0x21a)]=0x1;case 0x1:return this['hasRemaining'](0x1)?[0x4,this['doDecodeSync']()]:[0x3,0x3];case 0x2:return _0x6d3a79[_0x4c7e78(0x1ac)](),[0x3,0x1];case 0x3:return[0x2];}});},_0x233ae0[_0x5cd694(0x11b)][_0x5cd694(0x1c7)]=function(_0x235c38){var _0x1764c5,_0x318502,_0x4486cd,_0x2ed9dd;return _0xbfa1e1(this,void 0x0,void 0x0,function(){var _0x564816,_0x278eab,_0x5b3d33,_0x55e63b,_0x5b0a91,_0x3dd746,_0x58bcda,_0x2d7c56;return _0x35a1a4(this,function(_0x54d5ea){var _0xa7a2cc=_0xef6d;switch(_0x54d5ea[_0xa7a2cc(0x21a)]){case 0x0:_0x564816=!0x1,_0x54d5ea[_0xa7a2cc(0x21a)]=0x1;case 0x1:_0x54d5ea[_0xa7a2cc(0x1cd)]['push']([0x1,0x6,0x7,0xc]),_0x1764c5=_0x785d7d(_0x235c38),_0x54d5ea[_0xa7a2cc(0x21a)]=0x2;case 0x2:return[0x4,_0x1764c5[_0xa7a2cc(0x20e)]()];case 0x3:if(_0x318502=_0x54d5ea[_0xa7a2cc(0x1ac)](),!!_0x318502[_0xa7a2cc(0x207)])return[0x3,0x5];if(_0x5b3d33=_0x318502[_0xa7a2cc(0x10a)],_0x564816)throw this[_0xa7a2cc(0x21b)](this[_0xa7a2cc(0x213)]);this[_0xa7a2cc(0x242)](_0x5b3d33);try{_0x278eab=this[_0xa7a2cc(0x223)](),_0x564816=!0x0;}catch(_0x2a0d88){if(!(_0x2a0d88 instanceof _0x444d87))throw _0x2a0d88;}this[_0xa7a2cc(0x213)]+=this['pos'],_0x54d5ea[_0xa7a2cc(0x21a)]=0x4;case 0x4:return[0x3,0x2];case 0x5:return[0x3,0xc];case 0x6:return _0x55e63b=_0x54d5ea[_0xa7a2cc(0x1ac)](),_0x4486cd={'error':_0x55e63b},[0x3,0xc];case 0x7:return _0x54d5ea[_0xa7a2cc(0x1cd)][_0xa7a2cc(0xfb)]([0x7,,0xa,0xb]),_0x318502&&!_0x318502[_0xa7a2cc(0x207)]&&(_0x2ed9dd=_0x1764c5['return'])?[0x4,_0x2ed9dd['call'](_0x1764c5)]:[0x3,0x9];case 0x8:_0x54d5ea[_0xa7a2cc(0x1ac)](),_0x54d5ea['label']=0x9;case 0x9:return[0x3,0xb];case 0xa:if(_0x4486cd)throw _0x4486cd['error'];return[0x7];case 0xb:return[0x7];case 0xc:if(_0x564816){if(this[_0xa7a2cc(0x127)](0x1))throw this[_0xa7a2cc(0x21b)](this[_0xa7a2cc(0x213)]);return[0x2,_0x278eab];}throw _0x5b0a91=this,_0x3dd746=_0x5b0a91['headByte'],_0x58bcda=_0x5b0a91[_0xa7a2cc(0x1c0)],_0x2d7c56=_0x5b0a91[_0xa7a2cc(0x213)],new RangeError('Insufficient\x20data\x20in\x20parsing\x20'['concat'](_0x1ead54(_0x3dd746),_0xa7a2cc(0x1b2))[_0xa7a2cc(0x196)](_0x2d7c56,'\x20(')[_0xa7a2cc(0x196)](_0x58bcda,_0xa7a2cc(0x1f3)));}});});},_0x233ae0['prototype'][_0x5cd694(0x138)]=function(_0x26274f){return this['decodeMultiAsync'](_0x26274f,!0x0);},_0x233ae0[_0x5cd694(0x11b)][_0x5cd694(0x190)]=function(_0x59b3a4){var _0x24c56e=_0x5cd694;return this[_0x24c56e(0x1f1)](_0x59b3a4,!0x1);},_0x233ae0['prototype'][_0x5cd694(0x1f1)]=function(_0x59ceff,_0x12443e){return _0x951d9f(this,arguments,function(){var _0x134a56,_0x136d82,_0x3c45cc,_0xced078,_0x3f8a9a,_0x6bf50a,_0x21140d,_0x1e3859,_0x1666d1;return _0x35a1a4(this,function(_0x409439){var _0x29cd90=_0xef6d;switch(_0x409439[_0x29cd90(0x21a)]){case 0x0:_0x134a56=_0x12443e,_0x136d82=-0x1,_0x409439[_0x29cd90(0x21a)]=0x1;case 0x1:_0x409439[_0x29cd90(0x1cd)][_0x29cd90(0xfb)]([0x1,0xd,0xe,0x13]),_0x3c45cc=_0x785d7d(_0x59ceff),_0x409439[_0x29cd90(0x21a)]=0x2;case 0x2:return[0x4,_0x176993(_0x3c45cc[_0x29cd90(0x20e)]())];case 0x3:if(_0xced078=_0x409439[_0x29cd90(0x1ac)](),!!_0xced078[_0x29cd90(0x207)])return[0x3,0xc];if(_0x3f8a9a=_0xced078[_0x29cd90(0x10a)],_0x12443e&&_0x136d82===0x0)throw this['createExtraByteError'](this[_0x29cd90(0x213)]);this[_0x29cd90(0x242)](_0x3f8a9a),_0x134a56&&(_0x136d82=this[_0x29cd90(0x147)](),_0x134a56=!0x1,this[_0x29cd90(0x142)]()),_0x409439[_0x29cd90(0x21a)]=0x4;case 0x4:_0x409439[_0x29cd90(0x1cd)][_0x29cd90(0xfb)]([0x4,0x9,,0xa]),_0x409439[_0x29cd90(0x21a)]=0x5;case 0x5:return[0x4,_0x176993(this[_0x29cd90(0x223)]())];case 0x6:return[0x4,_0x409439[_0x29cd90(0x1ac)]()];case 0x7:return _0x409439[_0x29cd90(0x1ac)](),--_0x136d82===0x0?[0x3,0x8]:[0x3,0x5];case 0x8:return[0x3,0xa];case 0x9:if(_0x6bf50a=_0x409439[_0x29cd90(0x1ac)](),!(_0x6bf50a instanceof _0x444d87))throw _0x6bf50a;return[0x3,0xa];case 0xa:this[_0x29cd90(0x213)]+=this[_0x29cd90(0x1c0)],_0x409439[_0x29cd90(0x21a)]=0xb;case 0xb:return[0x3,0x2];case 0xc:return[0x3,0x13];case 0xd:return _0x21140d=_0x409439[_0x29cd90(0x1ac)](),_0x1e3859={'error':_0x21140d},[0x3,0x13];case 0xe:return _0x409439[_0x29cd90(0x1cd)][_0x29cd90(0xfb)]([0xe,,0x11,0x12]),_0xced078&&!_0xced078[_0x29cd90(0x207)]&&(_0x1666d1=_0x3c45cc[_0x29cd90(0x236)])?[0x4,_0x176993(_0x1666d1[_0x29cd90(0x134)](_0x3c45cc))]:[0x3,0x10];case 0xf:_0x409439['sent'](),_0x409439['label']=0x10;case 0x10:return[0x3,0x12];case 0x11:if(_0x1e3859)throw _0x1e3859[_0x29cd90(0x16c)];return[0x7];case 0x12:return[0x7];case 0x13:return[0x2];}});});},_0x233ae0[_0x5cd694(0x11b)][_0x5cd694(0x223)]=function(){var _0x3f0206=_0x5cd694;_0x197063:for(;;){var _0x419362=this[_0x3f0206(0x11e)](),_0x7c0ea7=void 0x0;if(_0x419362>=0xe0)_0x7c0ea7=_0x419362-0x100;else{if(_0x419362<0xc0){if(_0x419362<0x80)_0x7c0ea7=_0x419362;else{if(_0x419362<0x90){var _0x51a099=_0x419362-0x80;if(_0x51a099!==0x0){this[_0x3f0206(0x1ed)](_0x51a099),this[_0x3f0206(0x142)]();continue _0x197063;}else _0x7c0ea7={};}else{if(_0x419362<0xa0){var _0x51a099=_0x419362-0x90;if(_0x51a099!==0x0){this[_0x3f0206(0x10d)](_0x51a099),this['complete']();continue _0x197063;}else _0x7c0ea7=[];}else{var _0x108365=_0x419362-0xa0;_0x7c0ea7=this[_0x3f0206(0x243)](_0x108365,0x0);}}}}else{if(_0x419362===0xc0)_0x7c0ea7=null;else{if(_0x419362===0xc2)_0x7c0ea7=!0x1;else{if(_0x419362===0xc3)_0x7c0ea7=!0x0;else{if(_0x419362===0xca)_0x7c0ea7=this[_0x3f0206(0x1a1)]();else{if(_0x419362===0xcb)_0x7c0ea7=this[_0x3f0206(0x1ab)]();else{if(_0x419362===0xcc)_0x7c0ea7=this[_0x3f0206(0x112)]();else{if(_0x419362===0xcd)_0x7c0ea7=this[_0x3f0206(0x1cc)]();else{if(_0x419362===0xce)_0x7c0ea7=this[_0x3f0206(0x1ea)]();else{if(_0x419362===0xcf)_0x7c0ea7=this['readU64']();else{if(_0x419362===0xd0)_0x7c0ea7=this[_0x3f0206(0x233)]();else{if(_0x419362===0xd1)_0x7c0ea7=this[_0x3f0206(0x234)]();else{if(_0x419362===0xd2)_0x7c0ea7=this[_0x3f0206(0x186)]();else{if(_0x419362===0xd3)_0x7c0ea7=this['readI64']();else{if(_0x419362===0xd9){var _0x108365=this[_0x3f0206(0x12f)]();_0x7c0ea7=this[_0x3f0206(0x243)](_0x108365,0x1);}else{if(_0x419362===0xda){var _0x108365=this[_0x3f0206(0x171)]();_0x7c0ea7=this[_0x3f0206(0x243)](_0x108365,0x2);}else{if(_0x419362===0xdb){var _0x108365=this[_0x3f0206(0x1c2)]();_0x7c0ea7=this['decodeUtf8String'](_0x108365,0x4);}else{if(_0x419362===0xdc){var _0x51a099=this[_0x3f0206(0x1cc)]();if(_0x51a099!==0x0){this[_0x3f0206(0x10d)](_0x51a099),this[_0x3f0206(0x142)]();continue _0x197063;}else _0x7c0ea7=[];}else{if(_0x419362===0xdd){var _0x51a099=this[_0x3f0206(0x1ea)]();if(_0x51a099!==0x0){this[_0x3f0206(0x10d)](_0x51a099),this[_0x3f0206(0x142)]();continue _0x197063;}else _0x7c0ea7=[];}else{if(_0x419362===0xde){var _0x51a099=this[_0x3f0206(0x1cc)]();if(_0x51a099!==0x0){this['pushMapState'](_0x51a099),this[_0x3f0206(0x142)]();continue _0x197063;}else _0x7c0ea7={};}else{if(_0x419362===0xdf){var _0x51a099=this['readU32']();if(_0x51a099!==0x0){this[_0x3f0206(0x1ed)](_0x51a099),this['complete']();continue _0x197063;}else _0x7c0ea7={};}else{if(_0x419362===0xc4){var _0x51a099=this[_0x3f0206(0x12f)]();_0x7c0ea7=this['decodeBinary'](_0x51a099,0x1);}else{if(_0x419362===0xc5){var _0x51a099=this[_0x3f0206(0x171)]();_0x7c0ea7=this[_0x3f0206(0x206)](_0x51a099,0x2);}else{if(_0x419362===0xc6){var _0x51a099=this[_0x3f0206(0x1c2)]();_0x7c0ea7=this[_0x3f0206(0x206)](_0x51a099,0x4);}else{if(_0x419362===0xd4)_0x7c0ea7=this[_0x3f0206(0x1c3)](0x1,0x0);else{if(_0x419362===0xd5)_0x7c0ea7=this[_0x3f0206(0x1c3)](0x2,0x0);else{if(_0x419362===0xd6)_0x7c0ea7=this[_0x3f0206(0x1c3)](0x4,0x0);else{if(_0x419362===0xd7)_0x7c0ea7=this[_0x3f0206(0x1c3)](0x8,0x0);else{if(_0x419362===0xd8)_0x7c0ea7=this[_0x3f0206(0x1c3)](0x10,0x0);else{if(_0x419362===0xc7){var _0x51a099=this[_0x3f0206(0x12f)]();_0x7c0ea7=this[_0x3f0206(0x1c3)](_0x51a099,0x1);}else{if(_0x419362===0xc8){var _0x51a099=this['lookU16']();_0x7c0ea7=this[_0x3f0206(0x1c3)](_0x51a099,0x2);}else{if(_0x419362===0xc9){var _0x51a099=this[_0x3f0206(0x1c2)]();_0x7c0ea7=this[_0x3f0206(0x1c3)](_0x51a099,0x4);}else throw new _0x161764(_0x3f0206(0x1d9)[_0x3f0206(0x196)](_0x1ead54(_0x419362)));}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}this['complete']();for(var _0x5ae890=this[_0x3f0206(0x1c4)];_0x5ae890[_0x3f0206(0x191)]>0x0;){var _0x9ca675=_0x5ae890[_0x5ae890[_0x3f0206(0x191)]-0x1];if(_0x9ca675[_0x3f0206(0x1f8)]===0x0){if(_0x9ca675[_0x3f0206(0x217)][_0x9ca675[_0x3f0206(0x156)]]=_0x7c0ea7,_0x9ca675[_0x3f0206(0x156)]++,_0x9ca675[_0x3f0206(0x156)]===_0x9ca675['size'])_0x5ae890[_0x3f0206(0x1e1)](),_0x7c0ea7=_0x9ca675[_0x3f0206(0x217)];else continue _0x197063;}else{if(_0x9ca675[_0x3f0206(0x1f8)]===0x1){if(!_0x452561(_0x7c0ea7))throw new _0x161764(_0x3f0206(0x1ae)+typeof _0x7c0ea7);if(_0x7c0ea7===_0x3f0206(0x19c))throw new _0x161764(_0x3f0206(0x1b1));_0x9ca675[_0x3f0206(0x19b)]=_0x7c0ea7,_0x9ca675[_0x3f0206(0x1f8)]=0x2;continue _0x197063;}else{if(_0x9ca675[_0x3f0206(0x12c)][_0x9ca675[_0x3f0206(0x19b)]]=_0x7c0ea7,_0x9ca675[_0x3f0206(0x218)]++,_0x9ca675['readCount']===_0x9ca675[_0x3f0206(0x168)])_0x5ae890['pop'](),_0x7c0ea7=_0x9ca675[_0x3f0206(0x12c)];else{_0x9ca675[_0x3f0206(0x19b)]=null,_0x9ca675[_0x3f0206(0x1f8)]=0x1;continue _0x197063;}}}}return _0x7c0ea7;}},_0x233ae0[_0x5cd694(0x11b)]['readHeadByte']=function(){var _0x5b9d0d=_0x5cd694;return this[_0x5b9d0d(0x204)]===_0x5b167b&&(this['headByte']=this['readU8']()),this[_0x5b9d0d(0x204)];},_0x233ae0[_0x5cd694(0x11b)][_0x5cd694(0x142)]=function(){var _0x1d696d=_0x5cd694;this[_0x1d696d(0x204)]=_0x5b167b;},_0x233ae0[_0x5cd694(0x11b)]['readArraySize']=function(){var _0x5c36fd=_0x5cd694,_0x29b0fd=this['readHeadByte']();switch(_0x29b0fd){case 0xdc:return this[_0x5c36fd(0x1cc)]();case 0xdd:return this[_0x5c36fd(0x1ea)]();default:{if(_0x29b0fd<0xa0)return _0x29b0fd-0x90;throw new _0x161764('Unrecognized\x20array\x20type\x20byte:\x20'[_0x5c36fd(0x196)](_0x1ead54(_0x29b0fd)));}}},_0x233ae0[_0x5cd694(0x11b)][_0x5cd694(0x1ed)]=function(_0x58f031){var _0x5d6181=_0x5cd694;if(_0x58f031>this[_0x5d6181(0x211)])throw new _0x161764('Max\x20length\x20exceeded:\x20map\x20length\x20('[_0x5d6181(0x196)](_0x58f031,_0x5d6181(0x11d))[_0x5d6181(0x196)](this[_0x5d6181(0x211)],')'));this[_0x5d6181(0x1c4)]['push']({'type':0x1,'size':_0x58f031,'key':null,'readCount':0x0,'map':{}});},_0x233ae0[_0x5cd694(0x11b)][_0x5cd694(0x10d)]=function(_0x36d9d9){var _0x545508=_0x5cd694;if(_0x36d9d9>this[_0x545508(0x17d)])throw new _0x161764('Max\x20length\x20exceeded:\x20array\x20length\x20('[_0x545508(0x196)](_0x36d9d9,')\x20>\x20maxArrayLength\x20(')[_0x545508(0x196)](this[_0x545508(0x17d)],')'));this['stack']['push']({'type':0x0,'size':_0x36d9d9,'array':new Array(_0x36d9d9),'position':0x0});},_0x233ae0[_0x5cd694(0x11b)][_0x5cd694(0x243)]=function(_0x43ac3c,_0x346629){var _0x4b562c=_0x5cd694,_0x315728;if(_0x43ac3c>this['maxStrLength'])throw new _0x161764(_0x4b562c(0x1e5)['concat'](_0x43ac3c,_0x4b562c(0x185))[_0x4b562c(0x196)](this['maxStrLength'],')'));if(this[_0x4b562c(0x173)][_0x4b562c(0x18f)]<this['pos']+_0x346629+_0x43ac3c)throw _0x534e6b;var _0x435446=this[_0x4b562c(0x1c0)]+_0x346629,_0x152578;return this[_0x4b562c(0x1d6)]()&&((_0x315728=this[_0x4b562c(0x247)])===null||_0x315728===void 0x0?void 0x0:_0x315728['canBeCached'](_0x43ac3c))?_0x152578=this[_0x4b562c(0x247)][_0x4b562c(0x1f7)](this['bytes'],_0x435446,_0x43ac3c):_0x43ac3c>_0x171222?_0x152578=_0x4a79bc(this[_0x4b562c(0x173)],_0x435446,_0x43ac3c):_0x152578=_0x29ee75(this[_0x4b562c(0x173)],_0x435446,_0x43ac3c),this['pos']+=_0x346629+_0x43ac3c,_0x152578;},_0x233ae0[_0x5cd694(0x11b)][_0x5cd694(0x1d6)]=function(){var _0x47be47=_0x5cd694;if(this[_0x47be47(0x1c4)][_0x47be47(0x191)]>0x0){var _0x26bc14=this['stack'][this[_0x47be47(0x1c4)][_0x47be47(0x191)]-0x1];return _0x26bc14[_0x47be47(0x1f8)]===0x1;}return!0x1;},_0x233ae0['prototype'][_0x5cd694(0x206)]=function(_0x12808d,_0x58fe9b){var _0x1ff2bb=_0x5cd694;if(_0x12808d>this['maxBinLength'])throw new _0x161764(_0x1ff2bb(0x19a)[_0x1ff2bb(0x196)](_0x12808d,_0x1ff2bb(0x1ec))[_0x1ff2bb(0x196)](this[_0x1ff2bb(0x1d0)],')'));if(!this['hasRemaining'](_0x12808d+_0x58fe9b))throw _0x534e6b;var _0x2e919d=this[_0x1ff2bb(0x1c0)]+_0x58fe9b,_0x2857d3=this[_0x1ff2bb(0x173)]['subarray'](_0x2e919d,_0x2e919d+_0x12808d);return this['pos']+=_0x58fe9b+_0x12808d,_0x2857d3;},_0x233ae0[_0x5cd694(0x11b)][_0x5cd694(0x1c3)]=function(_0x58eb57,_0x20acf8){var _0x3b4da2=_0x5cd694;if(_0x58eb57>this['maxExtLength'])throw new _0x161764(_0x3b4da2(0x1d3)['concat'](_0x58eb57,_0x3b4da2(0x128))[_0x3b4da2(0x196)](this[_0x3b4da2(0x14b)],')'));var _0x49408d=this[_0x3b4da2(0x141)][_0x3b4da2(0x20c)](this[_0x3b4da2(0x1c0)]+_0x20acf8),_0x4d6852=this[_0x3b4da2(0x206)](_0x58eb57,_0x20acf8+0x1);return this[_0x3b4da2(0x105)][_0x3b4da2(0x1f7)](_0x4d6852,_0x49408d,this['context']);},_0x233ae0[_0x5cd694(0x11b)][_0x5cd694(0x12f)]=function(){var _0x48c676=_0x5cd694;return this['view'][_0x48c676(0x21c)](this[_0x48c676(0x1c0)]);},_0x233ae0['prototype']['lookU16']=function(){var _0x6d1ed0=_0x5cd694;return this[_0x6d1ed0(0x141)]['getUint16'](this[_0x6d1ed0(0x1c0)]);},_0x233ae0[_0x5cd694(0x11b)][_0x5cd694(0x1c2)]=function(){var _0x395d16=_0x5cd694;return this[_0x395d16(0x141)]['getUint32'](this[_0x395d16(0x1c0)]);},_0x233ae0['prototype'][_0x5cd694(0x112)]=function(){var _0x1f37f1=_0x5cd694,_0x4bbd6b=this[_0x1f37f1(0x141)][_0x1f37f1(0x21c)](this['pos']);return this['pos']++,_0x4bbd6b;},_0x233ae0[_0x5cd694(0x11b)][_0x5cd694(0x233)]=function(){var _0x3d7ff6=_0x5cd694,_0x419b29=this[_0x3d7ff6(0x141)][_0x3d7ff6(0x20c)](this['pos']);return this[_0x3d7ff6(0x1c0)]++,_0x419b29;},_0x233ae0['prototype']['readU16']=function(){var _0x479db9=_0x5cd694,_0x253fd4=this['view'][_0x479db9(0x157)](this[_0x479db9(0x1c0)]);return this[_0x479db9(0x1c0)]+=0x2,_0x253fd4;},_0x233ae0[_0x5cd694(0x11b)][_0x5cd694(0x234)]=function(){var _0x1f9235=_0x5cd694,_0x1d8e3e=this[_0x1f9235(0x141)][_0x1f9235(0x101)](this[_0x1f9235(0x1c0)]);return this[_0x1f9235(0x1c0)]+=0x2,_0x1d8e3e;},_0x233ae0[_0x5cd694(0x11b)]['readU32']=function(){var _0x4d5f87=_0x5cd694,_0x2c3ead=this[_0x4d5f87(0x141)][_0x4d5f87(0x229)](this[_0x4d5f87(0x1c0)]);return this[_0x4d5f87(0x1c0)]+=0x4,_0x2c3ead;},_0x233ae0[_0x5cd694(0x11b)][_0x5cd694(0x186)]=function(){var _0x5a798e=_0x5cd694,_0xc90f28=this['view']['getInt32'](this[_0x5a798e(0x1c0)]);return this[_0x5a798e(0x1c0)]+=0x4,_0xc90f28;},_0x233ae0[_0x5cd694(0x11b)][_0x5cd694(0x20b)]=function(){var _0x5f0d6c=_0x5cd694,_0x4150a0=_0x3e81be(this[_0x5f0d6c(0x141)],this[_0x5f0d6c(0x1c0)]);return this[_0x5f0d6c(0x1c0)]+=0x8,_0x4150a0;},_0x233ae0['prototype'][_0x5cd694(0x1e7)]=function(){var _0xa27469=_0x5cd694,_0x3e0149=_0x565b2b(this[_0xa27469(0x141)],this[_0xa27469(0x1c0)]);return this[_0xa27469(0x1c0)]+=0x8,_0x3e0149;},_0x233ae0['prototype']['readF32']=function(){var _0x1f8f14=_0x5cd694,_0x50bb10=this[_0x1f8f14(0x141)][_0x1f8f14(0x16f)](this[_0x1f8f14(0x1c0)]);return this[_0x1f8f14(0x1c0)]+=0x4,_0x50bb10;},_0x233ae0['prototype'][_0x5cd694(0x1ab)]=function(){var _0x17ff8b=_0x5cd694,_0x785017=this[_0x17ff8b(0x141)][_0x17ff8b(0x130)](this[_0x17ff8b(0x1c0)]);return this[_0x17ff8b(0x1c0)]+=0x8,_0x785017;},_0x233ae0;}()),_0x1cb3d1={};function _0x5c2008(_0x29471f,_0x3cbb54){var _0x34b737=_0x1d3169;_0x3cbb54===void 0x0&&(_0x3cbb54=_0x1cb3d1);var _0x195c37=new _0x3e3d8e(_0x3cbb54['extensionCodec'],_0x3cbb54['context'],_0x3cbb54[_0x34b737(0x1e0)],_0x3cbb54[_0x34b737(0x1d0)],_0x3cbb54[_0x34b737(0x17d)],_0x3cbb54['maxMapLength'],_0x3cbb54[_0x34b737(0x14b)]);return _0x195c37[_0x34b737(0x1f7)](_0x29471f);}var _0x401914=class{[_0x1d3169(0x132)]=new _0x3ecf84();['onWillDispose']=this[_0x1d3169(0x132)][_0x1d3169(0x13f)];[_0x1d3169(0x21f)]=new _0x3ecf84();['onDidDispose']=this[_0x1d3169(0x21f)]['event'];[_0x1d3169(0x1db)]=[];[_0x1d3169(0x205)]=!0x1;['onDispose'](_0x5cdebb){var _0x573bec=_0x1d3169;this['toDispose'][_0x573bec(0xfb)](_0x401914[_0x573bec(0x1b8)](_0x5cdebb));}[_0x1d3169(0x110)](){var _0x45aeb8=_0x1d3169;this[_0x45aeb8(0x205)]||(this[_0x45aeb8(0x132)][_0x45aeb8(0x1c5)](null),this[_0x45aeb8(0x205)]=!0x0,this['toDispose'][_0x45aeb8(0x140)](_0x4ef5a7=>{var _0x5eae5b=_0x45aeb8;_0x4ef5a7[_0x5eae5b(0x110)]();}),this[_0x45aeb8(0x21f)][_0x45aeb8(0x1c5)](null),this['onWillDisposeEmitter'][_0x45aeb8(0x110)](),this[_0x45aeb8(0x21f)][_0x45aeb8(0x110)]());}static['is'](_0x3ca384){var _0x36af58=_0x1d3169;return typeof _0x3ca384[_0x36af58(0x110)]==_0x36af58(0x228);}static[_0x1d3169(0x1b8)](_0x430898){return{'dispose':_0x430898};}},_0x3ecf84=class{[_0x1d3169(0x1cf)]=new Set();[_0x1d3169(0x1e3)];get[_0x1d3169(0x13f)](){var _0x332843=_0x1d3169;return this[_0x332843(0x1e3)]||(this[_0x332843(0x1e3)]=_0x16ac1f=>(this[_0x332843(0x1cf)]['add'](_0x16ac1f),_0x401914[_0x332843(0x1b8)](()=>{var _0x5912de=_0x332843;this[_0x5912de(0x1cf)][_0x5912de(0x1df)](_0x16ac1f);}))),this[_0x332843(0x1e3)];}[_0x1d3169(0x1c5)](_0x7e8012){var _0x1d700d=_0x1d3169;this[_0x1d700d(0x1cf)][_0x1d700d(0x140)](_0xe5f0f9=>{_0xe5f0f9(_0x7e8012);});}[_0x1d3169(0x110)](){var _0x28793c=_0x1d3169;this[_0x28793c(0x1cf)]=new Set();}},_0x4fa8d0=(0x0,_0x59c109[_0x1d3169(0x20d)])(),_0x497777=_0x105711=>_0x1a6735(_0x105711,{'ignoreUndefined':!0x0}),_0x4591a7=class{[_0x1d3169(0x103)]=new Map();[_0x1d3169(0x192)]=new Map();[_0x1d3169(0x1ca)]=new _0x3ecf84();[_0x1d3169(0x150)]=this[_0x1d3169(0x1ca)][_0x1d3169(0x13f)];constructor(){}['getEndpointForNode'](_0x1d57b1){var _0x11d15b=_0x1d3169;let _0x4fc57c=this['nodeMap'][_0x11d15b(0x1c6)](_0x1d57b1);if(_0x4fc57c){let _0x3cd864=this[_0x11d15b(0x103)]['get'](_0x4fc57c);if(_0x3cd864)return _0x3cd864;}}[_0x1d3169(0x11c)](_0x11d1fc,_0x556a46){var _0x53ca4c=_0x1d3169;this[_0x53ca4c(0x103)]['set'](_0x11d1fc,_0x556a46),_0x556a46['onMessage'](_0x2f103b=>this[_0x53ca4c(0x155)](_0x2f103b,_0x11d1fc));let _0x20fa4f=_0x497777({'$type':_0x53ca4c(0x119),'$origin':_0x4fa8d0});_0x556a46[_0x53ca4c(0x1e2)](_0x20fa4f,[_0x20fa4f['buffer']]);}[_0x1d3169(0x176)](_0x5807f4){var _0x23c459=_0x1d3169;this[_0x23c459(0x103)][_0x23c459(0x1df)](_0x5807f4);}[_0x1d3169(0x1e2)](_0x1c0140,_0x1788b8,_0x2e071d=!0x0){var _0x392ada=_0x1d3169;let _0x3b0bfe={'$type':_0x392ada(0x235),'$origin':_0x4fa8d0,'$target':_0x1c0140,'$data':_0x1788b8};if(_0x1c0140!==_0x4fa8d0){let _0x1627a1=this[_0x392ada(0x123)](_0x1c0140);if(!_0x1627a1)throw new Error('Endpoint\x20'+_0x1c0140+'\x20not\x20registered');if(_0x2e071d){let _0x19f440=_0x497777(_0x3b0bfe);_0x1627a1[_0x392ada(0x1e2)](_0x19f440,[_0x19f440[_0x392ada(0x237)]]);}else _0x1627a1[_0x392ada(0x1e2)](_0x3b0bfe,[]);}else this[_0x392ada(0x1ca)]['fire'](_0x3b0bfe);}[_0x1d3169(0x238)](_0x4a1c06,_0x1ff797,_0xde09d9){var _0x3a5c34=_0x1d3169;let _0x1695b3={'$type':'router-broadcast','$origin':_0xde09d9??_0x4fa8d0,'$data':_0x4a1c06};!_0x1ff797&&!_0xde09d9&&this['onMessageEmitter'][_0x3a5c34(0x1c5)](_0x1695b3);for(let [_0x44077f,_0x42cc39]of this[_0x3a5c34(0x103)][_0x3a5c34(0x22e)]()){if(_0x44077f===_0x1ff797)continue;let _0x471b0f=_0x497777(_0x1695b3);_0x42cc39[_0x3a5c34(0x1e2)](_0x471b0f,[_0x471b0f[_0x3a5c34(0x237)]]);}}[_0x1d3169(0x155)](_0x45a18d,_0x2f5aec){var _0x34654d=_0x1d3169;let _0x1cb4d0=_0x45a18d instanceof Uint8Array,_0x1ff191=_0x1cb4d0?_0x5c2008(_0x45a18d):_0x45a18d;if(!!_0x1ff191[_0x34654d(0x177)]){if(this['nodeMap'][_0x34654d(0x1fb)](_0x1ff191[_0x34654d(0x177)])||this['nodeMap'][_0x34654d(0x1a9)](_0x1ff191[_0x34654d(0x177)],_0x2f5aec),_0x1ff191[_0x34654d(0x114)]===_0x34654d(0x14c)){let _0x457f84=_0x1ff191;this['broadcast'](_0x457f84[_0x34654d(0x245)],_0x2f5aec,_0x457f84[_0x34654d(0x177)]),this[_0x34654d(0x1ca)][_0x34654d(0x1c5)](_0x1ff191);return;}if(_0x1ff191[_0x34654d(0x114)]==='router-message'){let _0x3642d5=_0x1ff191;if(_0x3642d5['$target']===_0x4fa8d0)this[_0x34654d(0x1ca)]['fire'](_0x1ff191);else{let _0x40e6e7=this[_0x34654d(0x123)](_0x3642d5['$target']);_0x40e6e7&&_0x40e6e7[_0x34654d(0x1e2)](_0x45a18d,_0x1cb4d0?[_0x45a18d[_0x34654d(0x237)]]:[]);}return;}}}},_0x5b1532;function _0x11a377(){return _0x5b1532||(_0x5b1532=new _0x4591a7()),_0x5b1532;}function _0xf792f5(_0x5d4ded){var _0x2e52f1=_0x1d3169;let _0x23d128=8000;if(isNaN(_0x23d128))throw new Error(_0x2e52f1(0x169));return _0x23d128;}function _0x20f0d2(_0x4aeab9){var _0x3c1584=_0x1d3169;return _0x4aeab9[_0x3c1584(0x16b)]||_0x4aeab9[_0x3c1584(0x181)]||_0x4aeab9[_0x3c1584(0x23b)];}var _0x41a8ce=_0x15693e(_0x1d3169(0x133)),_0x27df83=_0xf792f5(window[_0x1d3169(0x209)][_0x1d3169(0x14a)]),_0x53e144={'$channel_name':_0xa72f7a,'$type':_0x4b4005,'port':_0x27df83},_0x3f73bc=_0x11a377(),_0x317942=new MessageChannel(),_0x3e7502=new _0x37f37b[(_0x1d3169(0x1f9))](),_0x8b5821=new _0x37f37b['DeferredPromise']();_0x3e7502['then'](_0x4afd6b=>(_0x41a8ce(_0x1d3169(0x1fe)),_0x4afd6b[_0x1d3169(0x221)]({'type':_0x1d3169(0x174)},[_0x317942[_0x1d3169(0x10b)]]),_0x4afd6b)),window['addEventListener'](_0x1d3169(0x160),()=>{var _0x6d59a3=_0x1d3169;_0x317942[_0x6d59a3(0x225)][_0x6d59a3(0x221)]({'$type':_0x193f41});}),window['addEventListener'](_0x1d3169(0x16a),_0xc27390=>{var _0x101843=_0x1d3169;switch(_0xc27390['data'][_0x101843(0x114)]){case _0x560028:{let _0x1a5df6=_0xc27390['ports'][0x0],_0x3976ab=document['getElementById'](_0x101843(0x203)),_0xe7c6e9=document[_0x101843(0x23c)](_0x101843(0x10c));_0xe7c6e9[_0x101843(0x246)](_0x101843(0x167),String(_0x27df83)),_0xe7c6e9[_0x101843(0x1d8)]=_0x101843(0x20f)+_0x27df83,_0x3976ab?.[_0x101843(0x125)](_0xe7c6e9),_0x8b5821[_0x101843(0x23f)](_0x1a5df6),_0x3f73bc[_0x101843(0x11c)](_0x101843(0x13b),{'send':(_0x5753f7,_0x4b91fb)=>_0x1a5df6['postMessage'](_0x5753f7,_0x4b91fb),'onMessage':_0x6a7d28=>{var _0x219de0=_0x101843;_0x1a5df6[_0x219de0(0x1b0)]=_0x4fa0bb=>{var _0x2d5a27=_0x219de0;_0x6a7d28(_0x4fa0bb[_0x2d5a27(0x1dd)]);};}});break;}}});var _0x3698a5=new _0x37f37b[(_0x1d3169(0x1f9))]();_0x3f73bc[_0x1d3169(0x150)](_0x4b6ea1=>{var _0x4db50e=_0x1d3169;switch(_0x4b6ea1[_0x4db50e(0x245)]['$type']){case _0x54a3e2:{_0x3698a5['resolve'](_0x4b6ea1['$origin']);break;}case _0x409595:{_0x317942['port1'][_0x4db50e(0x221)](_0x4b6ea1[_0x4db50e(0x245)]);break;}case _0x4cccf9:{_0x317942[_0x4db50e(0x225)][_0x4db50e(0x221)](_0x4b6ea1['$data']);break;}}}),_0x317942[_0x1d3169(0x225)][_0x1d3169(0x1b0)]=async _0x28d7b7=>{var _0x2f387f=_0x1d3169;let _0x600482=_0x28d7b7[_0x2f387f(0x1dd)];if(_0x41a8ce('incoming\x20message\x20from\x20the\x20worker',_0x28d7b7[_0x2f387f(0x1dd)]),_0x600482[_0x2f387f(0x16e)]===_0xa72f7a){let _0x284465=await _0x3698a5;_0x1e9b2c(_0x284465,'[bridge]\x20Failed\x20to\x20forward\x20worker\x20message\x20to\x20the\x20PreviewManager:\x20manager\x20node\x20ID\x20is\x20not\x20defined.');let _0x3b733c=_0x600482;_0x3f73bc[_0x2f387f(0x1e2)](_0x284465,_0x3b733c);}};var _0x46d862=new URL(_0x1d3169(0x1a8),location[_0x1d3169(0x1b3)])['href'];function _0x2c7199(_0x20d39f){var _0x12c44b=_0x1d3169;let _0x4ee2e0=setInterval(()=>{var _0x3e0297=_0xef6d;let _0x320167={'type':_0x3e0297(0x13a)};_0x20d39f[_0x3e0297(0x221)](_0x320167);},0x1388);_0x20d39f['addEventListener'](_0x12c44b(0x199),()=>{var _0x427430=_0x12c44b;_0x20d39f['state']===_0x427430(0x1fa)&&clearInterval(_0x4ee2e0);});}async function _0x469550(){var _0x46b95c=_0x1d3169;_0x1e9b2c(_0x46b95c(0x18e)in navigator,'Failed\x20to\x20start\x20the\x20bridge\x20Service\x20Worker:\x20Service\x20Worker\x20API\x20is\x20not\x20supported\x20in\x20this\x20browser');let _0xe7c3da=async()=>{var _0x4f1410=_0x46b95c;let _0x176125=await navigator['serviceWorker'][_0x4f1410(0x165)](_0x4f1410(0x126),{'scope':'.'});return _0x20f0d2(_0x176125);},_0x1e8d29=await navigator[_0x46b95c(0x18e)]['getRegistrations']();_0x41a8ce(_0x46b95c(0x23a),location,_0x1e8d29),await Promise[_0x46b95c(0x1f0)](_0x1e8d29[_0x46b95c(0x12c)](_0x119d42=>{var _0x341693=_0x46b95c;let _0x2ea5f0=_0x20f0d2(_0x119d42);if(_0x2ea5f0&&_0x2ea5f0[_0x341693(0x1d1)]!==_0x46d862)return _0x41a8ce('found\x20irrelevant\x20worker\x20registration,\x20unregistering...',_0x2ea5f0,_0x119d42),_0x119d42[_0x341693(0x1c9)]();}));let {controller:_0x2934de}=navigator[_0x46b95c(0x18e)];if(!_0x2934de)return _0x41a8ce(_0x46b95c(0x16d)),_0xe7c3da();if(_0x2934de[_0x46b95c(0x1d1)]===_0x46d862)return _0x41a8ce(_0x46b95c(0x17c),_0x2934de[_0x46b95c(0x1d1)]),_0x2934de;let [_0x374b5f,_0x3de7e2]=await Promise[_0x46b95c(0x1f0)]([navigator['serviceWorker'][_0x46b95c(0x197)](_0x2934de[_0x46b95c(0x1d1)]),navigator[_0x46b95c(0x18e)]['getRegistration'](_0x46d862)]);if(_0x41a8ce(_0x46b95c(0x19f),_0x374b5f),_0x41a8ce(_0x46b95c(0x20a),_0x3de7e2),!_0x3de7e2)return _0x41a8ce('no\x20registration\x20found\x20for\x20\x22%s\x22,\x20unregistering\x20controller\x20and\x20registering\x20a\x20new\x20worker...',_0x46d862),await _0x374b5f?.[_0x46b95c(0x1c9)](),_0xe7c3da();if(_0x3de7e2[_0x46b95c(0x181)]){_0x41a8ce(_0x46b95c(0x232)),await _0x3de7e2['update']();let _0x512461=_0x20f0d2(_0x3de7e2);return _0x1e9b2c(_0x512461,_0x46b95c(0x19d)),_0x1e9b2c(_0x3de7e2[_0x46b95c(0x23b)],_0x46b95c(0x18a),_0x512461['state']),_0x512461;}return null;}async function _0x22e96a(){var _0x2e1aa0=_0x1d3169;_0x41a8ce('starting\x20the\x20bridge...',{'workerUrl':_0x46d862});let _0x3bc212=await _0x469550()[_0x2e1aa0(0xfc)](_0x24c6de=>{var _0x4ee97f=_0x2e1aa0;console[_0x4ee97f(0x16c)](_0x4ee97f(0x1f4)),console['error'](_0x24c6de);});await navigator[_0x2e1aa0(0x18e)][_0x2e1aa0(0x18b)],_0x1e9b2c(_0x3bc212,_0x2e1aa0(0x1d4)),_0x2c7199(_0x3bc212),_0x3e7502[_0x2e1aa0(0x23f)](_0x3bc212);let _0x51559c=await _0x8b5821;_0x41a8ce('preview\x20manager\x20port\x20received',_0x51559c),_0x3f73bc[_0x2e1aa0(0x238)](_0x53e144);}_0x22e96a();})());function _0x2305(){var _0x21ade7=['Failed\x20to\x20ensure\x20the\x20bridge\x20has\x20a\x20Service\x20Worker\x20registered.\x20See\x20details\x20below.','Unrecognized\x20object:\x20','rejectionReason','decode','type','DeferredPromise','redundant','has','miss','pending','worker\x20is\x20ready,\x20initializing\x20MessageChannel...','reject','Too\x20large\x20map\x20object:\x20','encodeExtension','then','previews-list','headByte','isDisposed','decodeBinary','done','getInt32','location','worker\x20registration:','readU64','getInt8','default','next','localhost:','\x20is\x20not\x20a\x20constructor\x20or\x20null','maxMapLength','writeU8a','totalPos','userAgent','localStorage','msCrypto','array','readCount','defineProperty','label','createExtraByteError','getUint8','crypto','setPrototypeOf','onDidDisposeEmitter','hit','postMessage','64zKEkTu','doDecodeSync','tryToEncode','port1','defaultCodec','getPrototypeOf','function','getUint32','setInt8','encodeBinary','maxKeyLength','encode','entries','696RHwsaz','writeF64','byteOffset','found\x20waiting\x20registration,\x20promoting...','readI8','readI16','router-message','return','buffer','broadcast','Invariant\x20Violation','all\x20registrations','active','createElement','Too\x20deep\x20objects\x20in\x20depth\x20','encodeSharedRef','resolve','Too\x20large\x20binary:\x20','ops','appendBuffer','decodeUtf8String','name','$data','setAttribute','keyDecoder','push','catch','Unrecognized\x20data\x20size\x20for\x20timestamp\x20(expected\x204,\x208,\x20or\x2012):\x20','splice','__exportStar','forceFloat32','getInt16','split','endpoints','fromCharCode','extensionCodec','__esModule','constructor','setInt32','encodeNil','value','port2','span','pushArrayState','writeU32','encodeString','dispose','setFloat32','readU8','16397667cONfkJ','$type','object','nsec','bridge/close','writeU16','router-announce','26458RhFhQW','prototype','addEndpoint',')\x20>\x20maxMapLengthLength\x20(','readHeadByte','isView','63XXcDfx','maxDepth','floor','getEndpointForNode','preview/response','appendChild','__csb_sw.js','hasRemaining',')\x20>\x20maxExtLength\x20(','charCodeAt','subarray','never','map','keys','startsWith','lookU8','getFloat64','encodeNumber','onWillDisposeEmitter','bridge','call','initialBufferSize','\x20byte(s)\x20found\x20at\x20buffer[','str','decodeArrayStream','stringify','ping','parent','finally','slice','preview/manager-ack','event','forEach','view','complete','preview/ready','test','isSlug','000000000','readArraySize','string','getOwnPropertyNames','hostname','maxExtLength','router-broadcast','isCuid','9055jquuIN','find','onMessage','writeU8','forceIntegerToFloat','iterator','ensureBufferSizeToWrite','handleMessage','position','getUint16','enumerable','Class\x20extends\x20value\x20','shift','decoders','379551rpCgon','isArray','apply','writeI8','unload','3073806eUjHEb','Too\x20large\x20extension\x20object:\x20','writeU64','Extra\x20','register','countWithoutUndefined','data-port','size','Invalid\x20port','message','installing','error','bridge\x20is\x20not\x20controlled,\x20registering\x20a\x20new\x20worker...','$channel_name','getFloat32','padStart','lookU16','setInt16','bytes','bridge-channel-init','maxLengthPerKey','removeEndpoint','$origin','TEXT_ENCODING','Symbol.asyncIterator\x20is\x20not\x20defined.','asyncIterator','result','bridge\x20is\x20controlled\x20by\x20the\x20correct\x20worker','maxArrayLength','resizeBuffer','encodeArray','writeI64','waiting','mimeTypes','encodeObject','random',')\x20>\x20maxStrLength\x20(','readI32','substr','join','writeF32','Failed\x20to\x20promove\x20a\x20waiting\x20Service\x20Worker:\x20expected\x20the\x20worker\x20state\x20to\x20be\x20\x22active\x22\x20but\x20got\x20\x22%s\x22','ready','encodeInto','reinitializeState','serviceWorker','byteLength','decodeStream','length','nodeMap','never\x20reached','bridge/init','configurable','concat','getRegistration','from','statechange','Max\x20length\x20exceeded:\x20bin\x20length\x20(','key','__proto__','Failed\x20to\x20retrieve\x20the\x20worker\x20instance\x20after\x20promotion:\x20worked\x20does\x20not\x20exist','sec','controller\x20registration:','toString','readF32','force','fulfilled','number','encodeMap','caches','exports','__csb_sw.js','set','1352mOhsWQ','readF64','sent','defineProperties','The\x20type\x20of\x20key\x20must\x20be\x20string\x20or\x20number\x20but\x20','getTime','onmessage','The\x20key\x20__proto__\x20is\x20not\x20allowed','\x20at\x20','origin','createDeferredExecutor','setBuffer','store','state','create','setUint32','pow','getOwnPropertyDescriptor','encodeBoolean','builtInEncoders','setUint16','replace','pos','336510aRxkFQ','lookU32','decodeExtension','stack','fire','get','decodeAsync','ignoreUndefined','unregister','onMessageEmitter','throw','readU16','trys','CSB_EMULATOR_DEBUG','registeredListeners','maxBinLength','scriptURL','encoders','Max\x20length\x20exceeded:\x20ext\x20length\x20(','Failed\x20to\x20retrieve\x20the\x20worker\x20instance:\x20worker\x20not\x20found','boolean','stateIsMapKey','doEncode','innerText','Unrecognized\x20type\x20byte:\x20','sortKeys','toDispose','abs','data','env','delete','maxStrLength','pop','send','_event','writeI32','Max\x20length\x20exceeded:\x20UTF-8\x20byte\x20length\x20(','\x20bytes\x20in\x20UTF-8','readI64','Generator\x20is\x20already\x20executing.','50015clMWNP','readU32','writeStringHeader',')\x20>\x20maxBinLength\x20(','pushMapState','builtInDecoders','hasOwnProperty','all','decodeMultiAsync','writeI16','\x20in\x20the\x20current\x20buffer)'];_0x2305=function(){return _0x21ade7;};return _0x2305();}
+(() => {
+  var v = Object.create;
+  var v2 = Object.defineProperty;
+  var v3 = Object.getOwnPropertyDescriptor;
+  var v4 = Object.getOwnPropertyNames;
+  var v5 = Object.getPrototypeOf;
+  var v6 = Object.prototype.hasOwnProperty;
+  var vF = (p, p2) => () => {
+    if (!p2) {
+      p((p2 = {
+        exports: {}
+      }).exports, p2);
+    }
+    return p2.exports;
+  };
+  var vF2 = (p3, p4, p5, p6) => {
+    if (p4 && typeof p4 == "object" || typeof p4 == "function") {
+      for (let v7 of v4(p4)) {
+        if (!v6.call(p3, v7) && v7 !== p5) {
+          v2(p3, v7, {
+            get: () => p4[v7],
+            enumerable: !(p6 = v3(p4, v7)) || p6.enumerable
+          });
+        }
+      }
+    }
+    return p3;
+  };
+  var vF3 = (p7, p8, p9) => {
+    p9 = p7 != null ? v(v5(p7)) : {};
+    return vF2(p8 || !p7 || !p7.__esModule ? v2(p9, "default", {
+      value: p7,
+      enumerable: true
+    }) : p9, p7);
+  };
+  var vVF = vF(p10 => {
+    'use strict';
+
+    Object.defineProperty(p10, "__esModule", {
+      value: true
+    });
+    p10.createDeferredExecutor = undefined;
+    function f() {
+      let vF4 = (p11, p12) => {
+        vF4.state = "pending";
+        vF4.resolve = p13 => {
+          if (vF4.state !== "pending") {
+            return;
+          }
+          vF4.result = p13;
+          let vF5 = p14 => {
+            vF4.state = "fulfilled";
+            return p14;
+          };
+          return p11(p13 instanceof Promise ? p13 : Promise.resolve(p13).then(vF5));
+        };
+        vF4.reject = p15 => {
+          if (vF4.state === "pending") {
+            queueMicrotask(() => {
+              vF4.state = "rejected";
+            });
+            return p12(vF4.rejectionReason = p15);
+          }
+        };
+      };
+      return vF4;
+    }
+    p10.createDeferredExecutor = f;
+  });
+  var vVF2 = vF(p16 => {
+    'use strict';
+
+    Object.defineProperty(p16, "__esModule", {
+      value: true
+    });
+    p16.DeferredPromise = undefined;
+    var vVVF = vVF();
+    var vC = class extends Promise {
+      #e;
+      resolve;
+      reject;
+      constructor(p17 = null) {
+        let v8 = (0, vVVF.createDeferredExecutor)();
+        super((p18, p19) => {
+          v8(p18, p19);
+          p17?.(v8.resolve, v8.reject);
+        });
+        this.#e = v8;
+        this.resolve = this.#e.resolve;
+        this.reject = this.#e.reject;
+      }
+      get state() {
+        return this.#e.state;
+      }
+      get rejectionReason() {
+        return this.#e.rejectionReason;
+      }
+      then(p20, p21) {
+        return this.#t(super.then(p20, p21));
+      }
+      catch(p22) {
+        return this.#t(super.catch(p22));
+      }
+      finally(p23) {
+        return this.#t(super.finally(p23));
+      }
+      #t(p24) {
+        return Object.defineProperties(p24, {
+          resolve: {
+            configurable: true,
+            value: this.resolve
+          },
+          reject: {
+            configurable: true,
+            value: this.reject
+          }
+        });
+      }
+    };
+    p16.DeferredPromise = vC;
+  });
+  var vVF3 = vF(p25 => {
+    'use strict';
+
+    var v9 = p25 && p25.__createBinding || (Object.create ? function (p26, p27, p28, p29 = p28) {
+      var v10 = Object.getOwnPropertyDescriptor(p27, p28);
+      if (!v10 || ("get" in v10 ? !p27.__esModule : v10.writable || v10.configurable)) {
+        v10 = {
+          enumerable: true,
+          get: function () {
+            return p27[p28];
+          }
+        };
+      }
+      Object.defineProperty(p26, p29, v10);
+    } : function (p30, p31, p32, p33 = p32) {
+      p30[p33] = p31[p32];
+    });
+    var v11 = p25 && p25.__exportStar || function (p34, p35) {
+      for (var v12 in p34) {
+        if (v12 !== "default" && !Object.prototype.hasOwnProperty.call(p35, v12)) {
+          v9(p35, p34, v12);
+        }
+      }
+    };
+    Object.defineProperty(p25, "__esModule", {
+      value: true
+    });
+    v11(vVF(), p25);
+    v11(vVF2(), p25);
+  });
+  var vVF4 = vF((p36, p37) => {
+    p37.exports = function (p38, p39) {
+      var v13 = "000000000" + p38;
+      return v13.substr(v13.length - p39);
+    };
+  });
+  var vVF5 = vF((p40, p41) => {
+    var vVVF4 = vVF4();
+    var v14 = typeof window == "object" ? window : self;
+    var v15 = Object.keys(v14).length;
+    var v16 = navigator.mimeTypes ? navigator.mimeTypes.length : 0;
+    var vVVVF4 = vVVF4((v16 + navigator.userAgent.length).toString(36) + v15.toString(36), 4);
+    p41.exports = function () {
+      return vVVVF4;
+    };
+  });
+  var vVF6 = vF((p42, p43) => {
+    var v17;
+    var v18 = typeof window !== "undefined" && (window.crypto || window.msCrypto) || typeof self !== "undefined" && self.crypto;
+    if (v18) {
+      v19 = Math.pow(2, 32) - 1;
+      v17 = function () {
+        return Math.abs(v18.getRandomValues(new Uint32Array(1))[0] / v19);
+      };
+    } else {
+      v17 = Math.random;
+    }
+    var v19;
+    p43.exports = v17;
+  });
+  var vVF7 = vF((p44, p45) => {
+    var vVVF5 = vVF5();
+    var vVVF42 = vVF4();
+    var vVVF6 = vVF6();
+    var v20 = 0;
+    var v21 = 4;
+    var v22 = 36;
+    var v23 = Math.pow(v22, v21);
+    function f2() {
+      return vVVF42((vVVF6() * v23 << 0).toString(v22), v21);
+    }
+    function f3() {
+      v20 = v20 < v23 ? v20 : 0;
+      v20++;
+      return v20 - 1;
+    }
+    function f4() {
+      var v24 = "c";
+      var v25 = new Date().getTime().toString(v22);
+      var vVVVF42 = vVVF42(f3().toString(v22), v21);
+      var vVVVF5 = vVVF5();
+      var v26 = f2() + f2();
+      return v24 + v25 + vVVVF42 + vVVVF5 + v26;
+    }
+    f4.slug = function () {
+      var v27 = new Date().getTime().toString(36);
+      var v28 = f3().toString(36).slice(-4);
+      var v29 = vVVF5().slice(0, 1) + vVVF5().slice(-1);
+      var v30 = f2().slice(-2);
+      return v27.slice(-2) + v28 + v29 + v30;
+    };
+    f4.isCuid = function (p46) {
+      if (typeof p46 != "string") {
+        return false;
+      } else {
+        return !!p46.startsWith("c");
+      }
+    };
+    f4.isSlug = function (p47) {
+      if (typeof p47 != "string") {
+        return false;
+      }
+      var v31 = p47.length;
+      return v31 >= 7 && v31 <= 10;
+    };
+    f4.fingerprint = vVVF5;
+    p45.exports = f4;
+  });
+  var v32 = /(%?)(%([sdjo]))/g;
+  function f5(p48, p49) {
+    switch (p49) {
+      case "s":
+        return p48;
+      case "d":
+      case "i":
+        return Number(p48);
+      case "j":
+        return JSON.stringify(p48);
+      case "o":
+        {
+          if (typeof p48 == "string") {
+            return p48;
+          }
+          let v33 = JSON.stringify(p48);
+          if (v33 === "{}" || v33 === "[]" || /^\[object .+?\]$/.test(v33)) {
+            return p48;
+          } else {
+            return v33;
+          }
+        }
+    }
+  }
+  function f6(p50, ..._0x22494b) {
+    if (_0x22494b.length === 0) {
+      return p50;
+    }
+    let v34 = 0;
+    let v35 = p50.replace(v32, (p51, p52, p53, p54) => {
+      let v36 = _0x22494b[v34];
+      let vF52 = f5(v36, p54);
+      if (p52) {
+        return p51;
+      } else {
+        v34++;
+        return vF52;
+      }
+    });
+    if (v34 < _0x22494b.length) {
+      v35 += " " + _0x22494b.slice(v34).join(" ");
+    }
+    v35 = v35.replace(/%{2,2}/g, "%");
+    return v35;
+  }
+  var v37 = 2;
+  function f7(p55) {
+    if (!p55.stack) {
+      return;
+    }
+    let v38 = p55.stack.split("\n");
+    v38.splice(1, v37);
+    p55.stack = v38.join("\n");
+  }
+  var vC2 = class extends Error {
+    constructor(p56, ..._0x50ee51) {
+      super(p56);
+      this.message = p56;
+      this.name = "Invariant Violation";
+      this.message = f6(p56, ..._0x50ee51);
+      f7(this);
+    }
+  };
+  var vF6 = (p57, p58, ..._0x3c771e) => {
+    if (!p57) {
+      throw new vC2(p58, ..._0x3c771e);
+    }
+  };
+  vF6.as = (p59, p60, p61, ..._0x474a34) => {
+    if (!p60) {
+      throw p59.prototype.name != null ? new p59(f6(p61, _0x474a34)) : p59(f6(p61, _0x474a34));
+    }
+  };
+  var vVF32 = vF3(vVF3());
+  var v39 = window.localStorage.CSB_EMULATOR_DEBUG;
+  function f8(p62) {
+    return function (p63, ..._0x41272f) {};
+  }
+  var v40 = "preview-manager";
+  var v41 = "preview/ready";
+  var v42 = "preview/response";
+  var v43 = "preview/manager-ack";
+  var v44 = "bridge/init";
+  var v45 = "preview/runtime-response";
+  var v46 = "bridge/close";
+  var vVF33 = vF3(vVF7());
+  var v47 = 4294967295;
+  function f9(p64, p65, p66) {
+    var v48 = p66 / 4294967296;
+    var vP66 = p66;
+    p64.setUint32(p65, v48);
+    p64.setUint32(p65 + 4, vP66);
+  }
+  function f10(p67, p68, p69) {
+    var v49 = Math.floor(p69 / 4294967296);
+    var vP69 = p69;
+    p67.setUint32(p68, v49);
+    p67.setUint32(p68 + 4, vP69);
+  }
+  function f11(p70, p71) {
+    var v50 = p70.getInt32(p71);
+    var v51 = p70.getUint32(p71 + 4);
+    return v50 * 4294967296 + v51;
+  }
+  function f12(p72, p73) {
+    var v52 = p72.getUint32(p73);
+    var v53 = p72.getUint32(p73 + 4);
+    return v52 * 4294967296 + v53;
+  }
+  var v54 = (typeof process === "undefined" || (process == null ? undefined : process.env)?.TEXT_ENCODING !== "never") && typeof TextEncoder !== "undefined" && typeof TextDecoder !== "undefined";
+  function f13(p74) {
+    for (var v55 = p74.length, v56 = 0, v57 = 0; v57 < v55;) {
+      var v58 = p74.charCodeAt(v57++);
+      if ((v58 & 4294967168) === 0) {
+        v56++;
+        continue;
+      } else if ((v58 & 4294965248) === 0) {
+        v56 += 2;
+      } else {
+        if (v58 >= 55296 && v58 <= 56319 && v57 < v55) {
+          var v59 = p74.charCodeAt(v57);
+          if ((v59 & 64512) === 56320) {
+            ++v57;
+            v58 = ((v58 & 1023) << 10) + (v59 & 1023) + 65536;
+          }
+        }
+        if ((v58 & 4294901760) === 0) {
+          v56 += 3;
+        } else {
+          v56 += 4;
+        }
+      }
+    }
+    return v56;
+  }
+  function f14(p75, p76, p77) {
+    for (var v60 = p75.length, vP77 = p77, v61 = 0; v61 < v60;) {
+      var v62 = p75.charCodeAt(v61++);
+      if ((v62 & 4294967168) === 0) {
+        p76[vP77++] = v62;
+        continue;
+      } else if ((v62 & 4294965248) === 0) {
+        p76[vP77++] = v62 >> 6 & 31 | 192;
+      } else {
+        if (v62 >= 55296 && v62 <= 56319 && v61 < v60) {
+          var v63 = p75.charCodeAt(v61);
+          if ((v63 & 64512) === 56320) {
+            ++v61;
+            v62 = ((v62 & 1023) << 10) + (v63 & 1023) + 65536;
+          }
+        }
+        if ((v62 & 4294901760) === 0) {
+          p76[vP77++] = v62 >> 12 & 15 | 224;
+          p76[vP77++] = v62 >> 6 & 63 | 128;
+        } else {
+          p76[vP77++] = v62 >> 18 & 7 | 240;
+          p76[vP77++] = v62 >> 12 & 63 | 128;
+          p76[vP77++] = v62 >> 6 & 63 | 128;
+        }
+      }
+      p76[vP77++] = v62 & 63 | 128;
+    }
+  }
+  var v64 = v54 ? new TextEncoder() : undefined;
+  var v65 = v54 ? typeof process !== "undefined" && (process == null ? undefined : process.env)?.TEXT_ENCODING !== "force" ? 200 : 0 : v47;
+  function f15(p78, p79, p80) {
+    p79.set(v64.encode(p78), p80);
+  }
+  function f16(p81, p82, p83) {
+    v64.encodeInto(p81, p82.subarray(p83));
+  }
+  var v66 = v64?.encodeInto ? f16 : f15;
+  var v67 = 4096;
+  function f17(p84, p85, p86) {
+    for (var vP85 = p85, v68 = vP85 + p86, v69 = [], v70 = ""; vP85 < v68;) {
+      var v71 = p84[vP85++];
+      if ((v71 & 128) === 0) {
+        v69.push(v71);
+      } else if ((v71 & 224) === 192) {
+        var v72 = p84[vP85++] & 63;
+        v69.push((v71 & 31) << 6 | v72);
+      } else if ((v71 & 240) === 224) {
+        var v72 = p84[vP85++] & 63;
+        var v73 = p84[vP85++] & 63;
+        v69.push((v71 & 31) << 12 | v72 << 6 | v73);
+      } else if ((v71 & 248) === 240) {
+        var v72 = p84[vP85++] & 63;
+        var v73 = p84[vP85++] & 63;
+        var v74 = p84[vP85++] & 63;
+        var v75 = (v71 & 7) << 18 | v72 << 12 | v73 << 6 | v74;
+        if (v75 > 65535) {
+          v75 -= 65536;
+          v69.push(v75 >>> 10 & 1023 | 55296);
+          v75 = v75 & 1023 | 56320;
+        }
+        v69.push(v75);
+      } else {
+        v69.push(v71);
+      }
+      if (v69.length >= v67) {
+        v70 += String.fromCharCode.apply(String, v69);
+        v69.length = 0;
+      }
+    }
+    if (v69.length > 0) {
+      v70 += String.fromCharCode.apply(String, v69);
+    }
+    return v70;
+  }
+  var v76 = v54 ? new TextDecoder() : null;
+  var v77 = v54 ? typeof process !== "undefined" && (process == null ? undefined : process.env)?.TEXT_DECODER !== "force" ? 200 : 0 : v47;
+  function f18(p87, p88, p89) {
+    var v78 = p87.subarray(p88, p88 + p89);
+    return v76.decode(v78);
+  }
+  var vF7 = function () {
+    function f19(p90, p91) {
+      this.type = p90;
+      this.data = p91;
+    }
+    return f19;
+  }();
+  var vF8 = function () {
+    function f20(p92, p93) {
+      f20 = Object.setPrototypeOf || {
+        "__proto__": []
+      } instanceof Array && function (p94, p95) {
+        p94.__proto__ = p95;
+      } || function (p96, p97) {
+        for (var v79 in p97) {
+          if (Object.prototype.hasOwnProperty.call(p97, v79)) {
+            p96[v79] = p97[v79];
+          }
+        }
+      };
+      return f20(p92, p93);
+    }
+    return function (p98, p99) {
+      if (typeof p99 != "function" && p99 !== null) {
+        throw new TypeError("Class extends value " + String(p99) + " is not a constructor or null");
+      }
+      f20(p98, p99);
+      function f21() {
+        this.constructor = p98;
+      }
+      p98.prototype = p99 === null ? Object.create(p99) : (f21.prototype = p99.prototype, new f21());
+    };
+  }();
+  var vF9 = function (p100) {
+    vF8(f22, p100);
+    function f22(p101) {
+      var v80 = p100.call(this, p101) || this;
+      var v81 = Object.create(f22.prototype);
+      Object.setPrototypeOf(v80, v81);
+      Object.defineProperty(v80, "name", {
+        configurable: true,
+        enumerable: false,
+        value: f22.name
+      });
+      return v80;
+    }
+    return f22;
+  }(Error);
+  var v82 = -1;
+  var v83 = 4294967295;
+  var v84 = 17179869183;
+  function f23(p102) {
+    var v85 = p102.sec;
+    var v86 = p102.nsec;
+    if (v85 >= 0 && v86 >= 0 && v85 <= v84) {
+      if (v86 === 0 && v85 <= v83) {
+        var v87 = new Uint8Array(4);
+        var v88 = new DataView(v87.buffer);
+        v88.setUint32(0, v85);
+        return v87;
+      } else {
+        var v89 = v85 / 4294967296;
+        var v90 = v85 & 4294967295;
+        var v87 = new Uint8Array(8);
+        var v88 = new DataView(v87.buffer);
+        v88.setUint32(0, v86 << 2 | v89 & 3);
+        v88.setUint32(4, v90);
+        return v87;
+      }
+    } else {
+      var v87 = new Uint8Array(12);
+      var v88 = new DataView(v87.buffer);
+      v88.setUint32(0, v86);
+      f10(v88, 4, v85);
+      return v87;
+    }
+  }
+  function f24(p103) {
+    var v91 = p103.getTime();
+    var v92 = Math.floor(v91 / 1000);
+    var v93 = (v91 - v92 * 1000) * 1000000;
+    var v94 = Math.floor(v93 / 1000000000);
+    return {
+      sec: v92 + v94,
+      nsec: v93 - v94 * 1000000000
+    };
+  }
+  function f25(p104) {
+    if (p104 instanceof Date) {
+      var vF24 = f24(p104);
+      return f23(vF24);
+    } else {
+      return null;
+    }
+  }
+  function f26(p105) {
+    var v95 = new DataView(p105.buffer, p105.byteOffset, p105.byteLength);
+    switch (p105.byteLength) {
+      case 4:
+        {
+          var v96 = v95.getUint32(0);
+          var v97 = 0;
+          return {
+            sec: v96,
+            nsec: v97
+          };
+        }
+      case 8:
+        {
+          var v98 = v95.getUint32(0);
+          var v99 = v95.getUint32(4);
+          var v96 = (v98 & 3) * 4294967296 + v99;
+          var v97 = v98 >>> 2;
+          return {
+            sec: v96,
+            nsec: v97
+          };
+        }
+      case 12:
+        {
+          var v96 = f11(v95, 4);
+          var v97 = v95.getUint32(0);
+          return {
+            sec: v96,
+            nsec: v97
+          };
+        }
+      default:
+        throw new vF9(`Unrecognized data size for timestamp (expected 4, 8, or 12): ${p105.length}`);
+    }
+  }
+  function f27(p106) {
+    var vF26 = f26(p106);
+    return new Date(vF26.sec * 1000 + vF26.nsec / 1000000);
+  }
+  var v100 = {
+    type: v82,
+    encode: f25,
+    decode: f27
+  };
+  var vF10 = function () {
+    function f28() {
+      this.builtInEncoders = [];
+      this.builtInDecoders = [];
+      this.encoders = [];
+      this.decoders = [];
+      this.register(v100);
+    }
+    f28.prototype.register = function (p107) {
+      var v101 = p107.type;
+      var v102 = p107.encode;
+      var v103 = p107.decode;
+      if (v101 >= 0) {
+        this.encoders[v101] = v102;
+        this.decoders[v101] = v103;
+      } else {
+        var v104 = 1 + v101;
+        this.builtInEncoders[v104] = v102;
+        this.builtInDecoders[v104] = v103;
+      }
+    };
+    f28.prototype.tryToEncode = function (p108, p109) {
+      for (var v105 = 0; v105 < this.builtInEncoders.length; v105++) {
+        var v106 = this.builtInEncoders[v105];
+        if (v106 != null) {
+          var vV106 = v106(p108, p109);
+          if (vV106 != null) {
+            var v107 = -1 - v105;
+            return new vF7(v107, vV106);
+          }
+        }
+      }
+      for (var v105 = 0; v105 < this.encoders.length; v105++) {
+        var v106 = this.encoders[v105];
+        if (v106 != null) {
+          var vV106 = v106(p108, p109);
+          if (vV106 != null) {
+            var v107 = v105;
+            return new vF7(v107, vV106);
+          }
+        }
+      }
+      if (p108 instanceof vF7) {
+        return p108;
+      } else {
+        return null;
+      }
+    };
+    f28.prototype.decode = function (p110, p111, p112) {
+      var v108 = p111 < 0 ? this.builtInDecoders[-1 - p111] : this.decoders[p111];
+      if (v108) {
+        return v108(p110, p111, p112);
+      } else {
+        return new vF7(p111, p110);
+      }
+    };
+    f28.defaultCodec = new f28();
+    return f28;
+  }();
+  function f29(p113) {
+    if (p113 instanceof Uint8Array) {
+      return p113;
+    } else if (ArrayBuffer.isView(p113)) {
+      return new Uint8Array(p113.buffer, p113.byteOffset, p113.byteLength);
+    } else if (p113 instanceof ArrayBuffer) {
+      return new Uint8Array(p113);
+    } else {
+      return Uint8Array.from(p113);
+    }
+  }
+  function f30(p114) {
+    if (p114 instanceof ArrayBuffer) {
+      return new DataView(p114);
+    }
+    var vF29 = f29(p114);
+    return new DataView(vF29.buffer, vF29.byteOffset, vF29.byteLength);
+  }
+  var v109 = 100;
+  var v110 = 2048;
+  var vF11 = function () {
+    function f31(p115 = vF10.defaultCodec, p116 = undefined, p117 = v109, p118 = v110, p119 = false, p120 = false, p121 = false, p122 = false) {
+      this.extensionCodec = p115;
+      this.context = p116;
+      this.maxDepth = p117;
+      this.initialBufferSize = p118;
+      this.sortKeys = p119;
+      this.forceFloat32 = p120;
+      this.ignoreUndefined = p121;
+      this.forceIntegerToFloat = p122;
+      this.pos = 0;
+      this.view = new DataView(new ArrayBuffer(this.initialBufferSize));
+      this.bytes = new Uint8Array(this.view.buffer);
+    }
+    f31.prototype.reinitializeState = function () {
+      this.pos = 0;
+    };
+    f31.prototype.encodeSharedRef = function (p123) {
+      this.reinitializeState();
+      this.doEncode(p123, 1);
+      return this.bytes.subarray(0, this.pos);
+    };
+    f31.prototype.encode = function (p124) {
+      this.reinitializeState();
+      this.doEncode(p124, 1);
+      return this.bytes.slice(0, this.pos);
+    };
+    f31.prototype.doEncode = function (p125, p126) {
+      if (p126 > this.maxDepth) {
+        throw new Error(`Too deep objects in depth ${p126}`);
+      }
+      if (p125 == null) {
+        this.encodeNil();
+      } else if (typeof p125 == "boolean") {
+        this.encodeBoolean(p125);
+      } else if (typeof p125 == "number") {
+        this.encodeNumber(p125);
+      } else if (typeof p125 == "string") {
+        this.encodeString(p125);
+      } else {
+        this.encodeObject(p125, p126);
+      }
+    };
+    f31.prototype.ensureBufferSizeToWrite = function (p127) {
+      var v111 = this.pos + p127;
+      if (this.view.byteLength < v111) {
+        this.resizeBuffer(v111 * 2);
+      }
+    };
+    f31.prototype.resizeBuffer = function (p128) {
+      var v112 = new ArrayBuffer(p128);
+      var v113 = new Uint8Array(v112);
+      var v114 = new DataView(v112);
+      v113.set(this.bytes);
+      this.view = v114;
+      this.bytes = v113;
+    };
+    f31.prototype.encodeNil = function () {
+      this.writeU8(192);
+    };
+    f31.prototype.encodeBoolean = function (p129) {
+      if (p129 === false) {
+        this.writeU8(194);
+      } else {
+        this.writeU8(195);
+      }
+    };
+    f31.prototype.encodeNumber = function (p130) {
+      if (Number.isSafeInteger(p130) && !this.forceIntegerToFloat) {
+        if (p130 >= 0) {
+          if (p130 < 128) {
+            this.writeU8(p130);
+          } else if (p130 < 256) {
+            this.writeU8(204);
+            this.writeU8(p130);
+          } else if (p130 < 65536) {
+            this.writeU8(205);
+            this.writeU16(p130);
+          } else if (p130 < 4294967296) {
+            this.writeU8(206);
+            this.writeU32(p130);
+          } else {
+            this.writeU8(207);
+            this.writeU64(p130);
+          }
+        } else if (p130 >= -32) {
+          this.writeU8(p130 + 32 | 224);
+        } else if (p130 >= -128) {
+          this.writeU8(208);
+          this.writeI8(p130);
+        } else if (p130 >= -32768) {
+          this.writeU8(209);
+          this.writeI16(p130);
+        } else if (p130 >= -2147483648) {
+          this.writeU8(210);
+          this.writeI32(p130);
+        } else {
+          this.writeU8(211);
+          this.writeI64(p130);
+        }
+      } else if (this.forceFloat32) {
+        this.writeU8(202);
+        this.writeF32(p130);
+      } else {
+        this.writeU8(203);
+        this.writeF64(p130);
+      }
+    };
+    f31.prototype.writeStringHeader = function (p131) {
+      if (p131 < 32) {
+        this.writeU8(160 + p131);
+      } else if (p131 < 256) {
+        this.writeU8(217);
+        this.writeU8(p131);
+      } else if (p131 < 65536) {
+        this.writeU8(218);
+        this.writeU16(p131);
+      } else if (p131 < 4294967296) {
+        this.writeU8(219);
+        this.writeU32(p131);
+      } else {
+        throw new Error(`Too long string: ${p131} bytes in UTF-8`);
+      }
+    };
+    f31.prototype.encodeString = function (p132) {
+      var v115 = 5;
+      var v116 = p132.length;
+      if (v116 > v65) {
+        var vF13 = f13(p132);
+        this.ensureBufferSizeToWrite(v115 + vF13);
+        this.writeStringHeader(vF13);
+        v66(p132, this.bytes, this.pos);
+        this.pos += vF13;
+      } else {
+        var vF13 = f13(p132);
+        this.ensureBufferSizeToWrite(v115 + vF13);
+        this.writeStringHeader(vF13);
+        f14(p132, this.bytes, this.pos);
+        this.pos += vF13;
+      }
+    };
+    f31.prototype.encodeObject = function (p133, p134) {
+      var v117 = this.extensionCodec.tryToEncode(p133, this.context);
+      if (v117 != null) {
+        this.encodeExtension(v117);
+      } else if (Array.isArray(p133)) {
+        this.encodeArray(p133, p134);
+      } else if (ArrayBuffer.isView(p133)) {
+        this.encodeBinary(p133);
+      } else if (typeof p133 == "object") {
+        this.encodeMap(p133, p134);
+      } else {
+        throw new Error(`Unrecognized object: ${Object.prototype.toString.apply(p133)}`);
+      }
+    };
+    f31.prototype.encodeBinary = function (p135) {
+      var v118 = p135.byteLength;
+      if (v118 < 256) {
+        this.writeU8(196);
+        this.writeU8(v118);
+      } else if (v118 < 65536) {
+        this.writeU8(197);
+        this.writeU16(v118);
+      } else if (v118 < 4294967296) {
+        this.writeU8(198);
+        this.writeU32(v118);
+      } else {
+        throw new Error(`Too large binary: ${v118}`);
+      }
+      var vF292 = f29(p135);
+      this.writeU8a(vF292);
+    };
+    f31.prototype.encodeArray = function (p136, p137) {
+      var v119 = p136.length;
+      if (v119 < 16) {
+        this.writeU8(144 + v119);
+      } else if (v119 < 65536) {
+        this.writeU8(220);
+        this.writeU16(v119);
+      } else if (v119 < 4294967296) {
+        this.writeU8(221);
+        this.writeU32(v119);
+      } else {
+        throw new Error(`Too large array: ${v119}`);
+      }
+      for (var v120 = 0, vP136 = p136; v120 < vP136.length; v120++) {
+        var v121 = vP136[v120];
+        this.doEncode(v121, p137 + 1);
+      }
+    };
+    f31.prototype.countWithoutUndefined = function (p138, p139) {
+      var v122 = 0;
+      for (var v123 = 0, vP139 = p139; v123 < vP139.length; v123++) {
+        var v124 = vP139[v123];
+        if (p138[v124] !== undefined) {
+          v122++;
+        }
+      }
+      return v122;
+    };
+    f31.prototype.encodeMap = function (p140, p141) {
+      var v125 = Object.keys(p140);
+      if (this.sortKeys) {
+        v125.sort();
+      }
+      var v126 = this.ignoreUndefined ? this.countWithoutUndefined(p140, v125) : v125.length;
+      if (v126 < 16) {
+        this.writeU8(128 + v126);
+      } else if (v126 < 65536) {
+        this.writeU8(222);
+        this.writeU16(v126);
+      } else if (v126 < 4294967296) {
+        this.writeU8(223);
+        this.writeU32(v126);
+      } else {
+        throw new Error(`Too large map object: ${v126}`);
+      }
+      for (var v127 = 0, vV125 = v125; v127 < vV125.length; v127++) {
+        var v128 = vV125[v127];
+        var v129 = p140[v128];
+        if (!this.ignoreUndefined || v129 !== undefined) {
+          this.encodeString(v128);
+          this.doEncode(v129, p141 + 1);
+        }
+      }
+    };
+    f31.prototype.encodeExtension = function (p142) {
+      var v130 = p142.data.length;
+      if (v130 === 1) {
+        this.writeU8(212);
+      } else if (v130 === 2) {
+        this.writeU8(213);
+      } else if (v130 === 4) {
+        this.writeU8(214);
+      } else if (v130 === 8) {
+        this.writeU8(215);
+      } else if (v130 === 16) {
+        this.writeU8(216);
+      } else if (v130 < 256) {
+        this.writeU8(199);
+        this.writeU8(v130);
+      } else if (v130 < 65536) {
+        this.writeU8(200);
+        this.writeU16(v130);
+      } else if (v130 < 4294967296) {
+        this.writeU8(201);
+        this.writeU32(v130);
+      } else {
+        throw new Error(`Too large extension object: ${v130}`);
+      }
+      this.writeI8(p142.type);
+      this.writeU8a(p142.data);
+    };
+    f31.prototype.writeU8 = function (p143) {
+      this.ensureBufferSizeToWrite(1);
+      this.view.setUint8(this.pos, p143);
+      this.pos++;
+    };
+    f31.prototype.writeU8a = function (p144) {
+      var v131 = p144.length;
+      this.ensureBufferSizeToWrite(v131);
+      this.bytes.set(p144, this.pos);
+      this.pos += v131;
+    };
+    f31.prototype.writeI8 = function (p145) {
+      this.ensureBufferSizeToWrite(1);
+      this.view.setInt8(this.pos, p145);
+      this.pos++;
+    };
+    f31.prototype.writeU16 = function (p146) {
+      this.ensureBufferSizeToWrite(2);
+      this.view.setUint16(this.pos, p146);
+      this.pos += 2;
+    };
+    f31.prototype.writeI16 = function (p147) {
+      this.ensureBufferSizeToWrite(2);
+      this.view.setInt16(this.pos, p147);
+      this.pos += 2;
+    };
+    f31.prototype.writeU32 = function (p148) {
+      this.ensureBufferSizeToWrite(4);
+      this.view.setUint32(this.pos, p148);
+      this.pos += 4;
+    };
+    f31.prototype.writeI32 = function (p149) {
+      this.ensureBufferSizeToWrite(4);
+      this.view.setInt32(this.pos, p149);
+      this.pos += 4;
+    };
+    f31.prototype.writeF32 = function (p150) {
+      this.ensureBufferSizeToWrite(4);
+      this.view.setFloat32(this.pos, p150);
+      this.pos += 4;
+    };
+    f31.prototype.writeF64 = function (p151) {
+      this.ensureBufferSizeToWrite(8);
+      this.view.setFloat64(this.pos, p151);
+      this.pos += 8;
+    };
+    f31.prototype.writeU64 = function (p152) {
+      this.ensureBufferSizeToWrite(8);
+      f9(this.view, this.pos, p152);
+      this.pos += 8;
+    };
+    f31.prototype.writeI64 = function (p153) {
+      this.ensureBufferSizeToWrite(8);
+      f10(this.view, this.pos, p153);
+      this.pos += 8;
+    };
+    return f31;
+  }();
+  var v132 = {};
+  function f32(p154, p155 = v132) {
+    var v133 = new vF11(p155.extensionCodec, p155.context, p155.maxDepth, p155.initialBufferSize, p155.sortKeys, p155.forceFloat32, p155.ignoreUndefined, p155.forceIntegerToFloat);
+    return v133.encodeSharedRef(p154);
+  }
+  function f33(p156) {
+    return `${p156 < 0 ? "-" : ""}0x${Math.abs(p156).toString(16).padStart(2, "0")}`;
+  }
+  var v134 = 16;
+  var v135 = 16;
+  var vF12 = function () {
+    function f34(p157 = v134, p158 = v135) {
+      this.maxKeyLength = p157;
+      this.maxLengthPerKey = p158;
+      this.hit = 0;
+      this.miss = 0;
+      this.caches = [];
+      for (var v136 = 0; v136 < this.maxKeyLength; v136++) {
+        this.caches.push([]);
+      }
+    }
+    f34.prototype.canBeCached = function (p159) {
+      return p159 > 0 && p159 <= this.maxKeyLength;
+    };
+    f34.prototype.find = function (p160, p161, p162) {
+      var v137 = this.caches[p162 - 1];
+      _0x2d51f0: for (var v138 = 0, vV137 = v137; v138 < vV137.length; v138++) {
+        var v139 = vV137[v138];
+        var v140 = v139.bytes;
+        for (var v141 = 0; v141 < p162; v141++) {
+          if (v140[v141] !== p160[p161 + v141]) {
+            continue _0x2d51f0;
+          }
+        }
+        return v139.str;
+      }
+      return null;
+    };
+    f34.prototype.store = function (p163, p164) {
+      var v142 = this.caches[p163.length - 1];
+      var v143 = {
+        bytes: p163,
+        str: p164
+      };
+      if (v142.length >= this.maxLengthPerKey) {
+        v142[Math.random() * v142.length | 0] = v143;
+      } else {
+        v142.push(v143);
+      }
+    };
+    f34.prototype.decode = function (p165, p166, p167) {
+      var v144 = this.find(p165, p166, p167);
+      if (v144 != null) {
+        this.hit++;
+        return v144;
+      }
+      this.miss++;
+      var vF17 = f17(p165, p166, p167);
+      var v145 = Uint8Array.prototype.slice.call(p165, p166, p166 + p167);
+      this.store(v145, vF17);
+      return vF17;
+    };
+    return f34;
+  }();
+  function f35(p168, p169, p170, p171) {
+    function f36(p172) {
+      if (p172 instanceof p170) {
+        return p172;
+      } else {
+        return new p170(function (p173) {
+          p173(p172);
+        });
+      }
+    }
+    return new (p170 ||= Promise)(function (p174, p175) {
+      function f37(p176) {
+        try {
+          f39(p171.next(p176));
+        } catch (_0x58ac72) {
+          p175(_0x58ac72);
+        }
+      }
+      function f38(p177) {
+        try {
+          f39(p171.throw(p177));
+        } catch (_0x417050) {
+          p175(_0x417050);
+        }
+      }
+      function f39(p178) {
+        if (p178.done) {
+          p174(p178.value);
+        } else {
+          f36(p178.value).then(f37, f38);
+        }
+      }
+      f39((p171 = p171.apply(p168, p169 || [])).next());
+    });
+  }
+  function f40(p179, p180) {
+    var v146 = {
+      label: 0,
+      sent: function () {
+        if (v149[0] & 1) {
+          throw v149[1];
+        }
+        return v149[1];
+      },
+      trys: [],
+      ops: []
+    };
+    var v147;
+    var v148;
+    var v149;
+    var v150;
+    v150 = {
+      next: f41(0),
+      throw: f41(1),
+      return: f41(2)
+    };
+    if (typeof Symbol == "function") {
+      v150[Symbol.iterator] = function () {
+        return this;
+      };
+    }
+    return v150;
+    function f41(p181) {
+      return function (p182) {
+        return f42([p181, p182]);
+      };
+    }
+    function f42(p183) {
+      if (v147) {
+        throw new TypeError("Generator is already executing.");
+      }
+      while (v146) {
+        try {
+          v147 = 1;
+          if (v148 && (v149 = p183[0] & 2 ? v148.return : p183[0] ? v148.throw || ((v149 = v148.return) && v149.call(v148), 0) : v148.next) && !(v149 = v149.call(v148, p183[1])).done) {
+            return v149;
+          }
+          v148 = 0;
+          if (v149) {
+            p183 = [p183[0] & 2, v149.value];
+          }
+          switch (p183[0]) {
+            case 0:
+            case 1:
+              v149 = p183;
+              break;
+            case 4:
+              v146.label++;
+              return {
+                value: p183[1],
+                done: false
+              };
+            case 5:
+              v146.label++;
+              v148 = p183[1];
+              p183 = [0];
+              continue;
+            case 7:
+              p183 = v146.ops.pop();
+              v146.trys.pop();
+              continue;
+            default:
+              v149 = v146.trys;
+              if (!(v149 = v149.length > 0 && v149[v149.length - 1]) && (p183[0] === 6 || p183[0] === 2)) {
+                v146 = 0;
+                continue;
+              }
+              if (p183[0] === 3 && (!v149 || p183[1] > v149[0] && p183[1] < v149[3])) {
+                v146.label = p183[1];
+                break;
+              }
+              if (p183[0] === 6 && v146.label < v149[1]) {
+                v146.label = v149[1];
+                v149 = p183;
+                break;
+              }
+              if (v149 && v146.label < v149[2]) {
+                v146.label = v149[2];
+                v146.ops.push(p183);
+                break;
+              }
+              if (v149[2]) {
+                v146.ops.pop();
+              }
+              v146.trys.pop();
+              continue;
+          }
+          p183 = p180.call(p179, v146);
+        } catch (_0x1f512d) {
+          p183 = [6, _0x1f512d];
+          v148 = 0;
+        } finally {
+          v147 = v149 = 0;
+        }
+      }
+      if (p183[0] & 5) {
+        throw p183[1];
+      }
+      return {
+        value: p183[0] ? p183[1] : undefined,
+        done: true
+      };
+    }
+  }
+  function f43(p184) {
+    if (!Symbol.asyncIterator) {
+      throw new TypeError("Symbol.asyncIterator is not defined.");
+    }
+    var v151 = p184[Symbol.asyncIterator];
+    var v152;
+    if (v151) {
+      return v151.call(p184);
+    } else {
+      p184 = typeof __values == "function" ? __values(p184) : p184[Symbol.iterator]();
+      v152 = {};
+      f44("next");
+      f44("throw");
+      f44("return");
+      v152[Symbol.asyncIterator] = function () {
+        return this;
+      };
+      return v152;
+    }
+    function f44(p185) {
+      v152[p185] = p184[p185] && function (p186) {
+        return new Promise(function (p187, p188) {
+          p186 = p184[p185](p186);
+          f45(p187, p188, p186.done, p186.value);
+        });
+      };
+    }
+    function f45(p189, p190, p191, p192) {
+      Promise.resolve(p192).then(function (p193) {
+        p189({
+          value: p193,
+          done: p191
+        });
+      }, p190);
+    }
+  }
+  function f46(p194) {
+    if (this instanceof f46) {
+      this.v = p194;
+      return this;
+    } else {
+      return new f46(p194);
+    }
+  }
+  function f47(p195, p196, p197) {
+    if (!Symbol.asyncIterator) {
+      throw new TypeError("Symbol.asyncIterator is not defined.");
+    }
+    var v153 = p197.apply(p195, p196 || []);
+    var v154;
+    var v155 = [];
+    v154 = {};
+    f48("next");
+    f48("throw");
+    f48("return");
+    v154[Symbol.asyncIterator] = function () {
+      return this;
+    };
+    return v154;
+    function f48(p198) {
+      if (v153[p198]) {
+        v154[p198] = function (p199) {
+          return new Promise(function (p200, p201) {
+            if (!(v155.push([p198, p199, p200, p201]) > 1)) {
+              f49(p198, p199);
+            }
+          });
+        };
+      }
+    }
+    function f49(p202, p203) {
+      try {
+        f50(v153[p202](p203));
+      } catch (_0x4057d1) {
+        f53(v155[0][3], _0x4057d1);
+      }
+    }
+    function f50(p204) {
+      if (p204.value instanceof f46) {
+        Promise.resolve(p204.value.v).then(f51, f52);
+      } else {
+        f53(v155[0][2], p204);
+      }
+    }
+    function f51(p205) {
+      f49("next", p205);
+    }
+    function f52(p206) {
+      f49("throw", p206);
+    }
+    function f53(p207, p208) {
+      p207(p208);
+      v155.shift();
+      if (v155.length) {
+        f49(v155[0][0], v155[0][1]);
+      }
+    }
+  }
+  function f54(p209) {
+    var v156 = typeof p209;
+    return v156 === "string" || v156 === "number";
+  }
+  var v157 = -1;
+  var v158 = new DataView(new ArrayBuffer(0));
+  var v159 = new Uint8Array(v158.buffer);
+  var vF14 = function () {
+    try {
+      v158.getInt8(0);
+    } catch (_0x5e3736) {
+      return _0x5e3736.constructor;
+    }
+    throw new Error("never reached");
+  }();
+  var v160 = new vF14("Insufficient data");
+  var v161 = new vF12();
+  var vF15 = function () {
+    function f55(p210 = vF10.defaultCodec, p211 = undefined, p212 = v47, p213 = v47, p214 = v47, p215 = v47, p216 = v47, p217 = v161) {
+      this.extensionCodec = p210;
+      this.context = p211;
+      this.maxStrLength = p212;
+      this.maxBinLength = p213;
+      this.maxArrayLength = p214;
+      this.maxMapLength = p215;
+      this.maxExtLength = p216;
+      this.keyDecoder = p217;
+      this.totalPos = 0;
+      this.pos = 0;
+      this.view = v158;
+      this.bytes = v159;
+      this.headByte = v157;
+      this.stack = [];
+    }
+    f55.prototype.reinitializeState = function () {
+      this.totalPos = 0;
+      this.headByte = v157;
+      this.stack.length = 0;
+    };
+    f55.prototype.setBuffer = function (p218) {
+      this.bytes = f29(p218);
+      this.view = f30(this.bytes);
+      this.pos = 0;
+    };
+    f55.prototype.appendBuffer = function (p219) {
+      if (this.headByte === v157 && !this.hasRemaining(1)) {
+        this.setBuffer(p219);
+      } else {
+        var v162 = this.bytes.subarray(this.pos);
+        var vF293 = f29(p219);
+        var v163 = new Uint8Array(v162.length + vF293.length);
+        v163.set(v162);
+        v163.set(vF293, v162.length);
+        this.setBuffer(v163);
+      }
+    };
+    f55.prototype.hasRemaining = function (p220) {
+      return this.view.byteLength - this.pos >= p220;
+    };
+    f55.prototype.createExtraByteError = function (p221) {
+      var vThis = this;
+      var v164 = vThis.view;
+      var v165 = vThis.pos;
+      return new RangeError(`Extra ${v164.byteLength - v165} of ${v164.byteLength} byte(s) found at buffer[${p221}]`);
+    };
+    f55.prototype.decode = function (p222) {
+      this.reinitializeState();
+      this.setBuffer(p222);
+      var v166 = this.doDecodeSync();
+      if (this.hasRemaining(1)) {
+        throw this.createExtraByteError(this.pos);
+      }
+      return v166;
+    };
+    f55.prototype.decodeMulti = function (p223) {
+      return f40(this, function (p224) {
+        switch (p224.label) {
+          case 0:
+            this.reinitializeState();
+            this.setBuffer(p223);
+            p224.label = 1;
+          case 1:
+            if (this.hasRemaining(1)) {
+              return [4, this.doDecodeSync()];
+            } else {
+              return [3, 3];
+            }
+          case 2:
+            p224.sent();
+            return [3, 1];
+          case 3:
+            return [2];
+        }
+      });
+    };
+    f55.prototype.decodeAsync = function (p225) {
+      var v167;
+      var v168;
+      var v169;
+      var v170;
+      return f35(this, undefined, undefined, function () {
+        var v171;
+        var v172;
+        var v173;
+        var v174;
+        var v175;
+        var v176;
+        var v177;
+        var v178;
+        return f40(this, function (p226) {
+          switch (p226.label) {
+            case 0:
+              v171 = false;
+              p226.label = 1;
+            case 1:
+              p226.trys.push([1, 6, 7, 12]);
+              v167 = f43(p225);
+              p226.label = 2;
+            case 2:
+              return [4, v167.next()];
+            case 3:
+              v168 = p226.sent();
+              if (v168.done) {
+                return [3, 5];
+              }
+              v173 = v168.value;
+              if (v171) {
+                throw this.createExtraByteError(this.totalPos);
+              }
+              this.appendBuffer(v173);
+              try {
+                v172 = this.doDecodeSync();
+                v171 = true;
+              } catch (_0x2a0d88) {
+                if (!(_0x2a0d88 instanceof vF14)) {
+                  throw _0x2a0d88;
+                }
+              }
+              this.totalPos += this.pos;
+              p226.label = 4;
+            case 4:
+              return [3, 2];
+            case 5:
+              return [3, 12];
+            case 6:
+              v174 = p226.sent();
+              v169 = {
+                error: v174
+              };
+              return [3, 12];
+            case 7:
+              p226.trys.push([7,, 10, 11]);
+              if (v168 && !v168.done && (v170 = v167.return)) {
+                return [4, v170.call(v167)];
+              } else {
+                return [3, 9];
+              }
+            case 8:
+              p226.sent();
+              p226.label = 9;
+            case 9:
+              return [3, 11];
+            case 10:
+              if (v169) {
+                throw v169.error;
+              }
+              return [7];
+            case 11:
+              return [7];
+            case 12:
+              if (v171) {
+                if (this.hasRemaining(1)) {
+                  throw this.createExtraByteError(this.totalPos);
+                }
+                return [2, v172];
+              }
+              v175 = this;
+              v176 = v175.headByte;
+              v177 = v175.pos;
+              v178 = v175.totalPos;
+              throw new RangeError(`Insufficient data in parsing ${f33(v176)} at ${v178} (${v177} in the current buffer)`);
+          }
+        });
+      });
+    };
+    f55.prototype.decodeArrayStream = function (p227) {
+      return this.decodeMultiAsync(p227, true);
+    };
+    f55.prototype.decodeStream = function (p228) {
+      return this.decodeMultiAsync(p228, false);
+    };
+    f55.prototype.decodeMultiAsync = function (p229, p230) {
+      return f47(this, arguments, function () {
+        var v179;
+        var v180;
+        var v181;
+        var v182;
+        var v183;
+        var v184;
+        var v185;
+        var v186;
+        var v187;
+        return f40(this, function (p231) {
+          switch (p231.label) {
+            case 0:
+              v179 = p230;
+              v180 = -1;
+              p231.label = 1;
+            case 1:
+              p231.trys.push([1, 13, 14, 19]);
+              v181 = f43(p229);
+              p231.label = 2;
+            case 2:
+              return [4, f46(v181.next())];
+            case 3:
+              v182 = p231.sent();
+              if (v182.done) {
+                return [3, 12];
+              }
+              v183 = v182.value;
+              if (p230 && v180 === 0) {
+                throw this.createExtraByteError(this.totalPos);
+              }
+              this.appendBuffer(v183);
+              if (v179) {
+                v180 = this.readArraySize();
+                v179 = false;
+                this.complete();
+              }
+              p231.label = 4;
+            case 4:
+              p231.trys.push([4, 9,, 10]);
+              p231.label = 5;
+            case 5:
+              return [4, f46(this.doDecodeSync())];
+            case 6:
+              return [4, p231.sent()];
+            case 7:
+              p231.sent();
+              if (--v180 === 0) {
+                return [3, 8];
+              } else {
+                return [3, 5];
+              }
+            case 8:
+              return [3, 10];
+            case 9:
+              v184 = p231.sent();
+              if (!(v184 instanceof vF14)) {
+                throw v184;
+              }
+              return [3, 10];
+            case 10:
+              this.totalPos += this.pos;
+              p231.label = 11;
+            case 11:
+              return [3, 2];
+            case 12:
+              return [3, 19];
+            case 13:
+              v185 = p231.sent();
+              v186 = {
+                error: v185
+              };
+              return [3, 19];
+            case 14:
+              p231.trys.push([14,, 17, 18]);
+              if (v182 && !v182.done && (v187 = v181.return)) {
+                return [4, f46(v187.call(v181))];
+              } else {
+                return [3, 16];
+              }
+            case 15:
+              p231.sent();
+              p231.label = 16;
+            case 16:
+              return [3, 18];
+            case 17:
+              if (v186) {
+                throw v186.error;
+              }
+              return [7];
+            case 18:
+              return [7];
+            case 19:
+              return [2];
+          }
+        });
+      });
+    };
+    f55.prototype.doDecodeSync = function () {
+      _0x197063: while (true) {
+        var v188 = this.readHeadByte();
+        var vUndefined = undefined;
+        if (v188 >= 224) {
+          vUndefined = v188 - 256;
+        } else if (v188 < 192) {
+          if (v188 < 128) {
+            vUndefined = v188;
+          } else if (v188 < 144) {
+            var v189 = v188 - 128;
+            if (v189 !== 0) {
+              this.pushMapState(v189);
+              this.complete();
+              continue _0x197063;
+            } else {
+              vUndefined = {};
+            }
+          } else if (v188 < 160) {
+            var v189 = v188 - 144;
+            if (v189 !== 0) {
+              this.pushArrayState(v189);
+              this.complete();
+              continue _0x197063;
+            } else {
+              vUndefined = [];
+            }
+          } else {
+            var v190 = v188 - 160;
+            vUndefined = this.decodeUtf8String(v190, 0);
+          }
+        } else if (v188 === 192) {
+          vUndefined = null;
+        } else if (v188 === 194) {
+          vUndefined = false;
+        } else if (v188 === 195) {
+          vUndefined = true;
+        } else if (v188 === 202) {
+          vUndefined = this.readF32();
+        } else if (v188 === 203) {
+          vUndefined = this.readF64();
+        } else if (v188 === 204) {
+          vUndefined = this.readU8();
+        } else if (v188 === 205) {
+          vUndefined = this.readU16();
+        } else if (v188 === 206) {
+          vUndefined = this.readU32();
+        } else if (v188 === 207) {
+          vUndefined = this.readU64();
+        } else if (v188 === 208) {
+          vUndefined = this.readI8();
+        } else if (v188 === 209) {
+          vUndefined = this.readI16();
+        } else if (v188 === 210) {
+          vUndefined = this.readI32();
+        } else if (v188 === 211) {
+          vUndefined = this.readI64();
+        } else if (v188 === 217) {
+          var v190 = this.lookU8();
+          vUndefined = this.decodeUtf8String(v190, 1);
+        } else if (v188 === 218) {
+          var v190 = this.lookU16();
+          vUndefined = this.decodeUtf8String(v190, 2);
+        } else if (v188 === 219) {
+          var v190 = this.lookU32();
+          vUndefined = this.decodeUtf8String(v190, 4);
+        } else if (v188 === 220) {
+          var v189 = this.readU16();
+          if (v189 !== 0) {
+            this.pushArrayState(v189);
+            this.complete();
+            continue _0x197063;
+          } else {
+            vUndefined = [];
+          }
+        } else if (v188 === 221) {
+          var v189 = this.readU32();
+          if (v189 !== 0) {
+            this.pushArrayState(v189);
+            this.complete();
+            continue _0x197063;
+          } else {
+            vUndefined = [];
+          }
+        } else if (v188 === 222) {
+          var v189 = this.readU16();
+          if (v189 !== 0) {
+            this.pushMapState(v189);
+            this.complete();
+            continue _0x197063;
+          } else {
+            vUndefined = {};
+          }
+        } else if (v188 === 223) {
+          var v189 = this.readU32();
+          if (v189 !== 0) {
+            this.pushMapState(v189);
+            this.complete();
+            continue _0x197063;
+          } else {
+            vUndefined = {};
+          }
+        } else if (v188 === 196) {
+          var v189 = this.lookU8();
+          vUndefined = this.decodeBinary(v189, 1);
+        } else if (v188 === 197) {
+          var v189 = this.lookU16();
+          vUndefined = this.decodeBinary(v189, 2);
+        } else if (v188 === 198) {
+          var v189 = this.lookU32();
+          vUndefined = this.decodeBinary(v189, 4);
+        } else if (v188 === 212) {
+          vUndefined = this.decodeExtension(1, 0);
+        } else if (v188 === 213) {
+          vUndefined = this.decodeExtension(2, 0);
+        } else if (v188 === 214) {
+          vUndefined = this.decodeExtension(4, 0);
+        } else if (v188 === 215) {
+          vUndefined = this.decodeExtension(8, 0);
+        } else if (v188 === 216) {
+          vUndefined = this.decodeExtension(16, 0);
+        } else if (v188 === 199) {
+          var v189 = this.lookU8();
+          vUndefined = this.decodeExtension(v189, 1);
+        } else if (v188 === 200) {
+          var v189 = this.lookU16();
+          vUndefined = this.decodeExtension(v189, 2);
+        } else if (v188 === 201) {
+          var v189 = this.lookU32();
+          vUndefined = this.decodeExtension(v189, 4);
+        } else {
+          throw new vF9(`Unrecognized type byte: ${f33(v188)}`);
+        }
+        this.complete();
+        for (var v191 = this.stack; v191.length > 0;) {
+          var v192 = v191[v191.length - 1];
+          if (v192.type === 0) {
+            v192.array[v192.position] = vUndefined;
+            v192.position++;
+            if (v192.position === v192.size) {
+              v191.pop();
+              vUndefined = v192.array;
+            } else {
+              continue _0x197063;
+            }
+          } else if (v192.type === 1) {
+            if (!f54(vUndefined)) {
+              throw new vF9("The type of key must be string or number but " + typeof vUndefined);
+            }
+            if (vUndefined === "__proto__") {
+              throw new vF9("The key __proto__ is not allowed");
+            }
+            v192.key = vUndefined;
+            v192.type = 2;
+            continue _0x197063;
+          } else {
+            v192.map[v192.key] = vUndefined;
+            v192.readCount++;
+            if (v192.readCount === v192.size) {
+              v191.pop();
+              vUndefined = v192.map;
+            } else {
+              v192.key = null;
+              v192.type = 1;
+              continue _0x197063;
+            }
+          }
+        }
+        return vUndefined;
+      }
+    };
+    f55.prototype.readHeadByte = function () {
+      if (this.headByte === v157) {
+        this.headByte = this.readU8();
+      }
+      return this.headByte;
+    };
+    f55.prototype.complete = function () {
+      this.headByte = v157;
+    };
+    f55.prototype.readArraySize = function () {
+      var v193 = this.readHeadByte();
+      switch (v193) {
+        case 220:
+          return this.readU16();
+        case 221:
+          return this.readU32();
+        default:
+          {
+            if (v193 < 160) {
+              return v193 - 144;
+            }
+            throw new vF9(`Unrecognized array type byte: ${f33(v193)}`);
+          }
+      }
+    };
+    f55.prototype.pushMapState = function (p232) {
+      if (p232 > this.maxMapLength) {
+        throw new vF9(`Max length exceeded: map length (${p232}) > maxMapLengthLength (${this.maxMapLength})`);
+      }
+      this.stack.push({
+        type: 1,
+        size: p232,
+        key: null,
+        readCount: 0,
+        map: {}
+      });
+    };
+    f55.prototype.pushArrayState = function (p233) {
+      if (p233 > this.maxArrayLength) {
+        throw new vF9(`Max length exceeded: array length (${p233}) > maxArrayLength (${this.maxArrayLength})`);
+      }
+      this.stack.push({
+        type: 0,
+        size: p233,
+        array: new Array(p233),
+        position: 0
+      });
+    };
+    f55.prototype.decodeUtf8String = function (p234, p235) {
+      var v194;
+      if (p234 > this.maxStrLength) {
+        throw new vF9(`Max length exceeded: UTF-8 byte length (${p234}) > maxStrLength (${this.maxStrLength})`);
+      }
+      if (this.bytes.byteLength < this.pos + p235 + p234) {
+        throw v160;
+      }
+      var v195 = this.pos + p235;
+      var v196;
+      if (this.stateIsMapKey() && ((v194 = this.keyDecoder) === null || v194 === undefined ? undefined : v194.canBeCached(p234))) {
+        v196 = this.keyDecoder.decode(this.bytes, v195, p234);
+      } else if (p234 > v77) {
+        v196 = f18(this.bytes, v195, p234);
+      } else {
+        v196 = f17(this.bytes, v195, p234);
+      }
+      this.pos += p235 + p234;
+      return v196;
+    };
+    f55.prototype.stateIsMapKey = function () {
+      if (this.stack.length > 0) {
+        var v197 = this.stack[this.stack.length - 1];
+        return v197.type === 1;
+      }
+      return false;
+    };
+    f55.prototype.decodeBinary = function (p236, p237) {
+      if (p236 > this.maxBinLength) {
+        throw new vF9(`Max length exceeded: bin length (${p236}) > maxBinLength (${this.maxBinLength})`);
+      }
+      if (!this.hasRemaining(p236 + p237)) {
+        throw v160;
+      }
+      var v198 = this.pos + p237;
+      var v199 = this.bytes.subarray(v198, v198 + p236);
+      this.pos += p237 + p236;
+      return v199;
+    };
+    f55.prototype.decodeExtension = function (p238, p239) {
+      if (p238 > this.maxExtLength) {
+        throw new vF9(`Max length exceeded: ext length (${p238}) > maxExtLength (${this.maxExtLength})`);
+      }
+      var v200 = this.view.getInt8(this.pos + p239);
+      var v201 = this.decodeBinary(p238, p239 + 1);
+      return this.extensionCodec.decode(v201, v200, this.context);
+    };
+    f55.prototype.lookU8 = function () {
+      return this.view.getUint8(this.pos);
+    };
+    f55.prototype.lookU16 = function () {
+      return this.view.getUint16(this.pos);
+    };
+    f55.prototype.lookU32 = function () {
+      return this.view.getUint32(this.pos);
+    };
+    f55.prototype.readU8 = function () {
+      var v202 = this.view.getUint8(this.pos);
+      this.pos++;
+      return v202;
+    };
+    f55.prototype.readI8 = function () {
+      var v203 = this.view.getInt8(this.pos);
+      this.pos++;
+      return v203;
+    };
+    f55.prototype.readU16 = function () {
+      var v204 = this.view.getUint16(this.pos);
+      this.pos += 2;
+      return v204;
+    };
+    f55.prototype.readI16 = function () {
+      var v205 = this.view.getInt16(this.pos);
+      this.pos += 2;
+      return v205;
+    };
+    f55.prototype.readU32 = function () {
+      var v206 = this.view.getUint32(this.pos);
+      this.pos += 4;
+      return v206;
+    };
+    f55.prototype.readI32 = function () {
+      var v207 = this.view.getInt32(this.pos);
+      this.pos += 4;
+      return v207;
+    };
+    f55.prototype.readU64 = function () {
+      var vF122 = f12(this.view, this.pos);
+      this.pos += 8;
+      return vF122;
+    };
+    f55.prototype.readI64 = function () {
+      var vF112 = f11(this.view, this.pos);
+      this.pos += 8;
+      return vF112;
+    };
+    f55.prototype.readF32 = function () {
+      var v208 = this.view.getFloat32(this.pos);
+      this.pos += 4;
+      return v208;
+    };
+    f55.prototype.readF64 = function () {
+      var v209 = this.view.getFloat64(this.pos);
+      this.pos += 8;
+      return v209;
+    };
+    return f55;
+  }();
+  var v210 = {};
+  function f56(p240, p241 = v210) {
+    var v211 = new vF15(p241.extensionCodec, p241.context, p241.maxStrLength, p241.maxBinLength, p241.maxArrayLength, p241.maxMapLength, p241.maxExtLength);
+    return v211.decode(p240);
+  }
+  var vC3 = class {
+    onWillDisposeEmitter = new vC4();
+    onWillDispose = this.onWillDisposeEmitter.event;
+    onDidDisposeEmitter = new vC4();
+    onDidDispose = this.onDidDisposeEmitter.event;
+    toDispose = [];
+    isDisposed = false;
+    onDispose(p242) {
+      this.toDispose.push(vC3.create(p242));
+    }
+    dispose() {
+      if (!this.isDisposed) {
+        this.onWillDisposeEmitter.fire(null);
+        this.isDisposed = true;
+        this.toDispose.forEach(p243 => {
+          p243.dispose();
+        });
+        this.onDidDisposeEmitter.fire(null);
+        this.onWillDisposeEmitter.dispose();
+        this.onDidDisposeEmitter.dispose();
+      }
+    }
+    static is(p244) {
+      return typeof p244.dispose == "function";
+    }
+    static create(p245) {
+      return {
+        dispose: p245
+      };
+    }
+  };
+  var vC4 = class {
+    registeredListeners = new Set();
+    _event;
+    get event() {
+      this._event ||= p246 => {
+        this.registeredListeners.add(p246);
+        return vC3.create(() => {
+          this.registeredListeners.delete(p246);
+        });
+      };
+      return this._event;
+    }
+    fire(p247) {
+      this.registeredListeners.forEach(p248 => {
+        p248(p247);
+      });
+    }
+    dispose() {
+      this.registeredListeners = new Set();
+    }
+  };
+  var v212 = (0, vVF33.default)();
+  var vF16 = p249 => f32(p249, {
+    ignoreUndefined: true
+  });
+  var vC5 = class {
+    endpoints = new Map();
+    nodeMap = new Map();
+    onMessageEmitter = new vC4();
+    onMessage = this.onMessageEmitter.event;
+    constructor() {}
+    getEndpointForNode(p250) {
+      let v213 = this.nodeMap.get(p250);
+      if (v213) {
+        let v214 = this.endpoints.get(v213);
+        if (v214) {
+          return v214;
+        }
+      }
+    }
+    addEndpoint(p251, p252) {
+      this.endpoints.set(p251, p252);
+      p252.onMessage(p253 => this.handleMessage(p253, p251));
+      let vVF16 = vF16({
+        $type: "router-announce",
+        $origin: v212
+      });
+      p252.send(vVF16, [vVF16.buffer]);
+    }
+    removeEndpoint(p254) {
+      this.endpoints.delete(p254);
+    }
+    send(p255, p256, p257 = true) {
+      let v215 = {
+        $type: "router-message",
+        $origin: v212,
+        $target: p255,
+        $data: p256
+      };
+      if (p255 !== v212) {
+        let v216 = this.getEndpointForNode(p255);
+        if (!v216) {
+          throw new Error("Endpoint " + p255 + " not registered");
+        }
+        if (p257) {
+          let vVF162 = vF16(v215);
+          v216.send(vVF162, [vVF162.buffer]);
+        } else {
+          v216.send(v215, []);
+        }
+      } else {
+        this.onMessageEmitter.fire(v215);
+      }
+    }
+    broadcast(p258, p259, p260) {
+      let v217 = {
+        $type: "router-broadcast",
+        $origin: p260 ?? v212,
+        $data: p258
+      };
+      if (!p259 && !p260) {
+        this.onMessageEmitter.fire(v217);
+      }
+      for (let [v218, v219] of this.endpoints.entries()) {
+        if (v218 === p259) {
+          continue;
+        }
+        let vVF163 = vF16(v217);
+        v219.send(vVF163, [vVF163.buffer]);
+      }
+    }
+    handleMessage(p261, p262) {
+      let v220 = p261 instanceof Uint8Array;
+      let v221 = v220 ? f56(p261) : p261;
+      if (v221.$origin) {
+        if (!this.nodeMap.has(v221.$origin)) {
+          this.nodeMap.set(v221.$origin, p262);
+        }
+        if (v221.$type === "router-broadcast") {
+          let vV221 = v221;
+          this.broadcast(vV221.$data, p262, vV221.$origin);
+          this.onMessageEmitter.fire(v221);
+          return;
+        }
+        if (v221.$type === "router-message") {
+          let vV2212 = v221;
+          if (vV2212.$target === v212) {
+            this.onMessageEmitter.fire(v221);
+          } else {
+            let v222 = this.getEndpointForNode(vV2212.$target);
+            if (v222) {
+              v222.send(p261, v220 ? [p261.buffer] : []);
+            }
+          }
+          return;
+        }
+      }
+    }
+  };
+  var v223;
+  function f57() {
+    v223 ||= new vC5();
+    return v223;
+  }
+  function f58(p263) {
+    let v224 = 8000;
+    if (isNaN(v224)) {
+      throw new Error("Invalid port");
+    }
+    return v224;
+  }
+  function f59(p264) {
+    return p264.installing || p264.waiting || p264.active;
+  }
+  var vF82 = f8("bridge");
+  var vF58 = f58(window.location.hostname);
+  var v225 = {
+    $channel_name: v40,
+    $type: v41,
+    port: vF58
+  };
+  var vF57 = f57();
+  var v226 = new MessageChannel();
+  var v227 = new vVF32.DeferredPromise();
+  var v228 = new vVF32.DeferredPromise();
+  v227.then(p265 => {
+    vF82("worker is ready, initializing MessageChannel...");
+    p265.postMessage({
+      type: "bridge-channel-init"
+    }, [v226.port2]);
+    return p265;
+  });
+  window.addEventListener("unload", () => {
+    v226.port1.postMessage({
+      $type: v46
+    });
+  });
+  window.addEventListener("message", p266 => {
+    switch (p266.data.$type) {
+      case v44:
+        {
+          let v229 = p266.ports[0];
+          let v230 = document.getElementById("previews-list");
+          let v231 = document.createElement("span");
+          v231.setAttribute("data-port", String(vF58));
+          v231.innerText = "localhost:" + vF58;
+          v230?.appendChild(v231);
+          v228.resolve(v229);
+          vF57.addEndpoint("parent", {
+            send: (p267, p268) => v229.postMessage(p267, p268),
+            onMessage: p269 => {
+              v229.onmessage = p270 => {
+                p269(p270.data);
+              };
+            }
+          });
+          break;
+        }
+    }
+  });
+  var v232 = new vVF32.DeferredPromise();
+  vF57.onMessage(p271 => {
+    switch (p271.$data.$type) {
+      case v43:
+        {
+          v232.resolve(p271.$origin);
+          break;
+        }
+      case v42:
+        {
+          v226.port1.postMessage(p271.$data);
+          break;
+        }
+      case v45:
+        {
+          v226.port1.postMessage(p271.$data);
+          break;
+        }
+    }
+  });
+  v226.port1.onmessage = async p272 => {
+    let v233 = p272.data;
+    vF82("incoming message from the worker", p272.data);
+    if (v233.$channel_name === v40) {
+      let v234 = await v232;
+      vF6(v234, "[bridge] Failed to forward worker message to the PreviewManager: manager node ID is not defined.");
+      let vV233 = v233;
+      vF57.send(v234, vV233);
+    }
+  };
+  var v235 = new URL("__csb_sw.js", location.origin).href;
+  function f60(p273) {
+    let vSetInterval = setInterval(() => {
+      let v236 = {
+        type: "ping"
+      };
+      p273.postMessage(v236);
+    }, 5000);
+    p273.addEventListener("statechange", () => {
+      if (p273.state === "redundant") {
+        clearInterval(vSetInterval);
+      }
+    });
+  }
+  async function f61() {
+    vF6("serviceWorker" in navigator, "Failed to start the bridge Service Worker: Service Worker API is not supported in this browser");
+    let vF18 = async () => {
+      let v237 = await navigator.serviceWorker.register("__csb_sw.js", {
+        scope: "."
+      });
+      return f59(v237);
+    };
+    let v238 = await navigator.serviceWorker.getRegistrations();
+    vF82("all registrations", location, v238);
+    await Promise.all(v238.map(p274 => {
+      let vF59 = f59(p274);
+      if (vF59 && vF59.scriptURL !== v235) {
+        vF82("found irrelevant worker registration, unregistering...", vF59, p274);
+        return p274.unregister();
+      }
+    }));
+    let {
+      controller: _0x2934de
+    } = navigator.serviceWorker;
+    if (!_0x2934de) {
+      vF82("bridge is not controlled, registering a new worker...");
+      return vF18();
+    }
+    if (_0x2934de.scriptURL === v235) {
+      vF82("bridge is controlled by the correct worker", _0x2934de.scriptURL);
+      return _0x2934de;
+    }
+    let [v239, v240] = await Promise.all([navigator.serviceWorker.getRegistration(_0x2934de.scriptURL), navigator.serviceWorker.getRegistration(v235)]);
+    vF82("controller registration:", v239);
+    vF82("worker registration:", v240);
+    if (!v240) {
+      vF82("no registration found for \"%s\", unregistering controller and registering a new worker...", v235);
+      await v239?.unregister();
+      return vF18();
+    }
+    if (v240.waiting) {
+      vF82("found waiting registration, promoting...");
+      await v240.update();
+      let vF592 = f59(v240);
+      vF6(vF592, "Failed to retrieve the worker instance after promotion: worked does not exist");
+      vF6(v240.active, "Failed to promove a waiting Service Worker: expected the worker state to be \"active\" but got \"%s\"", vF592.state);
+      return vF592;
+    }
+    return null;
+  }
+  async function f62() {
+    vF82("starting the bridge...", {
+      workerUrl: v235
+    });
+    let v241 = await f61().catch(p275 => {
+      console.error("Failed to ensure the bridge has a Service Worker registered. See details below.");
+      console.error(p275);
+    });
+    await navigator.serviceWorker.ready;
+    vF6(v241, "Failed to retrieve the worker instance: worker not found");
+    f60(v241);
+    v227.resolve(v241);
+    let v242 = await v228;
+    vF82("preview manager port received", v242);
+    vF57.broadcast(v225);
+  }
+  f62();
+})();
