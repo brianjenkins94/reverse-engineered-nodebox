@@ -6,12 +6,12 @@
   "author": "Brian Jenkins",
   "license": "UNLICENSED",
   "scripts": {
+    "postinstall": "rm -rf ./node_modules/humanifyjs && git clone https://github.com/jehna/humanify.git ./node_modules/humanifyjs && cd ./node_modules/humanifyjs && npm install && npm run build",
     "start": "npx http-server public/ -p 8000",
-    "humanify-openai": "for FILE in public/proprietary/*.js ; do npx humanifyjs openai \"$FILE\" && mv \"output/deobfuscated.js\" \"output/$(basename $FILE)\" ; done",
-    "humanify-gemini": "for FILE in public/proprietary/*.js ; do npx humanifyjs gemini \"$FILE\" && mv \"output/deobfuscated.js\" \"output/$(basename $FILE)\" ; done"
+    "humanify-openai": "for FILE in ./public/proprietary/*.js ; do if [[ ! -f \"output/$(basename \"$FILE\")\" ]]; then npx ./node_modules/humanifyjs openai \"$FILE\" && mv \"./output/deobfuscated.js\" \"./output/$(basename \"$FILE\")\" ; fi; done"
   },
   "dependencies": {
-    "humanifyjs": "latest"
+    "humanifyjs": "github:jehna/humanify"
   },
   "engines": {
     "node": ">=18.0.0",
