@@ -7,8 +7,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "npx http-server public/ -p 8000",
-    "humanify-openai": "for FILE in public/proprietary/*.js ; do npx humanifyjs openai \"$FILE\" && mv \"output/deobfuscated.js\" \"output/$(dirname $FILE)\" ; done",
-    "humanify-gemini": "for FILE in public/proprietary/*.js ; do npx humanifyjs gemini \"$FILE\" && mv \"output/deobfuscated.js\" \"output/$(dirname $FILE)\" ; done"
+    "humanify-openai": "for FILE in public/proprietary/*.js ; do npx humanifyjs openai \"$FILE\" && mv \"output/deobfuscated.js\" \"output/$(basename $FILE)\" ; done",
+    "humanify-gemini": "for FILE in public/proprietary/*.js ; do npx humanifyjs gemini \"$FILE\" && mv \"output/deobfuscated.js\" \"output/$(basename $FILE)\" ; done"
   },
   "dependencies": {
     "humanifyjs": "latest"
