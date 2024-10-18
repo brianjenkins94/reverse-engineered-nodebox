@@ -6,13 +6,21 @@
   "author": "Brian Jenkins",
   "license": "UNLICENSED",
   "scripts": {
-    "start": "npx http-server public/ -p 8000"
+    "start": "npx http-server public/ -p 8000",
+    "humanify-openai": "for FILE in public/proprietary/*.js ; do npx humanifyjs openai \"$FILE\" && mv \"output/deobfuscated.js\" \"output/$FILE\" ; done",
+    "humanify-gemini": "for FILE in public/proprietary/*.js ; do npx humanifyjs gemini \"$FILE\" && mv \"output/deobfuscated.js\" \"output/$FILE\" ; done"
   },
-  "devDependencies": {
+  "dependencies": {
+    "humanifyjs": "latest"
   },
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "overrides": {
+    "humanifyjs": {
+      "webcrack": "latest"
+    }
+  }
 }
