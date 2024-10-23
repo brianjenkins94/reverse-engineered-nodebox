@@ -20,6 +20,7 @@
   "sideEffects": false,
   "overrides": {
     "humanifyjs": {
+      "openai": "latest",
       "webcrack": "latest"
     }
   }
