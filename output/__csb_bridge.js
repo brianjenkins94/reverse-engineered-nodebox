@@ -1,19 +1,19 @@
-var initializeDeferredModule =
-  (setupAndReturnModuleExports, setupAndRetrieveModuleExports) => () => {
-    if (!setupAndRetrieveModuleExports) {
-      setupAndReturnModuleExports(
-        (setupAndRetrieveModuleExports = {
+var lazyLoadExportsIfNecessary =
+  (setupAndFetchExports, setupAndFetchExportsIfNeeded) => () => {
+    if (!setupAndFetchExportsIfNeeded) {
+      setupAndFetchExports(
+        (setupAndFetchExportsIfNeeded = {
           exports: {},
         }).exports,
-        setupAndRetrieveModuleExports,
+        setupAndFetchExportsIfNeeded,
       );
     }
-    return setupAndRetrieveModuleExports.exports;
+    return setupAndFetchExportsIfNeeded.exports;
   };
-var setupLazyPropertyAccessors = (
+var addLazyNonEnumerableAccessors = (
   copyNonEnumerableProperties,
   copyNonEnumerablePropertiesFromSource,
-  propertyNameToExcludeFromCopy,
+  excludedPropertyForCopying,
   isPropertyDescriptorEnumerable,
 ) => {
   if (
@@ -21,139 +21,142 @@ var setupLazyPropertyAccessors = (
       typeof copyNonEnumerablePropertiesFromSource == "object") ||
     typeof copyNonEnumerablePropertiesFromSource == "function"
   ) {
-    for (let propertyName of Object.getOwnPropertyNames(
+    for (let nonEnumerablePropertyKey of Object.getOwnPropertyNames(
       copyNonEnumerablePropertiesFromSource,
     )) {
       if (
         !Object.prototype.hasOwnProperty.call(
           copyNonEnumerableProperties,
-          propertyName,
+          nonEnumerablePropertyKey,
         ) &&
-        propertyName !== propertyNameToExcludeFromCopy
+        nonEnumerablePropertyKey !== excludedPropertyForCopying
       ) {
-        Object.defineProperty(copyNonEnumerableProperties, propertyName, {
-          get: () => copyNonEnumerablePropertiesFromSource[propertyName],
-          enumerable:
-            !(isPropertyDescriptorEnumerable = Object.getOwnPropertyDescriptor(
-              copyNonEnumerablePropertiesFromSource,
-              propertyName,
-            )) || isPropertyDescriptorEnumerable.enumerable,
-        });
+        Object.defineProperty(
+          copyNonEnumerableProperties,
+          nonEnumerablePropertyKey,
+          {
+            get: () =>
+              copyNonEnumerablePropertiesFromSource[nonEnumerablePropertyKey],
+            enumerable:
+              !(isPropertyDescriptorEnumerable =
+                Object.getOwnPropertyDescriptor(
+                  copyNonEnumerablePropertiesFromSource,
+                  nonEnumerablePropertyKey,
+                )) || isPropertyDescriptorEnumerable.enumerable,
+          },
+        );
       }
     }
   }
   return copyNonEnumerableProperties;
 };
-var initializeModulePrototypeWithSourceData = (
-  dataSource,
-  dataSourceProperties,
-  createPrototypeFromDataSource,
+var initializePrototypeWithDataSource = (
+  initializeDataSourcePrototype,
+  sourceDataConfiguration,
+  createPrototypeFromSourceData,
 ) => {
-  if (dataSource != null) {
-    createPrototypeFromDataSource = Object.create(
-      Object.getPrototypeOf(dataSource),
+  if (initializeDataSourcePrototype != null) {
+    createPrototypeFromSourceData = Object.create(
+      Object.getPrototypeOf(initializeDataSourcePrototype),
     );
   } else {
-    createPrototypeFromDataSource = {};
+    createPrototypeFromSourceData = {};
   }
-  return setupLazyPropertyAccessors(
-    dataSourceProperties || !dataSource || !dataSource.__esModule
-      ? Object.defineProperty(createPrototypeFromDataSource, "default", {
-          value: dataSource,
+  return addLazyNonEnumerableAccessors(
+    sourceDataConfiguration ||
+      !initializeDataSourcePrototype ||
+      !initializeDataSourcePrototype.__esModule
+      ? Object.defineProperty(createPrototypeFromSourceData, "default", {
+          value: initializeDataSourcePrototype,
           enumerable: true,
         })
-      : createPrototypeFromDataSource,
-    dataSource,
+      : createPrototypeFromSourceData,
+    initializeDataSourcePrototype,
   );
 };
-var initializeDeferredPromiseHandler = initializeDeferredModule(
-  (createDeferredPromiseHandler) => {
+var initializePromiseResolutionManager = lazyLoadExportsIfNecessary(
+  (initializeAndControlPromiseLifecycle) => {
     "use strict";
 
-    Object.defineProperty(createDeferredPromiseHandler, "__esModule", {
+    Object.defineProperty(initializeAndControlPromiseLifecycle, "__esModule", {
       value: true,
     });
-    createDeferredPromiseHandler.createDeferredExecutor = undefined;
-    function initializePromiseHandler() {
-      let createPendingPromiseResolutionHandler = (
-        _createPendingPromiseResolutionHandler,
-        handleRejectedPromise,
+    initializeAndControlPromiseLifecycle.createDeferredExecutor = undefined;
+    function handlePromiseResolutionLifecycle() {
+      let createPromiseManager = (
+        setupPromiseManager,
+        processPromiseRejection,
       ) => {
-        createPendingPromiseResolutionHandler.state = "pending";
-        createPendingPromiseResolutionHandler.resolve = (
-          processAndFinalizePromiseResolution,
-        ) => {
-          if (createPendingPromiseResolutionHandler.state !== "pending") {
+        createPromiseManager.state = "pending";
+        createPromiseManager.resolve = (processPromiseResolution) => {
+          if (createPromiseManager.state !== "pending") {
             return;
           }
-          createPendingPromiseResolutionHandler.result =
-            processAndFinalizePromiseResolution;
-          let finalizePromiseResolutionAndReturnValue = (
-            createPromiseFulfillmentHandler,
+          createPromiseManager.result = processPromiseResolution;
+          let markPromiseAsFulfilledAndUpdateState = (
+            setPromiseStatusToFulfilled,
           ) => {
-            createPendingPromiseResolutionHandler.state = "fulfilled";
-            return createPromiseFulfillmentHandler;
+            createPromiseManager.state = "fulfilled";
+            return setPromiseStatusToFulfilled;
           };
-          return _createPendingPromiseResolutionHandler(
-            processAndFinalizePromiseResolution instanceof Promise
-              ? processAndFinalizePromiseResolution
-              : Promise.resolve(processAndFinalizePromiseResolution).then(
-                  finalizePromiseResolutionAndReturnValue,
+          return setupPromiseManager(
+            processPromiseResolution instanceof Promise
+              ? processPromiseResolution
+              : Promise.resolve(processPromiseResolution).then(
+                  markPromiseAsFulfilledAndUpdateState,
                 ),
           );
         };
-        createPendingPromiseResolutionHandler.reject = (
-          rejectPendingPromiseWithRejectionReason,
-        ) => {
-          if (createPendingPromiseResolutionHandler.state === "pending") {
+        createPromiseManager.reject = (rejectPromiseWithReason) => {
+          if (createPromiseManager.state === "pending") {
             queueMicrotask(() => {
-              createPendingPromiseResolutionHandler.state = "rejected";
+              createPromiseManager.state = "rejected";
             });
-            return rejectPendingPromiseWithRejectionReason(
-              (createPendingPromiseResolutionHandler.rejectionReason =
-                rejectPendingPromiseWithRejectionReason),
+            return rejectPromiseWithReason(
+              (createPromiseManager.rejectionReason = rejectPromiseWithReason),
             );
           }
         };
       };
-      return createPendingPromiseResolutionHandler;
+      return createPromiseManager;
     }
-    createDeferredPromiseHandler.createDeferredExecutor =
-      initializePromiseHandler;
+    initializeAndControlPromiseLifecycle.createDeferredExecutor =
+      handlePromiseResolutionLifecycle;
   },
 );
-var _initializeDeferredPromiseHandler = initializeDeferredModule(
-  (PromiseExecutor) => {
+var initializeDeferredPromiseManager = lazyLoadExportsIfNecessary(
+  (AppLaunchPromiseHandler) => {
     "use strict";
 
-    Object.defineProperty(PromiseExecutor, "__esModule", {
+    Object.defineProperty(AppLaunchPromiseHandler, "__esModule", {
       value: true,
     });
-    PromiseExecutor.DeferredPromise = undefined;
-    var __initializeDeferredPromiseHandler = initializeDeferredPromiseHandler();
-    var DeferredPromiseExecutor = class extends Promise {
+    AppLaunchPromiseHandler.DeferredPromise = undefined;
+    var initializeAppLaunchPromiseExecutor =
+      initializePromiseResolutionManager();
+    var ApplicationLaunchPromise = class extends Promise {
       #e;
       resolve;
       reject;
       constructor(appLaunchStatus = null) {
-        let initializeAndExecuteDeferredPromise = (0,
-        __initializeDeferredPromiseHandler.createDeferredExecutor)();
+        let initializeAndHandleAppLaunchPromise = (0,
+        initializeAppLaunchPromiseExecutor.createDeferredExecutor)();
         super(
           (
-            initializeDeferredPromiseHandlerAndExecute,
-            isDeferredPromiseExecutionSuccessful,
+            initializeAppWithStatusMonitoring,
+            monitorPromiseExecutionStatus,
           ) => {
-            initializeAndExecuteDeferredPromise(
-              initializeDeferredPromiseHandlerAndExecute,
-              isDeferredPromiseExecutionSuccessful,
+            initializeAndHandleAppLaunchPromise(
+              initializeAppWithStatusMonitoring,
+              monitorPromiseExecutionStatus,
             );
             appLaunchStatus?.(
-              initializeAndExecuteDeferredPromise.resolve,
-              initializeAndExecuteDeferredPromise.reject,
+              initializeAndHandleAppLaunchPromise.resolve,
+              initializeAndHandleAppLaunchPromise.reject,
             );
           },
         );
-        this.#e = initializeAndExecuteDeferredPromise;
+        this.#e = initializeAndHandleAppLaunchPromise;
         this.resolve = this.#e.resolve;
         this.reject = this.#e.reject;
       }
@@ -163,22 +166,22 @@ var _initializeDeferredPromiseHandler = initializeDeferredModule(
       get rejectionReason() {
         return this.#e.rejectionReason;
       }
-      then(handlePromiseResolutionWithCallback, processPromiseHandlers) {
+      then(executeCallbackOnSuccess, executeCallbackOnPromiseFulfillment) {
         return this.#t(
           super.then(
-            handlePromiseResolutionWithCallback,
-            processPromiseHandlers,
+            executeCallbackOnSuccess,
+            executeCallbackOnPromiseFulfillment,
           ),
         );
       }
       catch(handleErrorResponseInCatch) {
         return this.#t(super.catch(handleErrorResponseInCatch));
       }
-      finally(handleFinalizationAndReturn) {
-        return this.#t(super.finally(handleFinalizationAndReturn));
+      finally(finalizeAndRetrieveResult) {
+        return this.#t(super.finally(finalizeAndRetrieveResult));
       }
-      #t(initializePromiseHandlers) {
-        return Object.defineProperties(initializePromiseHandlers, {
+      #t(initializePromiseHandlersForResolution) {
+        return Object.defineProperties(initializePromiseHandlersForResolution, {
           resolve: {
             configurable: true,
             value: this.resolve,
@@ -190,498 +193,510 @@ var _initializeDeferredPromiseHandler = initializeDeferredModule(
         });
       }
     };
-    PromiseExecutor.DeferredPromise = DeferredPromiseExecutor;
+    AppLaunchPromiseHandler.DeferredPromise = ApplicationLaunchPromise;
   },
 );
-var initializeDeferredExportBinding = initializeDeferredModule(
-  (bindModuleExportProperty) => {
+var initializeDeferredModuleExports = lazyLoadExportsIfNecessary(
+  (defineExportBindingFunction) => {
     "use strict";
 
-    var createBindingForExportedModuleProperty =
-      (bindModuleExportProperty && bindModuleExportProperty.__createBinding) ||
+    var defineExportBindingDescriptor =
+      (defineExportBindingFunction &&
+        defineExportBindingFunction.__createBinding) ||
       (Object.create
         ? function (
-            retrievePropertyDescriptor,
-            retrieveModuleExportedProperty,
-            propertyIdentifier,
-            _propertyIdentifier = propertyIdentifier,
+            defineOrRetrievePropertyDescriptor,
+            defineOrRetrieveExportedPropertyDescriptor,
+            propertyKey,
+            propertyKeyName = propertyKey,
           ) {
-            var retrieveOrCreatePropertyDescriptor =
-              Object.getOwnPropertyDescriptor(
-                retrieveModuleExportedProperty,
-                propertyIdentifier,
-              );
+            var getOrDefinePropertyDescriptor = Object.getOwnPropertyDescriptor(
+              defineOrRetrieveExportedPropertyDescriptor,
+              propertyKey,
+            );
             if (
-              !retrieveOrCreatePropertyDescriptor ||
-              ("get" in retrieveOrCreatePropertyDescriptor
-                ? !retrieveModuleExportedProperty.__esModule
-                : retrieveOrCreatePropertyDescriptor.writable ||
-                  retrieveOrCreatePropertyDescriptor.configurable)
+              !getOrDefinePropertyDescriptor ||
+              ("get" in getOrDefinePropertyDescriptor
+                ? !defineOrRetrieveExportedPropertyDescriptor.__esModule
+                : getOrDefinePropertyDescriptor.writable ||
+                  getOrDefinePropertyDescriptor.configurable)
             ) {
-              retrieveOrCreatePropertyDescriptor = {
+              getOrDefinePropertyDescriptor = {
                 enumerable: true,
                 get() {
-                  return retrieveModuleExportedProperty[propertyIdentifier];
+                  return defineOrRetrieveExportedPropertyDescriptor[
+                    propertyKey
+                  ];
                 },
               };
             }
             Object.defineProperty(
-              retrievePropertyDescriptor,
-              _propertyIdentifier,
-              retrieveOrCreatePropertyDescriptor,
+              defineOrRetrievePropertyDescriptor,
+              propertyKeyName,
+              getOrDefinePropertyDescriptor,
             );
           }
         : function (
-            bindPropertyFromSourceToTarget,
-            copyPropertyValueFromSourceToTarget,
+            transferPropertyValueFromSourceToTarget,
+            transferValueFromSourceToTarget,
             sourcePropertyIdentifier,
             _sourcePropertyIdentifier = sourcePropertyIdentifier,
           ) {
-            bindPropertyFromSourceToTarget[_sourcePropertyIdentifier] =
-              copyPropertyValueFromSourceToTarget[sourcePropertyIdentifier];
+            transferPropertyValueFromSourceToTarget[_sourcePropertyIdentifier] =
+              transferValueFromSourceToTarget[sourcePropertyIdentifier];
           });
-    var createBindingForExportedProperty =
-      (bindModuleExportProperty && bindModuleExportProperty.__exportStar) ||
+    var createExportBindingWithDescriptor =
+      (defineExportBindingFunction &&
+        defineExportBindingFunction.__exportStar) ||
       function (
-        copyExportsFromSourceToTargetModule,
-        copyAndBindExportsFromSourceToTargetModule,
+        defineExportBindingsBetweenModules,
+        defineExportBindingsForModule,
       ) {
-        for (var exportPropertyName in copyExportsFromSourceToTargetModule) {
+        for (var moduleExportKey in defineExportBindingsBetweenModules) {
           if (
-            exportPropertyName !== "default" &&
+            moduleExportKey !== "default" &&
             !Object.prototype.hasOwnProperty.call(
-              copyAndBindExportsFromSourceToTargetModule,
-              exportPropertyName,
+              defineExportBindingsForModule,
+              moduleExportKey,
             )
           ) {
-            createBindingForExportedModuleProperty(
-              copyAndBindExportsFromSourceToTargetModule,
-              copyExportsFromSourceToTargetModule,
-              exportPropertyName,
+            defineExportBindingDescriptor(
+              defineExportBindingsForModule,
+              defineExportBindingsBetweenModules,
+              moduleExportKey,
             );
           }
         }
       };
-    Object.defineProperty(bindModuleExportProperty, "__esModule", {
+    Object.defineProperty(defineExportBindingFunction, "__esModule", {
       value: true,
     });
-    createBindingForExportedProperty(
-      initializeDeferredPromiseHandler(),
-      bindModuleExportProperty,
+    createExportBindingWithDescriptor(
+      initializePromiseResolutionManager(),
+      defineExportBindingFunction,
     );
-    createBindingForExportedProperty(
-      _initializeDeferredPromiseHandler(),
-      bindModuleExportProperty,
+    createExportBindingWithDescriptor(
+      initializeDeferredPromiseManager(),
+      defineExportBindingFunction,
     );
   },
 );
-var generatePaddedSubstringWithLimit = initializeDeferredModule(
-  (createPaddedAndTruncatedSubstring, createAndLimitPaddedSubstring) => {
-    createAndLimitPaddedSubstring.exports = function (
-      createPaddedSubstringWithLimit,
-      paddingCharacterLimit,
+var generatePaddedSubstringWithMaxLength = lazyLoadExportsIfNecessary(
+  (createZeroPaddedSubstring, createZeroPaddedSubstringWithMaxLength) => {
+    createZeroPaddedSubstringWithMaxLength.exports = function (
+      generatePaddedSubstringWithMaxLengthLimit,
+      maxSubstringPaddingLength,
     ) {
-      var _generatePaddedSubstringWithLimit =
-        "000000000" + createPaddedSubstringWithLimit;
-      return _generatePaddedSubstringWithLimit.substr(
-        _generatePaddedSubstringWithLimit.length - paddingCharacterLimit,
+      var generatePaddedSubstringWithMaxLength =
+        "000000000" + generatePaddedSubstringWithMaxLengthLimit;
+      return generatePaddedSubstringWithMaxLength.substr(
+        generatePaddedSubstringWithMaxLength.length - maxSubstringPaddingLength,
       );
     };
   },
 );
-var generateUniqueIdentifierWithCount = initializeDeferredModule(
-  (createAndExposeUniqueIdentifier, _createAndExposeUniqueIdentifier) => {
-    var createAndReturnGlobalUniqueId = generatePaddedSubstringWithLimit();
-    var globalExecutionContext = typeof window == "object" ? window : self;
-    var globalObjectPropertiesCount = Object.keys(
-      globalExecutionContext,
-    ).length;
-    var getCountOfAvailableMimeTypes = navigator.mimeTypes
-      ? navigator.mimeTypes.length
-      : 0;
-    var createAndReturnUniqueId = createAndReturnGlobalUniqueId(
-      (getCountOfAvailableMimeTypes + navigator.userAgent.length).toString(36) +
-        globalObjectPropertiesCount.toString(36),
-      4,
-    );
-    _createAndExposeUniqueIdentifier.exports = function () {
-      return createAndReturnUniqueId;
-    };
-  },
-);
-var initializeSecureRandomGenerator = initializeDeferredModule(
+var createUniqueExecutionIdFromContextPropertyCount =
+  lazyLoadExportsIfNecessary(
+    (
+      setupUniqueExecutionIdentifierProvider,
+      setUpUniqueExecutionIdProvider,
+    ) => {
+      var generateUniqueExecutionIdentifier =
+        generatePaddedSubstringWithMaxLength();
+      var executionContextScope = typeof window == "object" ? window : self;
+      var totalGlobalExecutionContextProperties = Object.keys(
+        executionContextScope,
+      ).length;
+      var countOfSupportedMimeTypes = navigator.mimeTypes
+        ? navigator.mimeTypes.length
+        : 0;
+      var createUniqueExecutionIdentifier = generateUniqueExecutionIdentifier(
+        (countOfSupportedMimeTypes + navigator.userAgent.length).toString(36) +
+          totalGlobalExecutionContextProperties.toString(36),
+        4,
+      );
+      setUpUniqueExecutionIdProvider.exports = function () {
+        return createUniqueExecutionIdentifier;
+      };
+    },
+  );
+var initializeCryptoSecureRandomDecimalGenerator = lazyLoadExportsIfNecessary(
   (
-    initializeSecureRandomDecimalGenerator,
-    _initializeSecureRandomDecimalGenerator,
+    initializeCryptoRandomDecimalGenerator,
+    _initializeCryptoRandomDecimalGenerator,
   ) => {
-    var createSecureRandomDecimalGenerator;
-    var __initializeSecureRandomDecimalGenerator =
+    var generateSecureRandomDecimal;
+    var initializeCryptoRandomGenerator =
       (typeof window !== "undefined" && (window.crypto || window.msCrypto)) ||
       (typeof self !== "undefined" && self.crypto);
-    if (__initializeSecureRandomDecimalGenerator) {
-      maxSecureRandomUint32Value = Math.pow(2, 32) - 1;
-      createSecureRandomDecimalGenerator = function () {
+    if (initializeCryptoRandomGenerator) {
+      maxUint32ValueForNormalization = Math.pow(2, 32) - 1;
+      generateSecureRandomDecimal = function () {
         return Math.abs(
-          __initializeSecureRandomDecimalGenerator.getRandomValues(
+          initializeCryptoRandomGenerator.getRandomValues(
             new Uint32Array(1),
-          )[0] / maxSecureRandomUint32Value,
+          )[0] / maxUint32ValueForNormalization,
         );
       };
     } else {
-      createSecureRandomDecimalGenerator = Math.random;
+      generateSecureRandomDecimal = Math.random;
     }
-    var maxSecureRandomUint32Value;
-    _initializeSecureRandomDecimalGenerator.exports =
-      createSecureRandomDecimalGenerator;
+    var maxUint32ValueForNormalization;
+    _initializeCryptoRandomDecimalGenerator.exports =
+      generateSecureRandomDecimal;
   },
 );
-var generateUniquePropertyBindingIdentifier = initializeDeferredModule(
-  (_createUniqueIdentifierForProperty, createUniqueIdForProperty) => {
-    var generateUniqueIdForProperty = generateUniqueIdentifierWithCount();
-    var createPaddedUniqueIdForProperty = generatePaddedSubstringWithLimit();
-    var initializeSecureRandomIdentifierGenerator =
-      initializeSecureRandomGenerator();
-    var currentUniqueIdCounter = 0;
-    var uniqueIdentifierLengthLimit = 4;
-    var uniqueIdBaseNumericSystem = 36;
-    var maxUniqueIdentifierLimit = Math.pow(
-      uniqueIdBaseNumericSystem,
-      uniqueIdentifierLengthLimit,
+var generateUniqueId = lazyLoadExportsIfNecessary(
+  (generateUniqueIdForBinding, createUniqueIdForDataBinding) => {
+    var createUniqueIdentifierForProperty =
+      createUniqueExecutionIdFromContextPropertyCount();
+    var generatePaddedUniqueIdForData = generatePaddedSubstringWithMaxLength();
+    var initializeSecureRandomIdGenerator =
+      initializeCryptoSecureRandomDecimalGenerator();
+    var uniqueIdCounter = 0;
+    var maxUniqueIdentifierLength = 4;
+    var baseNumericSystemForUniqueIds = 36;
+    var maxUniqueIdCountBasedOnLength = Math.pow(
+      baseNumericSystemForUniqueIds,
+      maxUniqueIdentifierLength,
     );
-    function generateUniqueIdentifierForBinding() {
-      return createPaddedUniqueIdForProperty(
+    function generatePaddedUniqueIdForDataBinding() {
+      return generatePaddedUniqueIdForData(
         (
-          (initializeSecureRandomIdentifierGenerator() *
-            maxUniqueIdentifierLimit) <<
+          (initializeSecureRandomIdGenerator() *
+            maxUniqueIdCountBasedOnLength) <<
           0
-        ).toString(uniqueIdBaseNumericSystem),
-        uniqueIdentifierLengthLimit,
+        ).toString(baseNumericSystemForUniqueIds),
+        maxUniqueIdentifierLength,
       );
     }
     function getNextUniqueId() {
-      if (currentUniqueIdCounter < maxUniqueIdentifierLimit) {
-        currentUniqueIdCounter = currentUniqueIdCounter;
+      if (uniqueIdCounter < maxUniqueIdCountBasedOnLength) {
+        uniqueIdCounter = uniqueIdCounter;
       } else {
-        currentUniqueIdCounter = 0;
+        uniqueIdCounter = 0;
       }
-      currentUniqueIdCounter++;
-      return currentUniqueIdCounter - 1;
+      uniqueIdCounter++;
+      return uniqueIdCounter - 1;
     }
-    function createTimestampedUniqueIdWithProperties() {
-      var idGenerationPrefix = "c";
-      var currentMillisecondsBase36String = new Date()
+    function generateTimestampedUniqueId() {
+      var uniqueIdPrefix = "c";
+      var currentTimestampBase36Encoded = new Date()
         .getTime()
-        .toString(uniqueIdBaseNumericSystem);
-      var generatePaddedIdentifierForUniqueProperty =
-        createPaddedUniqueIdForProperty(
-          getNextUniqueId().toString(uniqueIdBaseNumericSystem),
-          uniqueIdentifierLengthLimit,
+        .toString(baseNumericSystemForUniqueIds);
+      var generatePaddedUniqueIdForDataIdentifier =
+        generatePaddedUniqueIdForData(
+          getNextUniqueId().toString(baseNumericSystemForUniqueIds),
+          maxUniqueIdentifierLength,
         );
-      var generateUniqueIdentifierWithTimestampAndProperties =
-        generateUniqueIdForProperty();
-      var combinedDescriptorIdentifiers =
-        generateUniqueIdentifierForBinding() +
-        generateUniqueIdentifierForBinding();
+      var generateUniqueIdWithTimestamp = createUniqueIdentifierForProperty();
+      var combinedDataBindingIds =
+        generatePaddedUniqueIdForDataBinding() +
+        generatePaddedUniqueIdForDataBinding();
       return (
-        idGenerationPrefix +
-        currentMillisecondsBase36String +
-        generatePaddedIdentifierForUniqueProperty +
-        generateUniqueIdentifierWithTimestampAndProperties +
-        combinedDescriptorIdentifiers
+        uniqueIdPrefix +
+        currentTimestampBase36Encoded +
+        generatePaddedUniqueIdForDataIdentifier +
+        generateUniqueIdWithTimestamp +
+        combinedDataBindingIds
       );
     }
-    createTimestampedUniqueIdWithProperties.slug = function () {
-      var generateUniqueIdentifierWithTimestamp = new Date()
-        .getTime()
-        .toString(36);
-      var getLastFourCharsFromUniqueId = getNextUniqueId()
-        .toString(36)
-        .slice(-4);
-      var uniqueIdentifierBoundaryChars =
-        generateUniqueIdForProperty().slice(0, 1) +
-        generateUniqueIdForProperty().slice(-1);
-      var getLastTwoCharactersFromDescriptor =
-        generateUniqueIdentifierForBinding().slice(-2);
+    generateTimestampedUniqueId.slug = function () {
+      var generateUniqueIdBasedOnTimestamp = new Date().getTime().toString(36);
+      var getLastFourCharsOfUniqueId = getNextUniqueId().toString(36).slice(-4);
+      var identifierBoundsForProperty =
+        createUniqueIdentifierForProperty().slice(0, 1) +
+        createUniqueIdentifierForProperty().slice(-1);
+      var getLastTwoCharsFromDataBindingDescriptor =
+        generatePaddedUniqueIdForDataBinding().slice(-2);
       return (
-        generateUniqueIdentifierWithTimestamp.slice(-2) +
-        getLastFourCharsFromUniqueId +
-        uniqueIdentifierBoundaryChars +
-        getLastTwoCharactersFromDescriptor
+        generateUniqueIdBasedOnTimestamp.slice(-2) +
+        getLastFourCharsOfUniqueId +
+        identifierBoundsForProperty +
+        getLastTwoCharsFromDataBindingDescriptor
       );
     };
-    createTimestampedUniqueIdWithProperties.isCuid = function (
-      isStringStartingWithC,
-    ) {
+    generateTimestampedUniqueId.isCuid = function (isStringStartingWithC) {
       if (typeof isStringStartingWithC != "string") {
         return false;
       } else {
         return !!isStringStartingWithC.startsWith("c");
       }
     };
-    createTimestampedUniqueIdWithProperties.isSlug = function (
-      isSlugLengthValid,
-    ) {
-      if (typeof isSlugLengthValid != "string") {
+    generateTimestampedUniqueId.isSlug = function (isSlugLengthInValidRange) {
+      if (typeof isSlugLengthInValidRange != "string") {
         return false;
       }
-      var calculateSlugCharacterCount = isSlugLengthValid.length;
-      return (
-        calculateSlugCharacterCount >= 7 && calculateSlugCharacterCount <= 10
-      );
+      var isValidSlugLength = isSlugLengthInValidRange.length;
+      return isValidSlugLength >= 7 && isValidSlugLength <= 10;
     };
-    createTimestampedUniqueIdWithProperties.fingerprint =
-      generateUniqueIdForProperty;
-    createUniqueIdForProperty.exports = createTimestampedUniqueIdWithProperties;
+    generateTimestampedUniqueId.fingerprint = createUniqueIdentifierForProperty;
+    createUniqueIdForDataBinding.exports = generateTimestampedUniqueId;
   },
 );
-var identifierFormatPattern = /(%?)(%([sdjo]))/g;
-function formatIdentifierByType(
-  getFormattedIdentifierByType,
-  identifierFormatTypeCharacter,
+var formattedIdentifierRegex = /(%?)(%([sdjo]))/g;
+function formatIdentifierForDisplay(
+  transformIdentifierBasedOnFormatSpecifier,
+  identifierFormatType,
 ) {
-  switch (identifierFormatTypeCharacter) {
+  switch (identifierFormatType) {
     case "s":
-      return getFormattedIdentifierByType;
+      return transformIdentifierBasedOnFormatSpecifier;
     case "d":
     case "i":
-      return Number(getFormattedIdentifierByType);
+      return Number(transformIdentifierBasedOnFormatSpecifier);
     case "j":
-      return JSON.stringify(getFormattedIdentifierByType);
+      return JSON.stringify(transformIdentifierBasedOnFormatSpecifier);
     case "o": {
-      if (typeof getFormattedIdentifierByType == "string") {
-        return getFormattedIdentifierByType;
+      if (typeof transformIdentifierBasedOnFormatSpecifier == "string") {
+        return transformIdentifierBasedOnFormatSpecifier;
       }
-      let jsonIdentifierString = JSON.stringify(getFormattedIdentifierByType);
+      let serializedIdentifier = JSON.stringify(
+        transformIdentifierBasedOnFormatSpecifier,
+      );
       if (
-        jsonIdentifierString === "{}" ||
-        jsonIdentifierString === "[]" ||
-        /^\[object .+?\]$/.test(jsonIdentifierString)
+        serializedIdentifier === "{}" ||
+        serializedIdentifier === "[]" ||
+        /^\[object .+?\]$/.test(serializedIdentifier)
       ) {
-        return getFormattedIdentifierByType;
+        return transformIdentifierBasedOnFormatSpecifier;
       } else {
-        return jsonIdentifierString;
+        return serializedIdentifier;
       }
     }
   }
 }
-function substitutePlaceholdersWithValues(
-  replaceIdentifiersInPlaceholders,
-  ...substitutePlaceholdersWithIdentifiers
+function substitutePlaceholdersInString(
+  formatStringWithPlaceholdersAndValues,
+  ...substitutePlaceholdersWithValuesInTemplateString
 ) {
-  if (substitutePlaceholdersWithIdentifiers.length === 0) {
-    return replaceIdentifiersInPlaceholders;
+  if (substitutePlaceholdersWithValuesInTemplateString.length === 0) {
+    return formatStringWithPlaceholdersAndValues;
   }
-  let activeSubstitutionIndex = 0;
-  let formattedStringWithSubstitutedIdentifiers =
-    replaceIdentifiersInPlaceholders.replace(
-      identifierFormatPattern,
-      (
-        processAndFormatPlaceholder,
-        isPlaceholderProcessingRequired,
-        generateOrProcessPlaceholder,
-        _processAndFormatPlaceholder,
-      ) => {
-        let activePlaceholderIdentifier =
-          substitutePlaceholdersWithIdentifiers[activeSubstitutionIndex];
-        let formatAndReturnPlaceholderIdentifier = formatIdentifierByType(
-          activePlaceholderIdentifier,
-          _processAndFormatPlaceholder,
-        );
-        if (isPlaceholderProcessingRequired) {
-          return processAndFormatPlaceholder;
-        } else {
-          activeSubstitutionIndex++;
-          return formatAndReturnPlaceholderIdentifier;
-        }
-      },
-    );
-  if (activeSubstitutionIndex < substitutePlaceholdersWithIdentifiers.length) {
-    formattedStringWithSubstitutedIdentifiers +=
+  let currentSubstituteValueIndex = 0;
+  let formatStringWithValues = formatStringWithPlaceholdersAndValues.replace(
+    formattedIdentifierRegex,
+    (
+      handlePlaceholderFormattingIfNeeded,
+      isPlaceholderFormattingRequired,
+      transformPlaceholderValueForDisplay,
+      generateFormattedPlaceholderOutput,
+    ) => {
+      let substitutedPlaceholderValue =
+        substitutePlaceholdersWithValuesInTemplateString[
+          currentSubstituteValueIndex
+        ];
+      let formatAndDisplayPlaceholderOutput = formatIdentifierForDisplay(
+        substitutedPlaceholderValue,
+        generateFormattedPlaceholderOutput,
+      );
+      if (isPlaceholderFormattingRequired) {
+        return handlePlaceholderFormattingIfNeeded;
+      } else {
+        currentSubstituteValueIndex++;
+        return formatAndDisplayPlaceholderOutput;
+      }
+    },
+  );
+  if (
+    currentSubstituteValueIndex <
+    substitutePlaceholdersWithValuesInTemplateString.length
+  ) {
+    formatStringWithValues +=
       " " +
-      substitutePlaceholdersWithIdentifiers
-        .slice(activeSubstitutionIndex)
+      substitutePlaceholdersWithValuesInTemplateString
+        .slice(currentSubstituteValueIndex)
         .join(" ");
   }
-  formattedStringWithSubstitutedIdentifiers =
-    formattedStringWithSubstitutedIdentifiers.replace(/%{2,2}/g, "%");
-  return formattedStringWithSubstitutedIdentifiers;
+  formatStringWithValues = formatStringWithValues.replace(/%{2,2}/g, "%");
+  return formatStringWithValues;
 }
-var linesToRemoveFromStackTraceForErrorHandling = 2;
-function sanitizeErrorStackTrace(sanitizeStackTraceForErrorHandling) {
-  if (!sanitizeStackTraceForErrorHandling.stack) {
+var numberOfLinesToOmitFromErrorStack = 2;
+function sanitizeErrorStackTrace(_trimErrorStackTrace) {
+  if (!_trimErrorStackTrace.stack) {
     return;
   }
-  let filteredStackTraceLines =
-    sanitizeStackTraceForErrorHandling.stack.split("\n");
-  filteredStackTraceLines.splice(
-    1,
-    linesToRemoveFromStackTraceForErrorHandling,
-  );
-  sanitizeStackTraceForErrorHandling.stack = filteredStackTraceLines.join("\n");
+  let sanitizedErrorStack = _trimErrorStackTrace.stack.split("\n");
+  sanitizedErrorStack.splice(1, numberOfLinesToOmitFromErrorStack);
+  _trimErrorStackTrace.stack = sanitizedErrorStack.join("\n");
 }
-var FormattedInvariantViolationError = class extends Error {
-  constructor(formattedErrorMessage, ...errorMessageValues) {
-    super(formattedErrorMessage);
-    this.message = formattedErrorMessage;
+var InvariantViolationError = class extends Error {
+  constructor(
+    formattedErrorMessageWithDynamicPlaceholders,
+    ...dynamicErrorMessageValues
+  ) {
+    super(formattedErrorMessageWithDynamicPlaceholders);
+    this.message = formattedErrorMessageWithDynamicPlaceholders;
     this.name = "Invariant Violation";
-    this.message = substitutePlaceholdersWithValues(
-      formattedErrorMessage,
-      ...errorMessageValues,
+    this.message = substitutePlaceholdersInString(
+      formattedErrorMessageWithDynamicPlaceholders,
+      ...dynamicErrorMessageValues,
     );
     sanitizeErrorStackTrace(this);
   }
 };
-var validateAndThrowIfInvalid = (
-  checkAndValidateInputOrThrowError,
-  validateInputOrThrowError,
-  ...errorDetails
+var validateAndThrowErrorIfInvalid = (
+  checkInputValidityAndThrowErrorIfInvalid,
+  validateInputAndThrowIfInvalid,
+  ...inputValidationErrorMessages
 ) => {
-  if (!checkAndValidateInputOrThrowError) {
-    throw new FormattedInvariantViolationError(
-      validateInputOrThrowError,
-      ...errorDetails,
+  if (!checkInputValidityAndThrowErrorIfInvalid) {
+    throw new InvariantViolationError(
+      validateInputAndThrowIfInvalid,
+      ...inputValidationErrorMessages,
     );
   }
 };
-validateAndThrowIfInvalid.as = (
-  InvalidPlaceholderError,
-  isPlaceholderValueValid,
-  placeholderKey,
-  ...checkAndSubstitutePlaceholders
+validateAndThrowErrorIfInvalid.as = (
+  InvalidPlaceholderValueException,
+  isPlaceholderValueCorrect,
+  placeholderSubstitutionKey,
+  ...validatePlaceholderSubstitution
 ) => {
-  if (!isPlaceholderValueValid) {
-    throw InvalidPlaceholderError.prototype.name != null
-      ? new InvalidPlaceholderError(
-          substitutePlaceholdersWithValues(
-            placeholderKey,
-            checkAndSubstitutePlaceholders,
+  if (!isPlaceholderValueCorrect) {
+    throw InvalidPlaceholderValueException.prototype.name != null
+      ? new InvalidPlaceholderValueException(
+          substitutePlaceholdersInString(
+            placeholderSubstitutionKey,
+            validatePlaceholderSubstitution,
           ),
         )
-      : InvalidPlaceholderError(
-          substitutePlaceholdersWithValues(
-            placeholderKey,
-            checkAndSubstitutePlaceholders,
+      : InvalidPlaceholderValueException(
+          substitutePlaceholdersInString(
+            placeholderSubstitutionKey,
+            validatePlaceholderSubstitution,
           ),
         );
   }
 };
-var initializeStorageValueFromSource = initializeModulePrototypeWithSourceData(
-  initializeDeferredExportBinding(),
+var bindStorageToDataSource = initializePrototypeWithDataSource(
+  initializeDeferredModuleExports(),
 );
-var fetchDebugModeFromLocalStorage = window.localStorage.CSB_EMULATOR_DEBUG;
-function initializePlaceholderTransformer(_createPlaceholderTransformer) {
-  return function (transformAndSubstitutePlaceholders, ...placeholderValues) {};
+var retrieveDebugModeSettingFromLocalStorage =
+  window.localStorage.CSB_EMULATOR_DEBUG;
+function generatePlaceholderReplacementFunction(
+  createPlaceholderReplacementFunction,
+) {
+  return function (
+    generatePlaceholderReplacements,
+    ...generatePlaceholderReplacementsArray
+  ) {};
 }
-var previewManagerId = "preview-manager";
+var previewManagerIdentifier = "preview-manager";
 var PREVIEW_STATUS_READY = "preview/ready";
-var previewResponseKey = "preview/response";
-var generatePreviewManagerAcknowledgementId = "preview/manager-ack";
-var bridgeInitializationUrl = "bridge/init";
-var generateRuntimeResponseIdentifier = "preview/runtime-response";
-var generateBridgeCloseIdentifier = "bridge/close";
-var initializeUniqueIdentifierGenerator =
-  initializeModulePrototypeWithSourceData(
-    generateUniquePropertyBindingIdentifier(),
-  );
-var maxAllowedUniqueIdentifier = 4294967295;
-function syncIdentifierBufferWithNormalizedId(
-  updateAndReplaceIdentifierValue,
-  updateIdentifierBufferWithPlaceholder,
-  normalizeAndUploadIdentifier,
+var previewResponsePayloadKey = "preview/response";
+var previewManagerAcknowledgmentToken = "preview/manager-ack";
+var bridgeInitializationEndpoint = "bridge/init";
+var previewResponseRuntimePath = "preview/runtime-response";
+var bridgeCloseConnectionEndpoint = "bridge/close";
+var initializeBindingWithUniqueId =
+  initializePrototypeWithDataSource(generateUniqueId());
+var MAX_UNSIGNED_INT_VALUE = 4294967295;
+function storeNormalizedValueWithIdentifier(
+  saveNormalizedValueAndOriginalToBuffer,
+  saveValueWithIdentifier,
+  normalizeAndStoreIdentifierInBuffer,
 ) {
-  var normalizedIdentifierValue = normalizeAndUploadIdentifier / 4294967296;
-  var rawIdentifierValue = normalizeAndUploadIdentifier;
-  updateAndReplaceIdentifierValue.setUint32(
-    updateIdentifierBufferWithPlaceholder,
-    normalizedIdentifierValue,
+  var normalizedFloatIdentifier =
+    normalizeAndStoreIdentifierInBuffer / 4294967296;
+  var originalIdentifierForNormalizedValue =
+    normalizeAndStoreIdentifierInBuffer;
+  saveNormalizedValueAndOriginalToBuffer.setUint32(
+    saveValueWithIdentifier,
+    normalizedFloatIdentifier,
   );
-  updateAndReplaceIdentifierValue.setUint32(
-    updateIdentifierBufferWithPlaceholder + 4,
-    rawIdentifierValue,
+  saveNormalizedValueAndOriginalToBuffer.setUint32(
+    saveValueWithIdentifier + 4,
+    originalIdentifierForNormalizedValue,
   );
 }
-function _storeUniqueIdentifierInBuffer(
-  storeUniqueIdentifierInBuffer,
-  currentUniqueIdentifierFromStack,
-  extractHighIdentifierChunk,
+function _storeHighOrderIdentifierInBuffer(
+  storeHighOrderIdentifierInBuffer,
+  bufferOffsetForHighOrderIdentifier,
+  storeHighOrderIdentifier,
 ) {
-  var highIdentifierValue = Math.floor(extractHighIdentifierChunk / 4294967296);
-  var highIdentifierChunkValue = extractHighIdentifierChunk;
-  storeUniqueIdentifierInBuffer.setUint32(
-    currentUniqueIdentifierFromStack,
-    highIdentifierValue,
+  var highOrderIdentifier = Math.floor(storeHighOrderIdentifier / 4294967296);
+  var highOrderIdentifierValue = storeHighOrderIdentifier;
+  storeHighOrderIdentifierInBuffer.setUint32(
+    bufferOffsetForHighOrderIdentifier,
+    highOrderIdentifier,
   );
-  storeUniqueIdentifierInBuffer.setUint32(
-    currentUniqueIdentifierFromStack + 4,
-    highIdentifierChunkValue,
+  storeHighOrderIdentifierInBuffer.setUint32(
+    bufferOffsetForHighOrderIdentifier + 4,
+    highOrderIdentifierValue,
   );
 }
-function generateRandomLargeIntegerFromBuffer(
-  _getRandomValueFromBuffer,
-  retrieveAndFormatRandomIdentifier,
+function createLargeRandomIntegerFromBuffer(
+  generateLargeRandomIntegerFromBuffer,
+  getRandomOffsetFromBuffer,
 ) {
-  var randomLargeIntegerFromBuffer = _getRandomValueFromBuffer.getInt32(
-    retrieveAndFormatRandomIdentifier,
-  );
-  var fetchLowOrderRandomUInt32 = _getRandomValueFromBuffer.getUint32(
-    retrieveAndFormatRandomIdentifier + 4,
-  );
-  return randomLargeIntegerFromBuffer * 4294967296 + fetchLowOrderRandomUInt32;
-}
-function createUniqueIdFromBuffer(
-  _generateUniqueIdentifierFromBuffer,
-  __generateUniqueIdentifierFromBuffer,
-) {
-  var generateUniqueIdFromBuffer =
-    _generateUniqueIdentifierFromBuffer.getUint32(
-      __generateUniqueIdentifierFromBuffer,
-    );
-  var getHighAndLowOrderIdsFromBuffer =
-    _generateUniqueIdentifierFromBuffer.getUint32(
-      __generateUniqueIdentifierFromBuffer + 4,
+  var _createLargeRandomIntegerFromBuffer =
+    generateLargeRandomIntegerFromBuffer.getInt32(getRandomOffsetFromBuffer);
+  var getRandomUint32FromBufferOffset =
+    generateLargeRandomIntegerFromBuffer.getUint32(
+      getRandomOffsetFromBuffer + 4,
     );
   return (
-    generateUniqueIdFromBuffer * 4294967296 + getHighAndLowOrderIdsFromBuffer
+    _createLargeRandomIntegerFromBuffer * 4294967296 +
+    getRandomUint32FromBufferOffset
   );
 }
-var isTextEncodingCompatibleWithNode =
+function createIdentifierFromBufferData(
+  _generateUniqueIdentifierFromBuffer,
+  getBufferOffsetForUniqueIdentifier,
+) {
+  var generateUniqueIdFromBufferData =
+    _generateUniqueIdentifierFromBuffer.getUint32(
+      getBufferOffsetForUniqueIdentifier,
+    );
+  var extractUniqueIdentifierFromBuffer =
+    _generateUniqueIdentifierFromBuffer.getUint32(
+      getBufferOffsetForUniqueIdentifier + 4,
+    );
+  return (
+    generateUniqueIdFromBufferData * 4294967296 +
+    extractUniqueIdentifierFromBuffer
+  );
+}
+var isTextEncodingAvailable =
   (typeof process === "undefined" ||
     (process == null ? undefined : process.env)?.TEXT_ENCODING !== "never") &&
   typeof TextEncoder !== "undefined" &&
   typeof TextDecoder !== "undefined";
-function calculateSlugUtf8ByteLengthInBytes(_calculateSlugUtf8ByteLength) {
+function calculateSlugUtf8ByteLength(getSlugUtf8ByteLength) {
   for (
-    var slugUtf8CharacterCount = _calculateSlugUtf8ByteLength.length,
+    var calculateUtf8ByteLengthFromSlug = getSlugUtf8ByteLength.length,
       calculateUtf8ByteLengthForSlug = 0,
       currentCharacterIndex = 0;
-    currentCharacterIndex < slugUtf8CharacterCount;
+    currentCharacterIndex < calculateUtf8ByteLengthFromSlug;
 
   ) {
-    var utf8CharacterCodeAtCurrentIndex =
-      _calculateSlugUtf8ByteLength.charCodeAt(currentCharacterIndex++);
-    if ((utf8CharacterCodeAtCurrentIndex & 4294967168) === 0) {
+    var utf8CharacterCode = getSlugUtf8ByteLength.charCodeAt(
+      currentCharacterIndex++,
+    );
+    if ((utf8CharacterCode & 4294967168) === 0) {
       calculateUtf8ByteLengthForSlug++;
       continue;
-    } else if ((utf8CharacterCodeAtCurrentIndex & 4294965248) === 0) {
+    } else if ((utf8CharacterCode & 4294965248) === 0) {
       calculateUtf8ByteLengthForSlug += 2;
     } else {
       if (
-        utf8CharacterCodeAtCurrentIndex >= 55296 &&
-        utf8CharacterCodeAtCurrentIndex <= 56319 &&
-        currentCharacterIndex < slugUtf8CharacterCount
+        utf8CharacterCode >= 55296 &&
+        utf8CharacterCode <= 56319 &&
+        currentCharacterIndex < calculateUtf8ByteLengthFromSlug
       ) {
-        var currentCharacterCode = _calculateSlugUtf8ByteLength.charCodeAt(
+        var currentUtf8ByteCode = getSlugUtf8ByteLength.charCodeAt(
           currentCharacterIndex,
         );
-        if ((currentCharacterCode & 64512) === 56320) {
+        if ((currentUtf8ByteCode & 64512) === 56320) {
           ++currentCharacterIndex;
-          utf8CharacterCodeAtCurrentIndex =
-            ((utf8CharacterCodeAtCurrentIndex & 1023) << 10) +
-            (currentCharacterCode & 1023) +
+          utf8CharacterCode =
+            ((utf8CharacterCode & 1023) << 10) +
+            (currentUtf8ByteCode & 1023) +
             65536;
         }
       }
-      if ((utf8CharacterCodeAtCurrentIndex & 4294901760) === 0) {
+      if ((utf8CharacterCode & 4294901760) === 0) {
         calculateUtf8ByteLengthForSlug += 3;
       } else {
         calculateUtf8ByteLengthForSlug += 4;
@@ -690,1029 +705,1038 @@ function calculateSlugUtf8ByteLengthInBytes(_calculateSlugUtf8ByteLength) {
   }
   return calculateUtf8ByteLengthForSlug;
 }
-function generateValidSlugCharacterArray(
-  invalidSlugViolations,
-  validateSlugFormat,
-  findInvalidSlugIndex,
+function _filterDisallowedCharactersFromSlug(
+  disallowedCharacters,
+  filterDisallowedCharactersFromSlug,
+  getStartingValidCharacterIndexForSlug,
 ) {
   for (
-    var slugViolationCount = invalidSlugViolations.length,
-      currentValidSlugCharacterIndex = findInvalidSlugIndex,
-      currentCharacterIndex = 0;
-    currentCharacterIndex < slugViolationCount;
+    var totalInvalidSlugCharacterCount = disallowedCharacters.length,
+      nextValidCharacterInsertIndex = getStartingValidCharacterIndexForSlug,
+      currentDisallowedCharacterIndex = 0;
+    currentDisallowedCharacterIndex < totalInvalidSlugCharacterCount;
 
   ) {
-    var unicodeCharacterCode = invalidSlugViolations.charCodeAt(
-      currentCharacterIndex++,
+    var getCharCodeForSlugCharacterValidation = disallowedCharacters.charCodeAt(
+      currentDisallowedCharacterIndex++,
     );
-    if ((unicodeCharacterCode & 4294967168) === 0) {
-      validateSlugFormat[currentValidSlugCharacterIndex++] =
-        unicodeCharacterCode;
+    if ((getCharCodeForSlugCharacterValidation & 4294967168) === 0) {
+      filterDisallowedCharactersFromSlug[nextValidCharacterInsertIndex++] =
+        getCharCodeForSlugCharacterValidation;
       continue;
-    } else if ((unicodeCharacterCode & 4294965248) === 0) {
-      validateSlugFormat[currentValidSlugCharacterIndex++] =
-        ((unicodeCharacterCode >> 6) & 31) | 192;
+    } else if ((getCharCodeForSlugCharacterValidation & 4294965248) === 0) {
+      filterDisallowedCharactersFromSlug[nextValidCharacterInsertIndex++] =
+        ((getCharCodeForSlugCharacterValidation >> 6) & 31) | 192;
     } else {
       if (
-        unicodeCharacterCode >= 55296 &&
-        unicodeCharacterCode <= 56319 &&
-        currentCharacterIndex < slugViolationCount
+        getCharCodeForSlugCharacterValidation >= 55296 &&
+        getCharCodeForSlugCharacterValidation <= 56319 &&
+        currentDisallowedCharacterIndex < totalInvalidSlugCharacterCount
       ) {
-        var fetchNextUnicodeCharacterCode = invalidSlugViolations.charCodeAt(
-          currentCharacterIndex,
+        var getNextDisallowedSlugCharCode = disallowedCharacters.charCodeAt(
+          currentDisallowedCharacterIndex,
         );
-        if ((fetchNextUnicodeCharacterCode & 64512) === 56320) {
-          ++currentCharacterIndex;
-          unicodeCharacterCode =
-            ((unicodeCharacterCode & 1023) << 10) +
-            (fetchNextUnicodeCharacterCode & 1023) +
+        if ((getNextDisallowedSlugCharCode & 64512) === 56320) {
+          ++currentDisallowedCharacterIndex;
+          getCharCodeForSlugCharacterValidation =
+            ((getCharCodeForSlugCharacterValidation & 1023) << 10) +
+            (getNextDisallowedSlugCharCode & 1023) +
             65536;
         }
       }
-      if ((unicodeCharacterCode & 4294901760) === 0) {
-        validateSlugFormat[currentValidSlugCharacterIndex++] =
-          ((unicodeCharacterCode >> 12) & 15) | 224;
-        validateSlugFormat[currentValidSlugCharacterIndex++] =
-          ((unicodeCharacterCode >> 6) & 63) | 128;
+      if ((getCharCodeForSlugCharacterValidation & 4294901760) === 0) {
+        filterDisallowedCharactersFromSlug[nextValidCharacterInsertIndex++] =
+          ((getCharCodeForSlugCharacterValidation >> 12) & 15) | 224;
+        filterDisallowedCharactersFromSlug[nextValidCharacterInsertIndex++] =
+          ((getCharCodeForSlugCharacterValidation >> 6) & 63) | 128;
       } else {
-        validateSlugFormat[currentValidSlugCharacterIndex++] =
-          ((unicodeCharacterCode >> 18) & 7) | 240;
-        validateSlugFormat[currentValidSlugCharacterIndex++] =
-          ((unicodeCharacterCode >> 12) & 63) | 128;
-        validateSlugFormat[currentValidSlugCharacterIndex++] =
-          ((unicodeCharacterCode >> 6) & 63) | 128;
+        filterDisallowedCharactersFromSlug[nextValidCharacterInsertIndex++] =
+          ((getCharCodeForSlugCharacterValidation >> 18) & 7) | 240;
+        filterDisallowedCharactersFromSlug[nextValidCharacterInsertIndex++] =
+          ((getCharCodeForSlugCharacterValidation >> 12) & 63) | 128;
+        filterDisallowedCharactersFromSlug[nextValidCharacterInsertIndex++] =
+          ((getCharCodeForSlugCharacterValidation >> 6) & 63) | 128;
       }
     }
-    validateSlugFormat[currentValidSlugCharacterIndex++] =
-      (unicodeCharacterCode & 63) | 128;
+    filterDisallowedCharactersFromSlug[nextValidCharacterInsertIndex++] =
+      (getCharCodeForSlugCharacterValidation & 63) | 128;
   }
 }
-var createTextEncoderIfNodeCompatible = isTextEncodingCompatibleWithNode
+var createTextEncoderIfAvailable = isTextEncodingAvailable
   ? new TextEncoder()
   : undefined;
-var getTextEncodingIdentifierBasedOnNodeCompatibility =
-  isTextEncodingCompatibleWithNode
-    ? typeof process !== "undefined" &&
-      (process == null ? undefined : process.env)?.TEXT_ENCODING !== "force"
-      ? 200
-      : 0
-    : maxAllowedUniqueIdentifier;
-function encodeAndStoreUniqueTextIdentifier(
-  setEncodedUniqueTextIdentifier,
-  encodeTextWithUniqueIdentifier,
-  setEncodedUniqueIdentifier,
+var determineTextEncodingIdentifier = isTextEncodingAvailable
+  ? typeof process !== "undefined" &&
+    (process == null ? undefined : process.env)?.TEXT_ENCODING !== "force"
+    ? 200
+    : 0
+  : MAX_UNSIGNED_INT_VALUE;
+function encodeAndSaveTextWithPosition(
+  encodeAndStoreTextData,
+  storeEncodedText,
+  storeEncodedTextPosition,
 ) {
-  encodeTextWithUniqueIdentifier.set(
-    createTextEncoderIfNodeCompatible.encode(setEncodedUniqueTextIdentifier),
-    setEncodedUniqueIdentifier,
+  storeEncodedText.set(
+    createTextEncoderIfAvailable.encode(encodeAndStoreTextData),
+    storeEncodedTextPosition,
   );
 }
-function initializeUniqueIdentifierEncoder(
-  setupUniqueIdentifierEncodingFromText,
-  encodeUniqueIdentifierBasedOnText,
-  encodeUniqueIdentifierFromText,
+function storeEncodedTextWithUniqueIdentifier(
+  encodeAndStoreTextUsingTextIdentifier,
+  encodeAndStoreUniqueIdentifier,
+  _storeEncodedTextPosition,
 ) {
-  createTextEncoderIfNodeCompatible.encodeInto(
-    setupUniqueIdentifierEncodingFromText,
-    encodeUniqueIdentifierBasedOnText.subarray(encodeUniqueIdentifierFromText),
+  createTextEncoderIfAvailable.encodeInto(
+    encodeAndStoreTextUsingTextIdentifier,
+    encodeAndStoreUniqueIdentifier.subarray(_storeEncodedTextPosition),
   );
 }
-var handleUniqueIdentifierEncoding =
-  createTextEncoderIfNodeCompatible?.encodeInto
-    ? initializeUniqueIdentifierEncoder
-    : encodeAndStoreUniqueTextIdentifier;
-var maxAllowedUniqueIdentifierValue = 4096;
-function combineAndProcessUniqueIdentifiers(
-  combineAndReplaceUniqueIdentifiers,
-  replaceAndCombineIdentifierMappings,
-  processUniqueIdentifierReplacements,
+var selectEncodingFunctionBasedOnTextEncoderAvailability =
+  createTextEncoderIfAvailable?.encodeInto
+    ? storeEncodedTextWithUniqueIdentifier
+    : encodeAndSaveTextWithPosition;
+var maxEncodedTextIdentifierLengthLimit = 4096;
+function extractAndAggregateUniqueIdentifiers(
+  _filterAndCombineUniqueIdentifiers,
+  filterAndCombineIdentifiers,
+  filterAndCombineUniqueTextIdentifiers,
 ) {
   for (
-    var identifierReplacementIndex = replaceAndCombineIdentifierMappings,
-      maxIdentifierReplacementIndex =
-        identifierReplacementIndex + processUniqueIdentifierReplacements,
-      uniqueIdentifiersBuffer = [],
-      temporaryIdentifierBufferValue = "";
-    identifierReplacementIndex < maxIdentifierReplacementIndex;
+    var currentIdentifierPointer = filterAndCombineIdentifiers,
+      endIndexOfUniqueIdentifiersToExtract =
+        currentIdentifierPointer + filterAndCombineUniqueTextIdentifiers,
+      filteredUniqueIdentifiers = [],
+      concatenatedIdentifiers = "";
+    currentIdentifierPointer < endIndexOfUniqueIdentifiersToExtract;
 
   ) {
-    var uniqueIdentifier =
-      combineAndReplaceUniqueIdentifiers[identifierReplacementIndex++];
-    if ((uniqueIdentifier & 128) === 0) {
-      uniqueIdentifiersBuffer.push(uniqueIdentifier);
-    } else if ((uniqueIdentifier & 224) === 192) {
-      var processedIdentifierBit =
-        combineAndReplaceUniqueIdentifiers[identifierReplacementIndex++] & 63;
-      uniqueIdentifiersBuffer.push(
-        ((uniqueIdentifier & 31) << 6) | processedIdentifierBit,
+    var currentUniqueIdentifier =
+      _filterAndCombineUniqueIdentifiers[currentIdentifierPointer++];
+    if ((currentUniqueIdentifier & 128) === 0) {
+      filteredUniqueIdentifiers.push(currentUniqueIdentifier);
+    } else if ((currentUniqueIdentifier & 224) === 192) {
+      var uniqueIdentifierSegmentMask =
+        _filterAndCombineUniqueIdentifiers[currentIdentifierPointer++] & 63;
+      filteredUniqueIdentifiers.push(
+        ((currentUniqueIdentifier & 31) << 6) | uniqueIdentifierSegmentMask,
       );
-    } else if ((uniqueIdentifier & 240) === 224) {
-      var processedIdentifierBit =
-        combineAndReplaceUniqueIdentifiers[identifierReplacementIndex++] & 63;
-      var currentIdentifierBit =
-        combineAndReplaceUniqueIdentifiers[identifierReplacementIndex++] & 63;
-      uniqueIdentifiersBuffer.push(
-        ((uniqueIdentifier & 31) << 12) |
-          (processedIdentifierBit << 6) |
-          currentIdentifierBit,
+    } else if ((currentUniqueIdentifier & 240) === 224) {
+      var uniqueIdentifierSegmentMask =
+        _filterAndCombineUniqueIdentifiers[currentIdentifierPointer++] & 63;
+      var nextUniqueIdentifierSegmentMask =
+        _filterAndCombineUniqueIdentifiers[currentIdentifierPointer++] & 63;
+      filteredUniqueIdentifiers.push(
+        ((currentUniqueIdentifier & 31) << 12) |
+          (uniqueIdentifierSegmentMask << 6) |
+          nextUniqueIdentifierSegmentMask,
       );
-    } else if ((uniqueIdentifier & 248) === 240) {
-      var processedIdentifierBit =
-        combineAndReplaceUniqueIdentifiers[identifierReplacementIndex++] & 63;
-      var currentIdentifierBit =
-        combineAndReplaceUniqueIdentifiers[identifierReplacementIndex++] & 63;
-      var sectionIdentifierBit =
-        combineAndReplaceUniqueIdentifiers[identifierReplacementIndex++] & 63;
-      var encodedUniqueIdentifier =
-        ((uniqueIdentifier & 7) << 18) |
-        (processedIdentifierBit << 12) |
-        (currentIdentifierBit << 6) |
-        sectionIdentifierBit;
-      if (encodedUniqueIdentifier > 65535) {
-        encodedUniqueIdentifier -= 65536;
-        uniqueIdentifiersBuffer.push(
-          ((encodedUniqueIdentifier >>> 10) & 1023) | 55296,
+    } else if ((currentUniqueIdentifier & 248) === 240) {
+      var uniqueIdentifierSegmentMask =
+        _filterAndCombineUniqueIdentifiers[currentIdentifierPointer++] & 63;
+      var nextUniqueIdentifierSegmentMask =
+        _filterAndCombineUniqueIdentifiers[currentIdentifierPointer++] & 63;
+      var sectionIdBitMask =
+        _filterAndCombineUniqueIdentifiers[currentIdentifierPointer++] & 63;
+      var combinedUniqueIdentifierBitMask =
+        ((currentUniqueIdentifier & 7) << 18) |
+        (uniqueIdentifierSegmentMask << 12) |
+        (nextUniqueIdentifierSegmentMask << 6) |
+        sectionIdBitMask;
+      if (combinedUniqueIdentifierBitMask > 65535) {
+        combinedUniqueIdentifierBitMask -= 65536;
+        filteredUniqueIdentifiers.push(
+          ((combinedUniqueIdentifierBitMask >>> 10) & 1023) | 55296,
         );
-        encodedUniqueIdentifier = (encodedUniqueIdentifier & 1023) | 56320;
+        combinedUniqueIdentifierBitMask =
+          (combinedUniqueIdentifierBitMask & 1023) | 56320;
       }
-      uniqueIdentifiersBuffer.push(encodedUniqueIdentifier);
+      filteredUniqueIdentifiers.push(combinedUniqueIdentifierBitMask);
     } else {
-      uniqueIdentifiersBuffer.push(uniqueIdentifier);
+      filteredUniqueIdentifiers.push(currentUniqueIdentifier);
     }
-    if (uniqueIdentifiersBuffer.length >= maxAllowedUniqueIdentifierValue) {
-      temporaryIdentifierBufferValue += String.fromCharCode.apply(
+    if (
+      filteredUniqueIdentifiers.length >= maxEncodedTextIdentifierLengthLimit
+    ) {
+      concatenatedIdentifiers += String.fromCharCode.apply(
         String,
-        uniqueIdentifiersBuffer,
+        filteredUniqueIdentifiers,
       );
-      uniqueIdentifiersBuffer.length = 0;
+      filteredUniqueIdentifiers.length = 0;
     }
   }
-  if (uniqueIdentifiersBuffer.length > 0) {
-    temporaryIdentifierBufferValue += String.fromCharCode.apply(
+  if (filteredUniqueIdentifiers.length > 0) {
+    concatenatedIdentifiers += String.fromCharCode.apply(
       String,
-      uniqueIdentifiersBuffer,
+      filteredUniqueIdentifiers,
     );
   }
-  return temporaryIdentifierBufferValue;
+  return concatenatedIdentifiers;
 }
-var uniqueIdentifierTextDecoder = isTextEncodingCompatibleWithNode
-  ? new TextDecoder()
-  : null;
-var getEncodedUniqueIdentifierValue = isTextEncodingCompatibleWithNode
+var textEncodingDecoder = isTextEncodingAvailable ? new TextDecoder() : null;
+var getMaxUniqueIdentifierValue = isTextEncodingAvailable
   ? typeof process !== "undefined" &&
     (process == null ? undefined : process.env)?.TEXT_DECODER !== "force"
     ? 200
     : 0
-  : maxAllowedUniqueIdentifier;
-function decodeSlugCharactersFromBuffer(
-  extractAndDecodeSlugCharactersBuffer,
-  decodeAndValidateUniqueIdentifiers,
-  processUniqueIdentifiersFromBuffer,
+  : MAX_UNSIGNED_INT_VALUE;
+function extractUniqueIdentifiersFromBufferSlice(
+  extractUniqueIdentifiersFromBuffer,
+  getBufferPositionForIdentifierExtraction,
+  getDecodedUniqueIdentifierSliceLength,
 ) {
-  var extractAndDecodeSlugCharactersSlice =
-    extractAndDecodeSlugCharactersBuffer.subarray(
-      decodeAndValidateUniqueIdentifiers,
-      decodeAndValidateUniqueIdentifiers + processUniqueIdentifiersFromBuffer,
+  var extractUniqueIdentifierSliceFromBuffer =
+    extractUniqueIdentifiersFromBuffer.subarray(
+      getBufferPositionForIdentifierExtraction,
+      getBufferPositionForIdentifierExtraction +
+        getDecodedUniqueIdentifierSliceLength,
     );
-  return uniqueIdentifierTextDecoder.decode(
-    extractAndDecodeSlugCharactersSlice,
-  );
+  return textEncodingDecoder.decode(extractUniqueIdentifierSliceFromBuffer);
 }
-var validateSlugByteLengthForUniqueness = (function () {
-  function _SlugUniquenessChecker(
-    SlugByteLengthValidator,
-    _SlugUniquenessValidator,
-  ) {
-    this.type = SlugByteLengthValidator;
-    this.data = _SlugUniquenessValidator;
+var createUniqueSlugGenerator = (function () {
+  function SlugManager(UniqueSlugValidatorFunction, UniqueSlugGenerator) {
+    this.type = UniqueSlugValidatorFunction;
+    this.data = UniqueSlugGenerator;
   }
-  return _SlugUniquenessChecker;
+  return SlugManager;
 })();
-var processAndValidateSlugIdentifier = (function () {
-  function validateAndProcessSlugForUniqueness(
-    validateAndNormalizeUniqueIdentifierLength,
-    SlugUniquenessChecker,
+var validateAndAssignUniqueSlugWithNormalization = (function () {
+  function assignSlugWithValidationAndNormalization(
+    validateAndEnsureUniqueSlugWithNormalization,
+    validateAndEnsureUniqueSlug,
   ) {
-    validateAndProcessSlugForUniqueness =
+    assignSlugWithValidationAndNormalization =
       Object.setPrototypeOf ||
       ({
         __proto__: [],
       } instanceof Array &&
         function (
-          validateAndNormalizeSlugUniqueIdentifier,
-          _processAndValidateSlugIdentifier,
+          validateAndEnsureUniqueSlugWithNormalization,
+          _validateAndEnsureUniqueSlug,
         ) {
-          validateAndNormalizeSlugUniqueIdentifier.__proto__ =
-            _processAndValidateSlugIdentifier;
+          validateAndEnsureUniqueSlugWithNormalization.__proto__ =
+            _validateAndEnsureUniqueSlug;
         }) ||
-      function (
-        validateSlugCharacterUniqueness,
-        validateAndNormalizeUniqueSlug,
-      ) {
-        for (var uniqueSlugValidationKey in validateAndNormalizeUniqueSlug) {
+      function (validateAndEnsureUniqueSlug, _validateAndAssignUniqueSlug) {
+        for (var uniqueSlugKey in _validateAndAssignUniqueSlug) {
           if (
             Object.prototype.hasOwnProperty.call(
-              validateAndNormalizeUniqueSlug,
-              uniqueSlugValidationKey,
+              _validateAndAssignUniqueSlug,
+              uniqueSlugKey,
             )
           ) {
-            validateSlugCharacterUniqueness[uniqueSlugValidationKey] =
-              validateAndNormalizeUniqueSlug[uniqueSlugValidationKey];
+            validateAndEnsureUniqueSlug[uniqueSlugKey] =
+              _validateAndAssignUniqueSlug[uniqueSlugKey];
           }
         }
       };
-    return validateAndProcessSlugForUniqueness(
-      validateAndNormalizeUniqueIdentifierLength,
-      SlugUniquenessChecker,
+    return assignSlugWithValidationAndNormalization(
+      validateAndEnsureUniqueSlugWithNormalization,
+      validateAndEnsureUniqueSlug,
     );
   }
   return function (
-    validateSlugAndEnsureUniqueness,
-    validateAndEnsureUniqueSlug,
+    __validateAndEnsureUniqueSlug,
+    _validateAndEnsureUniqueSlug,
   ) {
     if (
-      typeof validateAndEnsureUniqueSlug != "function" &&
-      validateAndEnsureUniqueSlug !== null
+      typeof _validateAndEnsureUniqueSlug != "function" &&
+      _validateAndEnsureUniqueSlug !== null
     ) {
       throw new TypeError(
         "Class extends value " +
-          String(validateAndEnsureUniqueSlug) +
+          String(_validateAndEnsureUniqueSlug) +
           " is not a constructor or null",
       );
     }
-    validateAndProcessSlugForUniqueness(
-      validateSlugAndEnsureUniqueness,
-      validateAndEnsureUniqueSlug,
+    assignSlugWithValidationAndNormalization(
+      __validateAndEnsureUniqueSlug,
+      _validateAndEnsureUniqueSlug,
     );
-    function setupSlugValidationRules() {
-      this.constructor = validateSlugAndEnsureUniqueness;
+    function setupSlugUniquenessValidation() {
+      this.constructor = __validateAndEnsureUniqueSlug;
     }
-    if (validateAndEnsureUniqueSlug === null) {
-      validateSlugAndEnsureUniqueness.prototype = Object.create(
-        validateAndEnsureUniqueSlug,
+    if (_validateAndEnsureUniqueSlug === null) {
+      __validateAndEnsureUniqueSlug.prototype = Object.create(
+        _validateAndEnsureUniqueSlug,
       );
     } else {
-      validateSlugAndEnsureUniqueness.prototype =
-        ((setupSlugValidationRules.prototype =
-          validateAndEnsureUniqueSlug.prototype),
-        new setupSlugValidationRules());
+      __validateAndEnsureUniqueSlug.prototype =
+        ((setupSlugUniquenessValidation.prototype =
+          _validateAndEnsureUniqueSlug.prototype),
+        new setupSlugUniquenessValidation());
     }
   };
 })();
-var processSlugForUniqueness = (function (processAndValidateSlugUniqueness) {
-  processAndValidateSlugIdentifier(
-    generateValidatedSlug,
-    processAndValidateSlugUniqueness,
+var generateAndEnsureUniqueSlug = (function (validateAndEnsureUniqueSlug) {
+  validateAndAssignUniqueSlugWithNormalization(
+    generateValidatedUniqueSlugInstance,
+    validateAndEnsureUniqueSlug,
   );
-  function generateValidatedSlug(createUniqueSlugObjectWithValidation) {
-    var uniqueValidatedSlug =
-      processAndValidateSlugUniqueness.call(
-        this,
-        createUniqueSlugObjectWithValidation,
-      ) || this;
-    var slugPrototype = Object.create(generateValidatedSlug.prototype);
-    Object.setPrototypeOf(uniqueValidatedSlug, slugPrototype);
-    Object.defineProperty(uniqueValidatedSlug, "name", {
+  function generateValidatedUniqueSlugInstance(generateAndValidateUniqueSlug) {
+    var validatedSlugGenerator =
+      validateAndEnsureUniqueSlug.call(this, generateAndValidateUniqueSlug) ||
+      this;
+    var slugGeneratorInstance = Object.create(
+      generateValidatedUniqueSlugInstance.prototype,
+    );
+    Object.setPrototypeOf(validatedSlugGenerator, slugGeneratorInstance);
+    Object.defineProperty(validatedSlugGenerator, "name", {
       configurable: true,
       enumerable: false,
-      value: generateValidatedSlug.name,
+      value: generateValidatedUniqueSlugInstance.name,
     });
-    return uniqueValidatedSlug;
+    return validatedSlugGenerator;
   }
-  return generateValidatedSlug;
+  return generateValidatedUniqueSlugInstance;
 })(Error);
-var generateUniqueSlugId = -1;
-var validateAndGenerateSlug = 4294967295;
-var slugUniquenessValidationResult = 17179869183;
-function createTimestampBufferFromUniqueSlug(createUniqueSlugFromValidation) {
-  var secondsSinceEpoch = createUniqueSlugFromValidation.sec;
-  var nanosecondsSinceEpoch = createUniqueSlugFromValidation.nsec;
+var getNextAvailableSlugID = -1;
+var maxSlugLengthAllowedForCreation = 4294967295;
+var maximumAllowedSlugCreationLimit = 17179869183;
+function createSlugTimestampBuffer(createTimestampFromSlugDetails) {
+  var slugCreationTimeInSeconds = createTimestampFromSlugDetails.sec;
+  var nanosecondsSinceEpochForSlug = createTimestampFromSlugDetails.nsec;
   if (
-    secondsSinceEpoch >= 0 &&
-    nanosecondsSinceEpoch >= 0 &&
-    secondsSinceEpoch <= slugUniquenessValidationResult
+    slugCreationTimeInSeconds >= 0 &&
+    nanosecondsSinceEpochForSlug >= 0 &&
+    slugCreationTimeInSeconds <= maximumAllowedSlugCreationLimit
   ) {
     if (
-      nanosecondsSinceEpoch === 0 &&
-      secondsSinceEpoch <= validateAndGenerateSlug
+      nanosecondsSinceEpochForSlug === 0 &&
+      slugCreationTimeInSeconds <= maxSlugLengthAllowedForCreation
     ) {
-      var timestampByteArrayFromEpoch = new Uint8Array(4);
-      var timestampDataBufferView = new DataView(
-        timestampByteArrayFromEpoch.buffer,
+      var generateSlugTimestampByteArray = new Uint8Array(4);
+      var slugTimestampDataView = new DataView(
+        generateSlugTimestampByteArray.buffer,
       );
-      timestampDataBufferView.setUint32(0, secondsSinceEpoch);
-      return timestampByteArrayFromEpoch;
+      slugTimestampDataView.setUint32(0, slugCreationTimeInSeconds);
+      return generateSlugTimestampByteArray;
     } else {
-      var nanosecondsToEpochSecondsRatio = secondsSinceEpoch / 4294967296;
-      var epochTimestampLower32Bits = secondsSinceEpoch & 4294967295;
-      var timestampByteArrayFromEpoch = new Uint8Array(8);
-      var timestampDataBufferView = new DataView(
-        timestampByteArrayFromEpoch.buffer,
+      var calculateNanosecondFractionFromEpoch =
+        slugCreationTimeInSeconds / 4294967296;
+      var extractLower32BitsFromSlugCreationTime =
+        slugCreationTimeInSeconds & 4294967295;
+      var generateSlugTimestampByteArray = new Uint8Array(8);
+      var slugTimestampDataView = new DataView(
+        generateSlugTimestampByteArray.buffer,
       );
-      timestampDataBufferView.setUint32(
+      slugTimestampDataView.setUint32(
         0,
-        (nanosecondsSinceEpoch << 2) | (nanosecondsToEpochSecondsRatio & 3),
+        (nanosecondsSinceEpochForSlug << 2) |
+          (calculateNanosecondFractionFromEpoch & 3),
       );
-      timestampDataBufferView.setUint32(4, epochTimestampLower32Bits);
-      return timestampByteArrayFromEpoch;
+      slugTimestampDataView.setUint32(
+        4,
+        extractLower32BitsFromSlugCreationTime,
+      );
+      return generateSlugTimestampByteArray;
     }
   } else {
-    var timestampByteArrayFromEpoch = new Uint8Array(12);
-    var timestampDataBufferView = new DataView(
-      timestampByteArrayFromEpoch.buffer,
+    var generateSlugTimestampByteArray = new Uint8Array(12);
+    var slugTimestampDataView = new DataView(
+      generateSlugTimestampByteArray.buffer,
     );
-    timestampDataBufferView.setUint32(0, nanosecondsSinceEpoch);
-    _storeUniqueIdentifierInBuffer(
-      timestampDataBufferView,
+    slugTimestampDataView.setUint32(0, nanosecondsSinceEpochForSlug);
+    _storeHighOrderIdentifierInBuffer(
+      slugTimestampDataView,
       4,
-      secondsSinceEpoch,
+      slugCreationTimeInSeconds,
     );
-    return timestampByteArrayFromEpoch;
+    return generateSlugTimestampByteArray;
   }
 }
-function convertDateSlugToNanoTimestamp(convertSlugToNanosecondTimestamp) {
-  var unixMillisTimestamp = convertSlugToNanosecondTimestamp.getTime();
-  var _secondsSinceEpoch = Math.floor(unixMillisTimestamp / 1000);
-  var remainingNanosecondsAfterMilliseconds =
-    (unixMillisTimestamp - _secondsSinceEpoch * 1000) * 1000000;
-  var extraSecondsFromNanoseconds = Math.floor(
-    remainingNanosecondsAfterMilliseconds / 1000000000,
+function getUnixTimeWithNanoseconds(_convertDateToUnixTimeAndNanoseconds) {
+  var epochMilliseconds = _convertDateToUnixTimeAndNanoseconds.getTime();
+  var elapsedSecondsSinceEpoch = Math.floor(epochMilliseconds / 1000);
+  var nanosecondsRemainderInMicroseconds =
+    (epochMilliseconds - elapsedSecondsSinceEpoch * 1000) * 1000000;
+  var getAdditionalSecondsFromNanoseconds = Math.floor(
+    nanosecondsRemainderInMicroseconds / 1000000000,
   );
   return {
-    sec: _secondsSinceEpoch + extraSecondsFromNanoseconds,
+    sec: elapsedSecondsSinceEpoch + getAdditionalSecondsFromNanoseconds,
     nsec:
-      remainingNanosecondsAfterMilliseconds -
-      extraSecondsFromNanoseconds * 1000000000,
+      nanosecondsRemainderInMicroseconds -
+      getAdditionalSecondsFromNanoseconds * 1000000000,
   };
 }
-function createBufferFromDateTimestamp(
-  generateBufferWithTimestampAndIdentifier,
-) {
-  if (generateBufferWithTimestampAndIdentifier instanceof Date) {
-    var timestampBufferWithUniqueIdentifierInNanoseconds =
-      convertDateSlugToNanoTimestamp(generateBufferWithTimestampAndIdentifier);
-    return createTimestampBufferFromUniqueSlug(
-      timestampBufferWithUniqueIdentifierInNanoseconds,
+function createTimestampBufferFromDateObject(createTimestampBufferFromDate) {
+  if (createTimestampBufferFromDate instanceof Date) {
+    var generateSlugTimestampBufferFromCreation = getUnixTimeWithNanoseconds(
+      createTimestampBufferFromDate,
     );
+    return createSlugTimestampBuffer(generateSlugTimestampBufferFromCreation);
   } else {
     return null;
   }
 }
-function extractTimestampFromBuffer(getTimestampComponentsFromBuffer) {
-  var timestampDataViewBuffer = new DataView(
-    getTimestampComponentsFromBuffer.buffer,
-    getTimestampComponentsFromBuffer.byteOffset,
-    getTimestampComponentsFromBuffer.byteLength,
+function convertDataBufferToEpochTimestamp(parseTimestampFromDataBuffer) {
+  var timestampDataView = new DataView(
+    parseTimestampFromDataBuffer.buffer,
+    parseTimestampFromDataBuffer.byteOffset,
+    parseTimestampFromDataBuffer.byteLength,
   );
-  switch (getTimestampComponentsFromBuffer.byteLength) {
+  switch (parseTimestampFromDataBuffer.byteLength) {
     case 4: {
-      var calculateNanosecondsSinceAdjustedEpoch =
-        timestampDataViewBuffer.getUint32(0);
-      var adjustedEpochSecondsDividedByFour = 0;
+      var calculateTotalNanosecondsFromEpoch = timestampDataView.getUint32(0);
+      var secondsSinceEpochInQuarters = 0;
       return {
-        sec: calculateNanosecondsSinceAdjustedEpoch,
-        nsec: adjustedEpochSecondsDividedByFour,
+        sec: calculateTotalNanosecondsFromEpoch,
+        nsec: secondsSinceEpochInQuarters,
       };
     }
     case 8: {
-      var getAdjustedEpochTime = timestampDataViewBuffer.getUint32(0);
-      var getNanosecondsSinceAdjustedEpoch =
-        timestampDataViewBuffer.getUint32(4);
-      var calculateNanosecondsSinceAdjustedEpoch =
-        (getAdjustedEpochTime & 3) * 4294967296 +
-        getNanosecondsSinceAdjustedEpoch;
-      var adjustedEpochSecondsDividedByFour = getAdjustedEpochTime >>> 2;
+      var getTimestampAndNanoseconds = timestampDataView.getUint32(0);
+      var retrieveNanosecondsFromTimestampData = timestampDataView.getUint32(4);
+      var calculateTotalNanosecondsFromEpoch =
+        (getTimestampAndNanoseconds & 3) * 4294967296 +
+        retrieveNanosecondsFromTimestampData;
+      var secondsSinceEpochInQuarters = getTimestampAndNanoseconds >>> 2;
       return {
-        sec: calculateNanosecondsSinceAdjustedEpoch,
-        nsec: adjustedEpochSecondsDividedByFour,
+        sec: calculateTotalNanosecondsFromEpoch,
+        nsec: secondsSinceEpochInQuarters,
       };
     }
     case 12: {
-      var calculateNanosecondsSinceAdjustedEpoch =
-        generateRandomLargeIntegerFromBuffer(timestampDataViewBuffer, 4);
-      var adjustedEpochSecondsDividedByFour =
-        timestampDataViewBuffer.getUint32(0);
+      var calculateTotalNanosecondsFromEpoch =
+        createLargeRandomIntegerFromBuffer(timestampDataView, 4);
+      var secondsSinceEpochInQuarters = timestampDataView.getUint32(0);
       return {
-        sec: calculateNanosecondsSinceAdjustedEpoch,
-        nsec: adjustedEpochSecondsDividedByFour,
+        sec: calculateTotalNanosecondsFromEpoch,
+        nsec: secondsSinceEpochInQuarters,
       };
     }
     default:
-      throw new processSlugForUniqueness(
-        `Unrecognized data size for timestamp (expected 4, 8, or 12): ${getTimestampComponentsFromBuffer.length}`,
+      throw new generateAndEnsureUniqueSlug(
+        `Unrecognized data size for timestamp (expected 4, 8, or 12): ${parseTimestampFromDataBuffer.length}`,
       );
   }
 }
-function transformSlugTimestampToDate(convertSlugToDate) {
-  var timestampComponents = extractTimestampFromBuffer(convertSlugToDate);
+function transformTimestampBufferToDate(convertTimestampBufferToDate) {
+  var epochTimestampFromBuffer = convertDataBufferToEpochTimestamp(
+    convertTimestampBufferToDate,
+  );
   return new Date(
-    timestampComponents.sec * 1000 + timestampComponents.nsec / 1000000,
+    epochTimestampFromBuffer.sec * 1000 +
+      epochTimestampFromBuffer.nsec / 1000000,
   );
 }
-var timestampUtility = {
-  type: generateUniqueSlugId,
-  encode: createBufferFromDateTimestamp,
-  decode: transformSlugTimestampToDate,
+var timestampConversionUtility = {
+  type: getNextAvailableSlugID,
+  encode: createTimestampBufferFromDateObject,
+  decode: transformTimestampBufferToDate,
 };
-var extractTimestampComponentsFromBuffer = (function () {
-  function DataTransformManager() {
+var initializeTimestampEncodingDecodingHandlers = (function () {
+  function EncodingDecodingUtilityManager() {
     this.builtInEncoders = [];
     this.builtInDecoders = [];
     this.encoders = [];
     this.decoders = [];
-    this.register(timestampUtility);
+    this.register(timestampConversionUtility);
   }
-  DataTransformManager.prototype.register = function (
-    registerTimestampUtilityHandlers,
+  EncodingDecodingUtilityManager.prototype.register = function (
+    initializeTimestampEncodingDecodingHandlers,
   ) {
-    var timestampUtilityHandlerType = registerTimestampUtilityHandlers.type;
-    var createUniqueTimestampSlug = registerTimestampUtilityHandlers.encode;
-    var decodeUniqueTimestampSlug = registerTimestampUtilityHandlers.decode;
-    if (timestampUtilityHandlerType >= 0) {
-      this.encoders[timestampUtilityHandlerType] = createUniqueTimestampSlug;
-      this.decoders[timestampUtilityHandlerType] = decodeUniqueTimestampSlug;
+    var timestampEncodingHandlerTypeIndex =
+      initializeTimestampEncodingDecodingHandlers.type;
+    var convertTimestampToSlug =
+      initializeTimestampEncodingDecodingHandlers.encode;
+    var decodeSlugToTimestamp =
+      initializeTimestampEncodingDecodingHandlers.decode;
+    if (timestampEncodingHandlerTypeIndex >= 0) {
+      this.encoders[timestampEncodingHandlerTypeIndex] = convertTimestampToSlug;
+      this.decoders[timestampEncodingHandlerTypeIndex] = decodeSlugToTimestamp;
     } else {
-      var uniqueTimestampHandlerTypeIndex = 1 + timestampUtilityHandlerType;
-      this.builtInEncoders[uniqueTimestampHandlerTypeIndex] =
-        createUniqueTimestampSlug;
-      this.builtInDecoders[uniqueTimestampHandlerTypeIndex] =
-        decodeUniqueTimestampSlug;
+      var timestampEncoderDecoderOffset = 1 + timestampEncodingHandlerTypeIndex;
+      this.builtInEncoders[timestampEncoderDecoderOffset] =
+        convertTimestampToSlug;
+      this.builtInDecoders[timestampEncoderDecoderOffset] =
+        decodeSlugToTimestamp;
     }
   };
-  DataTransformManager.prototype.tryToEncode = function (
-    isSlugLengthValid,
-    handleInvalidTimestampEncoding,
+  EncodingDecodingUtilityManager.prototype.tryToEncode = function (
+    isSlugValidForEncoding,
+    isTimestampSlugFormatValid,
   ) {
     for (
-      var builtInEncoderIndex = 0;
-      builtInEncoderIndex < this.builtInEncoders.length;
-      builtInEncoderIndex++
+      var activeEncoderIndex = 0;
+      activeEncoderIndex < this.builtInEncoders.length;
+      activeEncoderIndex++
     ) {
-      var currentSelectedEncoder = this.builtInEncoders[builtInEncoderIndex];
-      if (currentSelectedEncoder != null) {
-        var validateAndEncodeSlug = currentSelectedEncoder(
-          isSlugLengthValid,
-          handleInvalidTimestampEncoding,
+      var currentEncoder = this.builtInEncoders[activeEncoderIndex];
+      if (currentEncoder != null) {
+        var generateEncodedSlugIfValid = currentEncoder(
+          isSlugValidForEncoding,
+          isTimestampSlugFormatValid,
         );
-        if (validateAndEncodeSlug != null) {
-          var getSlugValidationOffsetForEncoding = -1 - builtInEncoderIndex;
-          return new validateSlugByteLengthForUniqueness(
-            getSlugValidationOffsetForEncoding,
-            validateAndEncodeSlug,
+        if (generateEncodedSlugIfValid != null) {
+          var getSlugOffsetBasedOnActiveEncoderIndex = -1 - activeEncoderIndex;
+          return new createUniqueSlugGenerator(
+            getSlugOffsetBasedOnActiveEncoderIndex,
+            generateEncodedSlugIfValid,
           );
         }
       }
     }
     for (
-      var builtInEncoderIndex = 0;
-      builtInEncoderIndex < this.encoders.length;
-      builtInEncoderIndex++
+      var activeEncoderIndex = 0;
+      activeEncoderIndex < this.encoders.length;
+      activeEncoderIndex++
     ) {
-      var currentSelectedEncoder = this.encoders[builtInEncoderIndex];
-      if (currentSelectedEncoder != null) {
-        var validateAndEncodeSlug = currentSelectedEncoder(
-          isSlugLengthValid,
-          handleInvalidTimestampEncoding,
+      var currentEncoder = this.encoders[activeEncoderIndex];
+      if (currentEncoder != null) {
+        var generateEncodedSlugIfValid = currentEncoder(
+          isSlugValidForEncoding,
+          isTimestampSlugFormatValid,
         );
-        if (validateAndEncodeSlug != null) {
-          var getSlugValidationOffsetForEncoding = builtInEncoderIndex;
-          return new validateSlugByteLengthForUniqueness(
-            getSlugValidationOffsetForEncoding,
-            validateAndEncodeSlug,
+        if (generateEncodedSlugIfValid != null) {
+          var getSlugOffsetBasedOnActiveEncoderIndex = activeEncoderIndex;
+          return new createUniqueSlugGenerator(
+            getSlugOffsetBasedOnActiveEncoderIndex,
+            generateEncodedSlugIfValid,
           );
         }
       }
     }
-    if (isSlugLengthValid instanceof validateSlugByteLengthForUniqueness) {
-      return isSlugLengthValid;
+    if (isSlugValidForEncoding instanceof createUniqueSlugGenerator) {
+      return isSlugValidForEncoding;
     } else {
       return null;
     }
   };
-  DataTransformManager.prototype.decode = function (
-    processDataWithEncodingStrategies,
-    getDecoderWithFallbackIfNeeded,
+  EncodingDecodingUtilityManager.prototype.decode = function (
+    decodeDataUsingActiveDecoder,
+    getActiveDecoderIndex,
     initializeSlugEncodingHandlers,
   ) {
-    var getDecoderFunctionForProcessing =
-      getDecoderWithFallbackIfNeeded < 0
-        ? this.builtInDecoders[-1 - getDecoderWithFallbackIfNeeded]
-        : this.decoders[getDecoderWithFallbackIfNeeded];
-    if (getDecoderFunctionForProcessing) {
-      return getDecoderFunctionForProcessing(
-        processDataWithEncodingStrategies,
-        getDecoderWithFallbackIfNeeded,
+    var getCurrentDecoderBasedOnIndex =
+      getActiveDecoderIndex < 0
+        ? this.builtInDecoders[-1 - getActiveDecoderIndex]
+        : this.decoders[getActiveDecoderIndex];
+    if (getCurrentDecoderBasedOnIndex) {
+      return getCurrentDecoderBasedOnIndex(
+        decodeDataUsingActiveDecoder,
+        getActiveDecoderIndex,
         initializeSlugEncodingHandlers,
       );
     } else {
-      return new validateSlugByteLengthForUniqueness(
-        getDecoderWithFallbackIfNeeded,
-        processDataWithEncodingStrategies,
+      return new createUniqueSlugGenerator(
+        getActiveDecoderIndex,
+        decodeDataUsingActiveDecoder,
       );
     }
   };
-  DataTransformManager.defaultCodec = new DataTransformManager();
-  return DataTransformManager;
+  EncodingDecodingUtilityManager.defaultCodec =
+    new EncodingDecodingUtilityManager();
+  return EncodingDecodingUtilityManager;
 })();
-function convertToUint8ArrayFromInputValue(generateUniqueSlugIdentifier) {
-  if (generateUniqueSlugIdentifier instanceof Uint8Array) {
-    return generateUniqueSlugIdentifier;
-  } else if (ArrayBuffer.isView(generateUniqueSlugIdentifier)) {
+function convertToUint8Array(_getUint8ArrayFromInput) {
+  if (_getUint8ArrayFromInput instanceof Uint8Array) {
+    return _getUint8ArrayFromInput;
+  } else if (ArrayBuffer.isView(_getUint8ArrayFromInput)) {
     return new Uint8Array(
-      generateUniqueSlugIdentifier.buffer,
-      generateUniqueSlugIdentifier.byteOffset,
-      generateUniqueSlugIdentifier.byteLength,
+      _getUint8ArrayFromInput.buffer,
+      _getUint8ArrayFromInput.byteOffset,
+      _getUint8ArrayFromInput.byteLength,
     );
-  } else if (generateUniqueSlugIdentifier instanceof ArrayBuffer) {
-    return new Uint8Array(generateUniqueSlugIdentifier);
+  } else if (_getUint8ArrayFromInput instanceof ArrayBuffer) {
+    return new Uint8Array(_getUint8ArrayFromInput);
   } else {
-    return Uint8Array.from(generateUniqueSlugIdentifier);
+    return Uint8Array.from(_getUint8ArrayFromInput);
   }
 }
-function generateDataViewFromInput(_createDataViewFromBufferOrSlug) {
-  if (_createDataViewFromBufferOrSlug instanceof ArrayBuffer) {
-    return new DataView(_createDataViewFromBufferOrSlug);
+function createDataViewFromInput(createDataViewFromArrayBufferOrView) {
+  if (createDataViewFromArrayBufferOrView instanceof ArrayBuffer) {
+    return new DataView(createDataViewFromArrayBufferOrView);
   }
-  var convertInputToUint8ArrayFromBufferOrSlug =
-    convertToUint8ArrayFromInputValue(_createDataViewFromBufferOrSlug);
+  var convertInputToUint8Array = convertToUint8Array(
+    createDataViewFromArrayBufferOrView,
+  );
   return new DataView(
-    convertInputToUint8ArrayFromBufferOrSlug.buffer,
-    convertInputToUint8ArrayFromBufferOrSlug.byteOffset,
-    convertInputToUint8ArrayFromBufferOrSlug.byteLength,
+    convertInputToUint8Array.buffer,
+    convertInputToUint8Array.byteOffset,
+    convertInputToUint8Array.byteLength,
   );
 }
-var defaultMaxSlugSize = 100;
-var maxAllowedSlugSize = 2048;
-var createUserSlugIdentifier = (function () {
-  function TimestampToSlugConverter(
-    extractTimestampComponentsFromDefaultCodecBuffer = extractTimestampComponentsFromBuffer.defaultCodec,
+var maxSlugLength = 100;
+var maxSlugCharacterLimit = 2048;
+var createTimestampedSlug = (function () {
+  function TimestampSlugGenerator(
+    _initializeTimestampEncodingDecodingHandlers = initializeTimestampEncodingDecodingHandlers.defaultCodec,
     initializationValue = undefined,
-    setDefaultMaxSlugSize = defaultMaxSlugSize,
-    generateSlugWithMaxLength = maxAllowedSlugSize,
-    userLoginStatus = false,
-    isCurrentlyUserAuthenticated = false,
-    isUserAuthenticated = false,
-    hasProcessingFinished = false,
+    _maxSlugLength = maxSlugLength,
+    generateSlugWithCharacterLimit = maxSlugCharacterLimit,
+    _isUserLoggedIn = false,
+    isUserLoggedIn = false,
+    userIsLoggedIn = false,
+    dataProcessingFinished = false,
   ) {
-    this.extensionCodec = extractTimestampComponentsFromDefaultCodecBuffer;
+    this.extensionCodec = _initializeTimestampEncodingDecodingHandlers;
     this.context = initializationValue;
-    this.maxDepth = setDefaultMaxSlugSize;
-    this.initialBufferSize = generateSlugWithMaxLength;
-    this.sortKeys = userLoginStatus;
-    this.forceFloat32 = isCurrentlyUserAuthenticated;
-    this.ignoreUndefined = isUserAuthenticated;
-    this.forceIntegerToFloat = hasProcessingFinished;
+    this.maxDepth = _maxSlugLength;
+    this.initialBufferSize = generateSlugWithCharacterLimit;
+    this.sortKeys = _isUserLoggedIn;
+    this.forceFloat32 = isUserLoggedIn;
+    this.ignoreUndefined = userIsLoggedIn;
+    this.forceIntegerToFloat = dataProcessingFinished;
     this.pos = 0;
     this.view = new DataView(new ArrayBuffer(this.initialBufferSize));
     this.bytes = new Uint8Array(this.view.buffer);
   }
-  TimestampToSlugConverter.prototype.reinitializeState = function () {
+  TimestampSlugGenerator.prototype.reinitializeState = function () {
     this.pos = 0;
   };
-  TimestampToSlugConverter.prototype.encodeSharedRef = function (
-    processAndValidateTimestampSlug,
+  TimestampSlugGenerator.prototype.encodeSharedRef = function (
+    encodeDataWithTimestamp,
   ) {
     this.reinitializeState();
-    this.doEncode(processAndValidateTimestampSlug, 1);
+    this.doEncode(encodeDataWithTimestamp, 1);
     return this.bytes.subarray(0, this.pos);
   };
-  TimestampToSlugConverter.prototype.encode = function (
-    generateUniqueIdentifierFromSlug,
-  ) {
+  TimestampSlugGenerator.prototype.encode = function (encodeValueWithDepth) {
     this.reinitializeState();
-    this.doEncode(generateUniqueIdentifierFromSlug, 1);
+    this.doEncode(encodeValueWithDepth, 1);
     return this.bytes.slice(0, this.pos);
   };
-  TimestampToSlugConverter.prototype.doEncode = function (
-    handleAndEncodeSlug,
-    encodingRecursionDepth,
+  TimestampSlugGenerator.prototype.doEncode = function (
+    encodeValueForSerialization,
+    currentEncodingDepth,
   ) {
-    if (encodingRecursionDepth > this.maxDepth) {
-      throw new Error(`Too deep objects in depth ${encodingRecursionDepth}`);
+    if (currentEncodingDepth > this.maxDepth) {
+      throw new Error(`Too deep objects in depth ${currentEncodingDepth}`);
     }
-    if (handleAndEncodeSlug == null) {
+    if (encodeValueForSerialization == null) {
       this.encodeNil();
-    } else if (typeof handleAndEncodeSlug == "boolean") {
-      this.encodeBoolean(handleAndEncodeSlug);
-    } else if (typeof handleAndEncodeSlug == "number") {
-      this.encodeNumber(handleAndEncodeSlug);
-    } else if (typeof handleAndEncodeSlug == "string") {
-      this.encodeString(handleAndEncodeSlug);
+    } else if (typeof encodeValueForSerialization == "boolean") {
+      this.encodeBoolean(encodeValueForSerialization);
+    } else if (typeof encodeValueForSerialization == "number") {
+      this.encodeNumber(encodeValueForSerialization);
+    } else if (typeof encodeValueForSerialization == "string") {
+      this.encodeString(encodeValueForSerialization);
     } else {
-      this.encodeObject(handleAndEncodeSlug, encodingRecursionDepth);
+      this.encodeObject(encodeValueForSerialization, currentEncodingDepth);
     }
   };
-  TimestampToSlugConverter.prototype.ensureBufferSizeToWrite = function (
-    ensureBufferSizeForEncoding,
+  TimestampSlugGenerator.prototype.ensureBufferSizeToWrite = function (
+    ensureSufficientBufferSize,
   ) {
-    var calculatedBufferSizeNeededForEncoding =
-      this.pos + ensureBufferSizeForEncoding;
-    if (this.view.byteLength < calculatedBufferSizeNeededForEncoding) {
-      this.resizeBuffer(calculatedBufferSizeNeededForEncoding * 2);
+    var calculateRequiredBufferSizeForEncoding =
+      this.pos + ensureSufficientBufferSize;
+    if (this.view.byteLength < calculateRequiredBufferSizeForEncoding) {
+      this.resizeBuffer(calculateRequiredBufferSizeForEncoding * 2);
     }
   };
-  TimestampToSlugConverter.prototype.resizeBuffer = function (
-    resizeBufferAndProcessSlug,
+  TimestampSlugGenerator.prototype.resizeBuffer = function (
+    resizeBufferAndUpdatePositionToFitBufferRequirements,
   ) {
-    var slugResizingBuffer = new ArrayBuffer(resizeBufferAndProcessSlug);
-    var slugByteArray = new Uint8Array(slugResizingBuffer);
-    var createSlugDataView = new DataView(slugResizingBuffer);
-    slugByteArray.set(this.bytes);
-    this.view = createSlugDataView;
-    this.bytes = slugByteArray;
+    var allocateAndInitializeBufferForSlug = new ArrayBuffer(
+      resizeBufferAndUpdatePositionToFitBufferRequirements,
+    );
+    var initializeSlugByteArrayWithResize = new Uint8Array(
+      allocateAndInitializeBufferForSlug,
+    );
+    var createSlugDataViewWithBuffer = new DataView(
+      allocateAndInitializeBufferForSlug,
+    );
+    initializeSlugByteArrayWithResize.set(this.bytes);
+    this.view = createSlugDataViewWithBuffer;
+    this.bytes = initializeSlugByteArrayWithResize;
   };
-  TimestampToSlugConverter.prototype.encodeNil = function () {
+  TimestampSlugGenerator.prototype.encodeNil = function () {
     this.writeU8(192);
   };
-  TimestampToSlugConverter.prototype.encodeBoolean = function (
-    encodeBooleanAsByte,
+  TimestampSlugGenerator.prototype.encodeBoolean = function (
+    encodeBooleanToUint8,
   ) {
-    if (encodeBooleanAsByte === false) {
+    if (encodeBooleanToUint8 === false) {
       this.writeU8(194);
     } else {
       this.writeU8(195);
     }
   };
-  TimestampToSlugConverter.prototype.encodeNumber = function (
-    serializeNumericValue,
+  TimestampSlugGenerator.prototype.encodeNumber = function (
+    encodeSafeIntegerToByte,
   ) {
     if (
-      Number.isSafeInteger(serializeNumericValue) &&
+      Number.isSafeInteger(encodeSafeIntegerToByte) &&
       !this.forceIntegerToFloat
     ) {
-      if (serializeNumericValue >= 0) {
-        if (serializeNumericValue < 128) {
-          this.writeU8(serializeNumericValue);
-        } else if (serializeNumericValue < 256) {
+      if (encodeSafeIntegerToByte >= 0) {
+        if (encodeSafeIntegerToByte < 128) {
+          this.writeU8(encodeSafeIntegerToByte);
+        } else if (encodeSafeIntegerToByte < 256) {
           this.writeU8(204);
-          this.writeU8(serializeNumericValue);
-        } else if (serializeNumericValue < 65536) {
+          this.writeU8(encodeSafeIntegerToByte);
+        } else if (encodeSafeIntegerToByte < 65536) {
           this.writeU8(205);
-          this.writeU16(serializeNumericValue);
-        } else if (serializeNumericValue < 4294967296) {
+          this.writeU16(encodeSafeIntegerToByte);
+        } else if (encodeSafeIntegerToByte < 4294967296) {
           this.writeU8(206);
-          this.writeU32(serializeNumericValue);
+          this.writeU32(encodeSafeIntegerToByte);
         } else {
           this.writeU8(207);
-          this.writeU64(serializeNumericValue);
+          this.writeU64(encodeSafeIntegerToByte);
         }
-      } else if (serializeNumericValue >= -32) {
-        this.writeU8((serializeNumericValue + 32) | 224);
-      } else if (serializeNumericValue >= -128) {
+      } else if (encodeSafeIntegerToByte >= -32) {
+        this.writeU8((encodeSafeIntegerToByte + 32) | 224);
+      } else if (encodeSafeIntegerToByte >= -128) {
         this.writeU8(208);
-        this.writeI8(serializeNumericValue);
-      } else if (serializeNumericValue >= -32768) {
+        this.writeI8(encodeSafeIntegerToByte);
+      } else if (encodeSafeIntegerToByte >= -32768) {
         this.writeU8(209);
-        this.writeI16(serializeNumericValue);
-      } else if (serializeNumericValue >= -2147483648) {
+        this.writeI16(encodeSafeIntegerToByte);
+      } else if (encodeSafeIntegerToByte >= -2147483648) {
         this.writeU8(210);
-        this.writeI32(serializeNumericValue);
+        this.writeI32(encodeSafeIntegerToByte);
       } else {
         this.writeU8(211);
-        this.writeI64(serializeNumericValue);
+        this.writeI64(encodeSafeIntegerToByte);
       }
     } else if (this.forceFloat32) {
       this.writeU8(202);
-      this.writeF32(serializeNumericValue);
+      this.writeF32(encodeSafeIntegerToByte);
     } else {
       this.writeU8(203);
-      this.writeF64(serializeNumericValue);
+      this.writeF64(encodeSafeIntegerToByte);
     }
   };
-  TimestampToSlugConverter.prototype.writeStringHeader = function (
-    writeNumericValueWithPrefix,
+  TimestampSlugGenerator.prototype.writeStringHeader = function (
+    calculatePrefixedStringLength,
   ) {
-    if (writeNumericValueWithPrefix < 32) {
-      this.writeU8(160 + writeNumericValueWithPrefix);
-    } else if (writeNumericValueWithPrefix < 256) {
+    if (calculatePrefixedStringLength < 32) {
+      this.writeU8(160 + calculatePrefixedStringLength);
+    } else if (calculatePrefixedStringLength < 256) {
       this.writeU8(217);
-      this.writeU8(writeNumericValueWithPrefix);
-    } else if (writeNumericValueWithPrefix < 65536) {
+      this.writeU8(calculatePrefixedStringLength);
+    } else if (calculatePrefixedStringLength < 65536) {
       this.writeU8(218);
-      this.writeU16(writeNumericValueWithPrefix);
-    } else if (writeNumericValueWithPrefix < 4294967296) {
+      this.writeU16(calculatePrefixedStringLength);
+    } else if (calculatePrefixedStringLength < 4294967296) {
       this.writeU8(219);
-      this.writeU32(writeNumericValueWithPrefix);
+      this.writeU32(calculatePrefixedStringLength);
     } else {
       throw new Error(
-        `Too long string: ${writeNumericValueWithPrefix} bytes in UTF-8`,
+        `Too long string: ${calculatePrefixedStringLength} bytes in UTF-8`,
       );
     }
   };
-  TimestampToSlugConverter.prototype.encodeString = function (
-    writeStringHeaderWithPrefix,
+  TimestampSlugGenerator.prototype.encodeString = function (
+    prepareSlugForEncoding,
   ) {
-    var defaultPaddingForSlugByteBuffer = 5;
-    var writeStringHeaderLength = writeStringHeaderWithPrefix.length;
-    if (
-      writeStringHeaderLength >
-      getTextEncodingIdentifierBasedOnNodeCompatibility
-    ) {
-      var calculatedSlugUtf8ByteLength = calculateSlugUtf8ByteLengthInBytes(
-        writeStringHeaderWithPrefix,
+    var slugEncodingBufferPadding = 5;
+    var prepareSlugLength = prepareSlugForEncoding.length;
+    if (prepareSlugLength > determineTextEncodingIdentifier) {
+      var slugUtf8ByteLength = calculateSlugUtf8ByteLength(
+        prepareSlugForEncoding,
       );
       this.ensureBufferSizeToWrite(
-        defaultPaddingForSlugByteBuffer + calculatedSlugUtf8ByteLength,
+        slugEncodingBufferPadding + slugUtf8ByteLength,
       );
-      this.writeStringHeader(calculatedSlugUtf8ByteLength);
-      handleUniqueIdentifierEncoding(
-        writeStringHeaderWithPrefix,
+      this.writeStringHeader(slugUtf8ByteLength);
+      selectEncodingFunctionBasedOnTextEncoderAvailability(
+        prepareSlugForEncoding,
         this.bytes,
         this.pos,
       );
-      this.pos += calculatedSlugUtf8ByteLength;
+      this.pos += slugUtf8ByteLength;
     } else {
-      var calculatedSlugUtf8ByteLength = calculateSlugUtf8ByteLengthInBytes(
-        writeStringHeaderWithPrefix,
+      var slugUtf8ByteLength = calculateSlugUtf8ByteLength(
+        prepareSlugForEncoding,
       );
       this.ensureBufferSizeToWrite(
-        defaultPaddingForSlugByteBuffer + calculatedSlugUtf8ByteLength,
+        slugEncodingBufferPadding + slugUtf8ByteLength,
       );
-      this.writeStringHeader(calculatedSlugUtf8ByteLength);
-      generateValidSlugCharacterArray(
-        writeStringHeaderWithPrefix,
+      this.writeStringHeader(slugUtf8ByteLength);
+      _filterDisallowedCharactersFromSlug(
+        prepareSlugForEncoding,
         this.bytes,
         this.pos,
       );
-      this.pos += calculatedSlugUtf8ByteLength;
+      this.pos += slugUtf8ByteLength;
     }
   };
-  TimestampToSlugConverter.prototype.encodeObject = function (
-    createSlugFromString,
-    _createSlugFromString,
+  TimestampSlugGenerator.prototype.encodeObject = function (
+    inputForSlugGeneration,
+    encodeInputToSlug,
   ) {
-    var encodedSlugForCurrentContext = this.extensionCodec.tryToEncode(
-      createSlugFromString,
+    var encodedSlug = this.extensionCodec.tryToEncode(
+      inputForSlugGeneration,
       this.context,
     );
-    if (encodedSlugForCurrentContext != null) {
-      this.encodeExtension(encodedSlugForCurrentContext);
-    } else if (Array.isArray(createSlugFromString)) {
-      this.encodeArray(createSlugFromString, _createSlugFromString);
-    } else if (ArrayBuffer.isView(createSlugFromString)) {
-      this.encodeBinary(createSlugFromString);
-    } else if (typeof createSlugFromString == "object") {
-      this.encodeMap(createSlugFromString, _createSlugFromString);
+    if (encodedSlug != null) {
+      this.encodeExtension(encodedSlug);
+    } else if (Array.isArray(inputForSlugGeneration)) {
+      this.encodeArray(inputForSlugGeneration, encodeInputToSlug);
+    } else if (ArrayBuffer.isView(inputForSlugGeneration)) {
+      this.encodeBinary(inputForSlugGeneration);
+    } else if (typeof inputForSlugGeneration == "object") {
+      this.encodeMap(inputForSlugGeneration, encodeInputToSlug);
     } else {
       throw new Error(
-        `Unrecognized object: ${Object.prototype.toString.apply(createSlugFromString)}`,
+        `Unrecognized object: ${Object.prototype.toString.apply(inputForSlugGeneration)}`,
       );
     }
   };
-  TimestampToSlugConverter.prototype.encodeBinary = function (
-    calculateBinaryArraySlugByteLength,
+  TimestampSlugGenerator.prototype.encodeBinary = function (
+    calculateUtf8ByteLengthForSlug,
   ) {
-    var calculateBinarySlugLength =
-      calculateBinaryArraySlugByteLength.byteLength;
-    if (calculateBinarySlugLength < 256) {
+    var writeUtf8ByteLengthAndSlug = calculateUtf8ByteLengthForSlug.byteLength;
+    if (writeUtf8ByteLengthAndSlug < 256) {
       this.writeU8(196);
-      this.writeU8(calculateBinarySlugLength);
-    } else if (calculateBinarySlugLength < 65536) {
+      this.writeU8(writeUtf8ByteLengthAndSlug);
+    } else if (writeUtf8ByteLengthAndSlug < 65536) {
       this.writeU8(197);
-      this.writeU16(calculateBinarySlugLength);
-    } else if (calculateBinarySlugLength < 4294967296) {
+      this.writeU16(writeUtf8ByteLengthAndSlug);
+    } else if (writeUtf8ByteLengthAndSlug < 4294967296) {
       this.writeU8(198);
-      this.writeU32(calculateBinarySlugLength);
+      this.writeU32(writeUtf8ByteLengthAndSlug);
     } else {
-      throw new Error(`Too large binary: ${calculateBinarySlugLength}`);
+      throw new Error(`Too large binary: ${writeUtf8ByteLengthAndSlug}`);
     }
-    var convertBinaryArrayToUint8Array = convertToUint8ArrayFromInputValue(
-      calculateBinaryArraySlugByteLength,
+    var writeSlugAsBinaryWithUtf8ByteLength = convertToUint8Array(
+      calculateUtf8ByteLengthForSlug,
     );
-    this.writeU8a(convertBinaryArrayToUint8Array);
+    this.writeU8a(writeSlugAsBinaryWithUtf8ByteLength);
   };
-  TimestampToSlugConverter.prototype.encodeArray = function (
-    binaryArraySlugForEncoding,
-    encodeArrayAndComputeSlugSize,
+  TimestampSlugGenerator.prototype.encodeArray = function (
+    getBinarySlugLengthArray,
+    encodeAndStoreSlugBytes,
   ) {
-    var inputBinaryArrayLength = binaryArraySlugForEncoding.length;
-    if (inputBinaryArrayLength < 16) {
-      this.writeU8(144 + inputBinaryArrayLength);
-    } else if (inputBinaryArrayLength < 65536) {
+    var binarySlugLengthCount = getBinarySlugLengthArray.length;
+    if (binarySlugLengthCount < 16) {
+      this.writeU8(144 + binarySlugLengthCount);
+    } else if (binarySlugLengthCount < 65536) {
       this.writeU8(220);
-      this.writeU16(inputBinaryArrayLength);
-    } else if (inputBinaryArrayLength < 4294967296) {
+      this.writeU16(binarySlugLengthCount);
+    } else if (binarySlugLengthCount < 4294967296) {
       this.writeU8(221);
-      this.writeU32(inputBinaryArrayLength);
+      this.writeU32(binarySlugLengthCount);
     } else {
-      throw new Error(`Too large array: ${inputBinaryArrayLength}`);
+      throw new Error(`Too large array: ${binarySlugLengthCount}`);
     }
     for (
-      var encodingLengthIndex = 0,
-        activeInputEncodingLengths = binaryArraySlugForEncoding;
-      encodingLengthIndex < activeInputEncodingLengths.length;
-      encodingLengthIndex++
+      var currentBinarySlugLengthIndex = 0,
+        binarySlugLengthsArray = getBinarySlugLengthArray;
+      currentBinarySlugLengthIndex < binarySlugLengthsArray.length;
+      currentBinarySlugLengthIndex++
     ) {
-      var currentInputEncodingLength =
-        activeInputEncodingLengths[encodingLengthIndex];
-      this.doEncode(
-        currentInputEncodingLength,
-        encodeArrayAndComputeSlugSize + 1,
-      );
+      var currentBinarySlugLength =
+        binarySlugLengthsArray[currentBinarySlugLengthIndex];
+      this.doEncode(currentBinarySlugLength, encodeAndStoreSlugBytes + 1);
     }
   };
-  TimestampToSlugConverter.prototype.countWithoutUndefined = function (
-    calculateValidBinaryArrayEncoding,
-    calculateValidDecodingsFromBuffer,
+  TimestampSlugGenerator.prototype.countWithoutUndefined = function (
+    countValidDecodingsForStatus,
+    getValidDecodingCount,
   ) {
-    var validDecodingCount = 0;
+    var countOfValidDecodings = 0;
     for (
-      var currentDecodingIndex = 0,
-        validDecodingArray = calculateValidDecodingsFromBuffer;
-      currentDecodingIndex < validDecodingArray.length;
-      currentDecodingIndex++
+      var validationIndexForValidDecodings = 0,
+        validDecodingCountList = getValidDecodingCount;
+      validationIndexForValidDecodings < validDecodingCountList.length;
+      validationIndexForValidDecodings++
     ) {
-      var activeDecoding = validDecodingArray[currentDecodingIndex];
-      if (calculateValidBinaryArrayEncoding[activeDecoding] !== undefined) {
-        validDecodingCount++;
+      var currentDecodingValidationStatus =
+        validDecodingCountList[validationIndexForValidDecodings];
+      if (
+        countValidDecodingsForStatus[currentDecodingValidationStatus] !==
+        undefined
+      ) {
+        countOfValidDecodings++;
       }
     }
-    return validDecodingCount;
+    return countOfValidDecodings;
   };
-  TimestampToSlugConverter.prototype.encodeMap = function (
-    encodeAndComputeIdentifier,
-    generateUniqueIdentifierFromBinaryArrayEncoding,
+  TimestampSlugGenerator.prototype.encodeMap = function (
+    generateEncodedIdentifierMap,
+    generateSlugFromBinaryData,
   ) {
-    var encodedIdentifierKeys = Object.keys(encodeAndComputeIdentifier);
+    var sortedIdentifierKeysArray = Object.keys(generateEncodedIdentifierMap);
     if (this.sortKeys) {
-      encodedIdentifierKeys.sort();
+      sortedIdentifierKeysArray.sort();
     }
-    var countOfEncodedIdentifierKeys = this.ignoreUndefined
+    var encodedIdentifierCount = this.ignoreUndefined
       ? this.countWithoutUndefined(
-          encodeAndComputeIdentifier,
-          encodedIdentifierKeys,
+          generateEncodedIdentifierMap,
+          sortedIdentifierKeysArray,
         )
-      : encodedIdentifierKeys.length;
-    if (countOfEncodedIdentifierKeys < 16) {
-      this.writeU8(128 + countOfEncodedIdentifierKeys);
-    } else if (countOfEncodedIdentifierKeys < 65536) {
+      : sortedIdentifierKeysArray.length;
+    if (encodedIdentifierCount < 16) {
+      this.writeU8(128 + encodedIdentifierCount);
+    } else if (encodedIdentifierCount < 65536) {
       this.writeU8(222);
-      this.writeU16(countOfEncodedIdentifierKeys);
-    } else if (countOfEncodedIdentifierKeys < 4294967296) {
+      this.writeU16(encodedIdentifierCount);
+    } else if (encodedIdentifierCount < 4294967296) {
       this.writeU8(223);
-      this.writeU32(countOfEncodedIdentifierKeys);
+      this.writeU32(encodedIdentifierCount);
     } else {
-      throw new Error(`Too large map object: ${countOfEncodedIdentifierKeys}`);
+      throw new Error(`Too large map object: ${encodedIdentifierCount}`);
     }
     for (
-      var sortedKeyIndex = 0,
-        encodedIdentifierKeysSorted = encodedIdentifierKeys;
-      sortedKeyIndex < encodedIdentifierKeysSorted.length;
-      sortedKeyIndex++
+      var currentSortingKeyIndex = 0,
+        sortedIdentifierKeys = sortedIdentifierKeysArray;
+      currentSortingKeyIndex < sortedIdentifierKeys.length;
+      currentSortingKeyIndex++
     ) {
-      var activeSortingKey = encodedIdentifierKeysSorted[sortedKeyIndex];
-      var activeSortingKeyValue = encodeAndComputeIdentifier[activeSortingKey];
-      if (!this.ignoreUndefined || activeSortingKeyValue !== undefined) {
+      var activeSortingKey = sortedIdentifierKeys[currentSortingKeyIndex];
+      var encodedMapValueForActiveSortKey =
+        generateEncodedIdentifierMap[activeSortingKey];
+      if (
+        !this.ignoreUndefined ||
+        encodedMapValueForActiveSortKey !== undefined
+      ) {
         this.encodeString(activeSortingKey);
         this.doEncode(
-          activeSortingKeyValue,
-          generateUniqueIdentifierFromBinaryArrayEncoding + 1,
+          encodedMapValueForActiveSortKey,
+          generateSlugFromBinaryData + 1,
         );
       }
     }
   };
-  TimestampToSlugConverter.prototype.encodeExtension = function (
-    calculateAndEncodeIdentifier,
+  TimestampSlugGenerator.prototype.encodeExtension = function (
+    countEncodedIdentifiersInMap,
   ) {
-    var identifierDataLength = calculateAndEncodeIdentifier.data.length;
-    if (identifierDataLength === 1) {
+    var countOfEncodedIdentifiers = countEncodedIdentifiersInMap.data.length;
+    if (countOfEncodedIdentifiers === 1) {
       this.writeU8(212);
-    } else if (identifierDataLength === 2) {
+    } else if (countOfEncodedIdentifiers === 2) {
       this.writeU8(213);
-    } else if (identifierDataLength === 4) {
+    } else if (countOfEncodedIdentifiers === 4) {
       this.writeU8(214);
-    } else if (identifierDataLength === 8) {
+    } else if (countOfEncodedIdentifiers === 8) {
       this.writeU8(215);
-    } else if (identifierDataLength === 16) {
+    } else if (countOfEncodedIdentifiers === 16) {
       this.writeU8(216);
-    } else if (identifierDataLength < 256) {
+    } else if (countOfEncodedIdentifiers < 256) {
       this.writeU8(199);
-      this.writeU8(identifierDataLength);
-    } else if (identifierDataLength < 65536) {
+      this.writeU8(countOfEncodedIdentifiers);
+    } else if (countOfEncodedIdentifiers < 65536) {
       this.writeU8(200);
-      this.writeU16(identifierDataLength);
-    } else if (identifierDataLength < 4294967296) {
+      this.writeU16(countOfEncodedIdentifiers);
+    } else if (countOfEncodedIdentifiers < 4294967296) {
       this.writeU8(201);
-      this.writeU32(identifierDataLength);
+      this.writeU32(countOfEncodedIdentifiers);
     } else {
-      throw new Error(`Too large extension object: ${identifierDataLength}`);
+      throw new Error(
+        `Too large extension object: ${countOfEncodedIdentifiers}`,
+      );
     }
-    this.writeI8(calculateAndEncodeIdentifier.type);
-    this.writeU8a(calculateAndEncodeIdentifier.data);
+    this.writeI8(countEncodedIdentifiersInMap.type);
+    this.writeU8a(countEncodedIdentifiersInMap.data);
   };
-  TimestampToSlugConverter.prototype.writeU8 = function (
-    encodeUniqueIdentifierByteLength,
-  ) {
+  TimestampSlugGenerator.prototype.writeU8 = function (writeUnsigned8Bit) {
     this.ensureBufferSizeToWrite(1);
-    this.view.setUint8(this.pos, encodeUniqueIdentifierByteLength);
+    this.view.setUint8(this.pos, writeUnsigned8Bit);
     this.pos++;
   };
-  TimestampToSlugConverter.prototype.writeU8a = function (
-    encodeUniqueIdentifierLength,
+  TimestampSlugGenerator.prototype.writeU8a = function (
+    writeEncodedIdentifierData,
   ) {
-    var uniqueIdentifierEncodedLength = encodeUniqueIdentifierLength.length;
-    this.ensureBufferSizeToWrite(uniqueIdentifierEncodedLength);
-    this.bytes.set(encodeUniqueIdentifierLength, this.pos);
-    this.pos += uniqueIdentifierEncodedLength;
+    var determineAndWriteEncodedIdentifierSize =
+      writeEncodedIdentifierData.length;
+    this.ensureBufferSizeToWrite(determineAndWriteEncodedIdentifierSize);
+    this.bytes.set(writeEncodedIdentifierData, this.pos);
+    this.pos += determineAndWriteEncodedIdentifierSize;
   };
-  TimestampToSlugConverter.prototype.writeI8 = function (
-    validateAndWriteUniqueIdentifierLength,
+  TimestampSlugGenerator.prototype.writeI8 = function (
+    appendSigned8BitToBuffer,
   ) {
     this.ensureBufferSizeToWrite(1);
-    this.view.setInt8(this.pos, validateAndWriteUniqueIdentifierLength);
+    this.view.setInt8(this.pos, appendSigned8BitToBuffer);
     this.pos++;
   };
-  TimestampToSlugConverter.prototype.writeU16 = function (
-    encodeUniqueIdentifierWithLength,
+  TimestampSlugGenerator.prototype.writeU16 = function (
+    writeEncodedUniqueIdentifierSize,
   ) {
     this.ensureBufferSizeToWrite(2);
-    this.view.setUint16(this.pos, encodeUniqueIdentifierWithLength);
+    this.view.setUint16(this.pos, writeEncodedUniqueIdentifierSize);
     this.pos += 2;
   };
-  TimestampToSlugConverter.prototype.writeI16 = function (
+  TimestampSlugGenerator.prototype.writeI16 = function (
     writeSignedInt16ToBuffer,
   ) {
     this.ensureBufferSizeToWrite(2);
     this.view.setInt16(this.pos, writeSignedInt16ToBuffer);
     this.pos += 2;
   };
-  TimestampToSlugConverter.prototype.writeU32 = function (encodedIdentifier) {
-    this.ensureBufferSizeToWrite(4);
-    this.view.setUint32(this.pos, encodedIdentifier);
-    this.pos += 4;
-  };
-  TimestampToSlugConverter.prototype.writeI32 = function (
-    _writeSignedInt16ToBuffer,
+  TimestampSlugGenerator.prototype.writeU32 = function (
+    writeEncodedIdentifierLength,
   ) {
     this.ensureBufferSizeToWrite(4);
-    this.view.setInt32(this.pos, _writeSignedInt16ToBuffer);
+    this.view.setUint32(this.pos, writeEncodedIdentifierLength);
     this.pos += 4;
   };
-  TimestampToSlugConverter.prototype.writeF32 = function (
-    valueToStoreAsFloat32,
+  TimestampSlugGenerator.prototype.writeI32 = function (
+    writeSignedInt16ToBuffer,
   ) {
     this.ensureBufferSizeToWrite(4);
-    this.view.setFloat32(this.pos, valueToStoreAsFloat32);
+    this.view.setInt32(this.pos, writeSignedInt16ToBuffer);
     this.pos += 4;
   };
-  TimestampToSlugConverter.prototype.writeF64 = function (
-    writeFloat64ToBuffer,
-  ) {
+  TimestampSlugGenerator.prototype.writeF32 = function (writeFloat32ToBuffer) {
+    this.ensureBufferSizeToWrite(4);
+    this.view.setFloat32(this.pos, writeFloat32ToBuffer);
+    this.pos += 4;
+  };
+  TimestampSlugGenerator.prototype.writeF64 = function (writeDoubleToBuffer) {
     this.ensureBufferSizeToWrite(8);
-    this.view.setFloat64(this.pos, writeFloat64ToBuffer);
+    this.view.setFloat64(this.pos, writeDoubleToBuffer);
     this.pos += 8;
   };
-  TimestampToSlugConverter.prototype.writeU64 = function (
-    storeUnsignedLongInteger,
+  TimestampSlugGenerator.prototype.writeU64 = function (
+    writeUnsignedLongToBuffer,
   ) {
     this.ensureBufferSizeToWrite(8);
-    syncIdentifierBufferWithNormalizedId(
+    storeNormalizedValueWithIdentifier(
       this.view,
       this.pos,
-      storeUnsignedLongInteger,
+      writeUnsignedLongToBuffer,
     );
     this.pos += 8;
   };
-  TimestampToSlugConverter.prototype.writeI64 = function (
-    identifierBufferSize,
+  TimestampSlugGenerator.prototype.writeI64 = function (
+    writeSignedInt64ToBuffer,
   ) {
     this.ensureBufferSizeToWrite(8);
-    _storeUniqueIdentifierInBuffer(this.view, this.pos, identifierBufferSize);
+    _storeHighOrderIdentifierInBuffer(
+      this.view,
+      this.pos,
+      writeSignedInt64ToBuffer,
+    );
     this.pos += 8;
   };
-  return TimestampToSlugConverter;
+  return TimestampSlugGenerator;
 })();
-var encodedTimestampIdentifier = {};
-function createAndEncodeUserSlug(
-  serializeUserIdentifier,
-  _encodedTimestampIdentifier = encodedTimestampIdentifier,
+var defaultUnsignedLongTimestampSerializer = {};
+function createTimestampedSlugFromUser(
+  TimestampedSlugGenerator,
+  defaultTimestampToUnsignedLongSerializer = defaultUnsignedLongTimestampSerializer,
 ) {
-  var userSlugIdentifierCreator = new createUserSlugIdentifier(
-    _encodedTimestampIdentifier.extensionCodec,
-    _encodedTimestampIdentifier.context,
-    _encodedTimestampIdentifier.maxDepth,
-    _encodedTimestampIdentifier.initialBufferSize,
-    _encodedTimestampIdentifier.sortKeys,
-    _encodedTimestampIdentifier.forceFloat32,
-    _encodedTimestampIdentifier.ignoreUndefined,
-    _encodedTimestampIdentifier.forceIntegerToFloat,
+  var timestampedSlugEncoderInstance = new createTimestampedSlug(
+    defaultTimestampToUnsignedLongSerializer.extensionCodec,
+    defaultTimestampToUnsignedLongSerializer.context,
+    defaultTimestampToUnsignedLongSerializer.maxDepth,
+    defaultTimestampToUnsignedLongSerializer.initialBufferSize,
+    defaultTimestampToUnsignedLongSerializer.sortKeys,
+    defaultTimestampToUnsignedLongSerializer.forceFloat32,
+    defaultTimestampToUnsignedLongSerializer.ignoreUndefined,
+    defaultTimestampToUnsignedLongSerializer.forceIntegerToFloat,
   );
-  return userSlugIdentifierCreator.encodeSharedRef(serializeUserIdentifier);
+  return timestampedSlugEncoderInstance.encodeSharedRef(
+    TimestampedSlugGenerator,
+  );
 }
-function convertIntegerToSignedHexadecimalString(
-  convertToSignedHexStringWithRangeVerification,
-) {
-  return `${convertToSignedHexStringWithRangeVerification < 0 ? "-" : ""}0x${Math.abs(convertToSignedHexStringWithRangeVerification).toString(16).padStart(2, "0")}`;
+function formatIntegerAsSignedHexadecimal(_convertIntegerToSignedHexString) {
+  return `${_convertIntegerToSignedHexString < 0 ? "-" : ""}0x${Math.abs(_convertIntegerToSignedHexString).toString(16).padStart(2, "0")}`;
 }
-var defaultMaxCachedKeyLength = 16;
-var defaultMaxCacheKeyLength = 16;
-var calculateCacheExpirationDuration = (function () {
-  function CacheHandler(
-    setMaxCacheKeyLengthIfValid = defaultMaxCachedKeyLength,
-    _defaultMaxCacheKeyLength = defaultMaxCacheKeyLength,
+var defaultMaxCacheKeyLengthForSlug = 16;
+var maxCacheKeyLengthForSlugGeneration = 16;
+var initializeSlugCacheConfig = (function () {
+  function SlugCacheHandler(
+    maxCacheKeyLengthForSlug = defaultMaxCacheKeyLengthForSlug,
+    maxSlugCacheKeyLength = maxCacheKeyLengthForSlugGeneration,
   ) {
-    this.maxKeyLength = setMaxCacheKeyLengthIfValid;
-    this.maxLengthPerKey = _defaultMaxCacheKeyLength;
+    this.maxKeyLength = maxCacheKeyLengthForSlug;
+    this.maxLengthPerKey = maxSlugCacheKeyLength;
     this.hit = 0;
     this.miss = 0;
     this.caches = [];
@@ -1724,639 +1748,636 @@ var calculateCacheExpirationDuration = (function () {
       this.caches.push([]);
     }
   }
-  CacheHandler.prototype.canBeCached = function (
-    isCacheDurationValidForExpiration,
-  ) {
+  SlugCacheHandler.prototype.canBeCached = function (isValidCacheDuration) {
     return (
-      isCacheDurationValidForExpiration > 0 &&
-      isCacheDurationValidForExpiration <= this.maxKeyLength
+      isValidCacheDuration > 0 && isValidCacheDuration <= this.maxKeyLength
     );
   };
-  CacheHandler.prototype.find = function (
-    _calculateCacheExpirationDuration,
-    calculateCacheExpiryDuration,
-    calculateTimestampFromDuration,
+  SlugCacheHandler.prototype.find = function (
+    retrieveCacheEntriesByDuration,
+    retrieveCacheEntryWithinExpiryDuration,
+    getCacheIndexForExpiryDuration,
   ) {
-    var cacheEntriesForDuration =
-      this.caches[calculateTimestampFromDuration - 1];
+    var getValidCacheEntriesForDuration =
+      this.caches[getCacheIndexForExpiryDuration - 1];
     _0x2d51f0: for (
-      var cacheEntryIndex = 0,
-        validCacheEntriesForDuration = cacheEntriesForDuration;
-      cacheEntryIndex < validCacheEntriesForDuration.length;
-      cacheEntryIndex++
+      var currentCacheEntryIndex = 0,
+        validCacheEntries = getValidCacheEntriesForDuration;
+      currentCacheEntryIndex < validCacheEntries.length;
+      currentCacheEntryIndex++
     ) {
-      var cacheEntryWithValidDuration =
-        validCacheEntriesForDuration[cacheEntryIndex];
-      var getBytesFromCacheEntry = cacheEntryWithValidDuration.bytes;
+      var currentCacheEntryData = validCacheEntries[currentCacheEntryIndex];
+      var getBytesFromCurrentCacheEntry = currentCacheEntryData.bytes;
       for (
-        var _cacheEntryIndex = 0;
-        _cacheEntryIndex < calculateTimestampFromDuration;
-        _cacheEntryIndex++
+        var _currentCacheEntryIndex = 0;
+        _currentCacheEntryIndex < getCacheIndexForExpiryDuration;
+        _currentCacheEntryIndex++
       ) {
         if (
-          getBytesFromCacheEntry[_cacheEntryIndex] !==
-          _calculateCacheExpirationDuration[
-            calculateCacheExpiryDuration + _cacheEntryIndex
+          getBytesFromCurrentCacheEntry[_currentCacheEntryIndex] !==
+          retrieveCacheEntriesByDuration[
+            retrieveCacheEntryWithinExpiryDuration + _currentCacheEntryIndex
           ]
         ) {
           continue _0x2d51f0;
         }
       }
-      return cacheEntryWithValidDuration.str;
+      return currentCacheEntryData.str;
     }
     return null;
   };
-  CacheHandler.prototype.store = function (
-    cacheTimestampEntriesBasedOnExpiryDuration,
-    addCacheEntryWithDuration,
+  SlugCacheHandler.prototype.store = function (
+    storeCacheEntryWithExpiry,
+    _cacheEntryDataWithExpiry,
   ) {
-    var mostRecentCacheEntries =
-      this.caches[cacheTimestampEntriesBasedOnExpiryDuration.length - 1];
-    var createCacheEntryWithExpiry = {
-      bytes: cacheTimestampEntriesBasedOnExpiryDuration,
-      str: addCacheEntryWithDuration,
+    var currentCacheEntries = this.caches[storeCacheEntryWithExpiry.length - 1];
+    var _storeCacheEntryWithExpiry = {
+      bytes: storeCacheEntryWithExpiry,
+      str: _cacheEntryDataWithExpiry,
     };
-    if (mostRecentCacheEntries.length >= this.maxLengthPerKey) {
-      mostRecentCacheEntries[
-        (Math.random() * mostRecentCacheEntries.length) | 0
-      ] = createCacheEntryWithExpiry;
+    if (currentCacheEntries.length >= this.maxLengthPerKey) {
+      currentCacheEntries[(Math.random() * currentCacheEntries.length) | 0] =
+        _storeCacheEntryWithExpiry;
     } else {
-      mostRecentCacheEntries.push(createCacheEntryWithExpiry);
+      currentCacheEntries.push(_storeCacheEntryWithExpiry);
     }
   };
-  CacheHandler.prototype.decode = function (
-    retrieveCacheEntryFromTimestampDuration,
-    getValidCacheEntryBasedOnDuration,
-    getValidCacheEntryForDuration,
+  SlugCacheHandler.prototype.decode = function (
+    retrieveValidCacheEntryByTimestamp,
+    retrieveValidCacheEntryIfActive,
+    retrieveValidCacheEntryWithinTimeFrame,
   ) {
-    var retrievedCacheEntryTimestamp = this.find(
-      retrieveCacheEntryFromTimestampDuration,
-      getValidCacheEntryBasedOnDuration,
-      getValidCacheEntryForDuration,
+    var foundValidCacheEntry = this.find(
+      retrieveValidCacheEntryByTimestamp,
+      retrieveValidCacheEntryIfActive,
+      retrieveValidCacheEntryWithinTimeFrame,
     );
-    if (retrievedCacheEntryTimestamp != null) {
+    if (foundValidCacheEntry != null) {
       this.hit++;
-      return retrievedCacheEntryTimestamp;
+      return foundValidCacheEntry;
     }
     this.miss++;
-    var composedCacheKey = combineAndProcessUniqueIdentifiers(
-      retrieveCacheEntryFromTimestampDuration,
-      getValidCacheEntryBasedOnDuration,
-      getValidCacheEntryForDuration,
+    var generateCacheSegmentKey = extractAndAggregateUniqueIdentifiers(
+      retrieveValidCacheEntryByTimestamp,
+      retrieveValidCacheEntryIfActive,
+      retrieveValidCacheEntryWithinTimeFrame,
     );
-    var createCacheSegmentFromTimestamp = Uint8Array.prototype.slice.call(
-      retrieveCacheEntryFromTimestampDuration,
-      getValidCacheEntryBasedOnDuration,
-      getValidCacheEntryBasedOnDuration + getValidCacheEntryForDuration,
+    var getCacheSegmentFromEntry = Uint8Array.prototype.slice.call(
+      retrieveValidCacheEntryByTimestamp,
+      retrieveValidCacheEntryIfActive,
+      retrieveValidCacheEntryIfActive + retrieveValidCacheEntryWithinTimeFrame,
     );
-    this.store(createCacheSegmentFromTimestamp, composedCacheKey);
-    return composedCacheKey;
+    this.store(getCacheSegmentFromEntry, generateCacheSegmentKey);
+    return generateCacheSegmentKey;
   };
-  return CacheHandler;
+  return SlugCacheHandler;
 })();
-function getOrCreateUniqueIdentifierPromise(
-  retrieveOrCreateUniqueCacheEntry,
-  retrieveOrCreateUniqueCacheIdentifier,
-  createUniqueCacheEntryIdentifier,
-  fetchOrGenerateCacheIdentifier,
+function initializeCacheIdentifierIfNeeded(
+  retrieveOrInitializeCacheWithExpiry,
+  retrieveOrCreateCacheEntry,
+  createUniqueCacheEntryKey,
+  handleCacheEntryLifecycle,
 ) {
-  function getOrInitializeUniqueIdentifier(fetchOrGenerateUniqueIdentifier) {
+  function getOrCreateUniqueCacheKey(retrieveOrInitializeCacheEntryKey) {
     if (
-      fetchOrGenerateUniqueIdentifier instanceof
-      createUniqueCacheEntryIdentifier
+      retrieveOrInitializeCacheEntryKey instanceof createUniqueCacheEntryKey
     ) {
-      return fetchOrGenerateUniqueIdentifier;
+      return retrieveOrInitializeCacheEntryKey;
     } else {
-      return new createUniqueCacheEntryIdentifier(function (
+      return new createUniqueCacheEntryKey(function (
         generateUniqueCacheKeyFromInput,
       ) {
-        generateUniqueCacheKeyFromInput(fetchOrGenerateUniqueIdentifier);
+        generateUniqueCacheKeyFromInput(retrieveOrInitializeCacheEntryKey);
       });
     }
   }
-  return new (createUniqueCacheEntryIdentifier ||= Promise)(function (
-    _retrieveOrCreateUniqueCacheIdentifier,
-    createCacheIdentifierForInputBasedOnTimestamp,
+  return new (createUniqueCacheEntryKey ||= Promise)(function (
+    createCacheIdentifierWithTimestamp,
+    handleCacheIdentifierErrorHandling,
   ) {
-    function processCacheIdentifierWithTimestamp(
-      generateUniqueCacheIdentifierFromTimestamp,
-    ) {
+    function createCacheKeyWithTimestamp(generateCacheKeyFromResponseData) {
       try {
-        processSlugGenerationResult(
-          fetchOrGenerateCacheIdentifier.next(
-            generateUniqueCacheIdentifierFromTimestamp,
-          ),
+        processCacheEntryLifecycleResult(
+          handleCacheEntryLifecycle.next(generateCacheKeyFromResponseData),
         );
-      } catch (errorDuringExecution) {
-        createCacheIdentifierForInputBasedOnTimestamp(errorDuringExecution);
+      } catch (handleCacheIdentifierError) {
+        handleCacheIdentifierErrorHandling(handleCacheIdentifierError);
       }
     }
-    function processCacheIdentifierErrorResponse(
-      handleCacheIdentifierGenerationError,
-    ) {
+    function processCacheIdentifierError(_handleCacheIdentifierError) {
       try {
-        processSlugGenerationResult(
-          fetchOrGenerateCacheIdentifier.throw(
-            handleCacheIdentifierGenerationError,
-          ),
+        processCacheEntryLifecycleResult(
+          handleCacheEntryLifecycle.throw(_handleCacheIdentifierError),
         );
-      } catch (handleCachedInputError) {
-        createCacheIdentifierForInputBasedOnTimestamp(handleCachedInputError);
+      } catch (handleInputCacheErrorAndManage) {
+        handleCacheIdentifierErrorHandling(handleInputCacheErrorAndManage);
       }
     }
-    function processSlugGenerationResult(_handleSlugGenerationOutcome) {
-      if (_handleSlugGenerationOutcome.done) {
-        _retrieveOrCreateUniqueCacheIdentifier(
-          _handleSlugGenerationOutcome.value,
+    function processCacheEntryLifecycleResult(
+      handleCacheEntryLifecycleOutcome,
+    ) {
+      if (handleCacheEntryLifecycleOutcome.done) {
+        createCacheIdentifierWithTimestamp(
+          handleCacheEntryLifecycleOutcome.value,
         );
       } else {
-        getOrInitializeUniqueIdentifier(
-          _handleSlugGenerationOutcome.value,
-        ).then(
-          processCacheIdentifierWithTimestamp,
-          processCacheIdentifierErrorResponse,
+        getOrCreateUniqueCacheKey(handleCacheEntryLifecycleOutcome.value).then(
+          createCacheKeyWithTimestamp,
+          processCacheIdentifierError,
         );
       }
     }
-    processSlugGenerationResult(
-      (fetchOrGenerateCacheIdentifier = fetchOrGenerateCacheIdentifier.apply(
-        retrieveOrCreateUniqueCacheEntry,
-        retrieveOrCreateUniqueCacheIdentifier || [],
+    processCacheEntryLifecycleResult(
+      (handleCacheEntryLifecycle = handleCacheEntryLifecycle.apply(
+        retrieveOrInitializeCacheWithExpiry,
+        retrieveOrCreateCacheEntry || [],
       )).next(),
     );
   });
 }
-function createUniqueIdentifierGeneratorHandlers(
-  createOrFetchUniqueCacheIdentifier,
-  generateUniqueIdentifierFromSlug,
+function manageSlugIdentifierLifecycle(
+  retrieveOrGenerateUniqueSlugIdentifier,
+  createOrFetchUniqueIdentifierFromSlug,
 ) {
-  var uniqueIdentifierGeneratorContext = {
+  var slugIdentifierCreationState = {
     label: 0,
     sent() {
-      if (currentYieldState[0] & 1) {
-        throw currentYieldState[1];
+      if (slugIdentifierYieldState[0] & 1) {
+        throw slugIdentifierYieldState[1];
       }
-      return currentYieldState[1];
+      return slugIdentifierYieldState[1];
     },
     trys: [],
     ops: [],
   };
-  var isUniqueIdentifierGeneratorActive;
-  var uniqueIdentifierGeneratorState;
-  var currentYieldState;
-  var uniqueIdentifierGeneratorHandlers;
-  uniqueIdentifierGeneratorHandlers = {
-    next: getUniqueIdentifierGeneratorHandler(0),
-    throw: getUniqueIdentifierGeneratorHandler(1),
-    return: getUniqueIdentifierGeneratorHandler(2),
+  var isSlugIdentifierCreationAllowed;
+  var slugIdentifierLifecycleManager;
+  var slugIdentifierYieldState;
+  var _slugIdentifierLifecycleManager;
+  _slugIdentifierLifecycleManager = {
+    next: initializeSlugIdentifierHandler(0),
+    throw: initializeSlugIdentifierHandler(1),
+    return: initializeSlugIdentifierHandler(2),
   };
   if (typeof Symbol == "function") {
-    uniqueIdentifierGeneratorHandlers[Symbol.iterator] = function () {
+    _slugIdentifierLifecycleManager[Symbol.iterator] = function () {
       return this;
     };
   }
-  return uniqueIdentifierGeneratorHandlers;
-  function getUniqueIdentifierGeneratorHandler(
-    initializeUniqueIdentifierGenerator,
-  ) {
-    return function (initializeAndHandleSlugGeneration) {
-      return executeUniqueIdentifierGeneratorYield([
-        initializeUniqueIdentifierGenerator,
-        initializeAndHandleSlugGeneration,
+  return _slugIdentifierLifecycleManager;
+  function initializeSlugIdentifierHandler(handleSlugIdentifierLifecycle) {
+    return function (generateUniqueSlugIdentifier) {
+      return createSlugUniqueIdentifier([
+        handleSlugIdentifierLifecycle,
+        generateUniqueSlugIdentifier,
       ]);
     };
   }
-  function executeUniqueIdentifierGeneratorYield(handleSlugCharacterDecoding) {
-    if (isUniqueIdentifierGeneratorActive) {
+  function createSlugUniqueIdentifier(generateUniqueIdFromSlugSegment) {
+    if (isSlugIdentifierCreationAllowed) {
       throw new TypeError("Generator is already executing.");
     }
-    while (uniqueIdentifierGeneratorContext) {
+    while (slugIdentifierCreationState) {
       try {
-        isUniqueIdentifierGeneratorActive = 1;
+        isSlugIdentifierCreationAllowed = 1;
         if (
-          uniqueIdentifierGeneratorState &&
-          (currentYieldState =
-            handleSlugCharacterDecoding[0] & 2
-              ? uniqueIdentifierGeneratorState.return
-              : handleSlugCharacterDecoding[0]
-                ? uniqueIdentifierGeneratorState.throw ||
-                  ((currentYieldState =
-                    uniqueIdentifierGeneratorState.return) &&
-                    currentYieldState.call(uniqueIdentifierGeneratorState),
+          slugIdentifierLifecycleManager &&
+          (slugIdentifierYieldState =
+            generateUniqueIdFromSlugSegment[0] & 2
+              ? slugIdentifierLifecycleManager.return
+              : generateUniqueIdFromSlugSegment[0]
+                ? slugIdentifierLifecycleManager.throw ||
+                  ((slugIdentifierYieldState =
+                    slugIdentifierLifecycleManager.return) &&
+                    slugIdentifierYieldState.call(
+                      slugIdentifierLifecycleManager,
+                    ),
                   0)
-                : uniqueIdentifierGeneratorState.next) &&
-          !(currentYieldState = currentYieldState.call(
-            uniqueIdentifierGeneratorState,
-            handleSlugCharacterDecoding[1],
+                : slugIdentifierLifecycleManager.next) &&
+          !(slugIdentifierYieldState = slugIdentifierYieldState.call(
+            slugIdentifierLifecycleManager,
+            generateUniqueIdFromSlugSegment[1],
           )).done
         ) {
-          return currentYieldState;
+          return slugIdentifierYieldState;
         }
-        uniqueIdentifierGeneratorState = 0;
-        if (currentYieldState) {
-          handleSlugCharacterDecoding = [
-            handleSlugCharacterDecoding[0] & 2,
-            currentYieldState.value,
+        slugIdentifierLifecycleManager = 0;
+        if (slugIdentifierYieldState) {
+          generateUniqueIdFromSlugSegment = [
+            generateUniqueIdFromSlugSegment[0] & 2,
+            slugIdentifierYieldState.value,
           ];
         }
-        switch (handleSlugCharacterDecoding[0]) {
+        switch (generateUniqueIdFromSlugSegment[0]) {
           case 0:
           case 1:
-            currentYieldState = handleSlugCharacterDecoding;
+            slugIdentifierYieldState = generateUniqueIdFromSlugSegment;
             break;
           case 4:
-            uniqueIdentifierGeneratorContext.label++;
+            slugIdentifierCreationState.label++;
             return {
-              value: handleSlugCharacterDecoding[1],
+              value: generateUniqueIdFromSlugSegment[1],
               done: false,
             };
           case 5:
-            uniqueIdentifierGeneratorContext.label++;
-            uniqueIdentifierGeneratorState = handleSlugCharacterDecoding[1];
-            handleSlugCharacterDecoding = [0];
+            slugIdentifierCreationState.label++;
+            slugIdentifierLifecycleManager = generateUniqueIdFromSlugSegment[1];
+            generateUniqueIdFromSlugSegment = [0];
             continue;
           case 7:
-            handleSlugCharacterDecoding =
-              uniqueIdentifierGeneratorContext.ops.pop();
-            uniqueIdentifierGeneratorContext.trys.pop();
+            generateUniqueIdFromSlugSegment =
+              slugIdentifierCreationState.ops.pop();
+            slugIdentifierCreationState.trys.pop();
             continue;
           default:
-            currentYieldState = uniqueIdentifierGeneratorContext.trys;
+            slugIdentifierYieldState = slugIdentifierCreationState.trys;
             if (
-              !(currentYieldState =
-                currentYieldState.length > 0 &&
-                currentYieldState[currentYieldState.length - 1]) &&
-              (handleSlugCharacterDecoding[0] === 6 ||
-                handleSlugCharacterDecoding[0] === 2)
+              !(slugIdentifierYieldState =
+                slugIdentifierYieldState.length > 0 &&
+                slugIdentifierYieldState[
+                  slugIdentifierYieldState.length - 1
+                ]) &&
+              (generateUniqueIdFromSlugSegment[0] === 6 ||
+                generateUniqueIdFromSlugSegment[0] === 2)
             ) {
-              uniqueIdentifierGeneratorContext = 0;
+              slugIdentifierCreationState = 0;
               continue;
             }
             if (
-              handleSlugCharacterDecoding[0] === 3 &&
-              (!currentYieldState ||
-                (handleSlugCharacterDecoding[1] > currentYieldState[0] &&
-                  handleSlugCharacterDecoding[1] < currentYieldState[3]))
+              generateUniqueIdFromSlugSegment[0] === 3 &&
+              (!slugIdentifierYieldState ||
+                (generateUniqueIdFromSlugSegment[1] >
+                  slugIdentifierYieldState[0] &&
+                  generateUniqueIdFromSlugSegment[1] <
+                    slugIdentifierYieldState[3]))
             ) {
-              uniqueIdentifierGeneratorContext.label =
-                handleSlugCharacterDecoding[1];
+              slugIdentifierCreationState.label =
+                generateUniqueIdFromSlugSegment[1];
               break;
             }
             if (
-              handleSlugCharacterDecoding[0] === 6 &&
-              uniqueIdentifierGeneratorContext.label < currentYieldState[1]
+              generateUniqueIdFromSlugSegment[0] === 6 &&
+              slugIdentifierCreationState.label < slugIdentifierYieldState[1]
             ) {
-              uniqueIdentifierGeneratorContext.label = currentYieldState[1];
-              currentYieldState = handleSlugCharacterDecoding;
+              slugIdentifierCreationState.label = slugIdentifierYieldState[1];
+              slugIdentifierYieldState = generateUniqueIdFromSlugSegment;
               break;
             }
             if (
-              currentYieldState &&
-              uniqueIdentifierGeneratorContext.label < currentYieldState[2]
+              slugIdentifierYieldState &&
+              slugIdentifierCreationState.label < slugIdentifierYieldState[2]
             ) {
-              uniqueIdentifierGeneratorContext.label = currentYieldState[2];
-              uniqueIdentifierGeneratorContext.ops.push(
-                handleSlugCharacterDecoding,
+              slugIdentifierCreationState.label = slugIdentifierYieldState[2];
+              slugIdentifierCreationState.ops.push(
+                generateUniqueIdFromSlugSegment,
               );
               break;
             }
-            if (currentYieldState[2]) {
-              uniqueIdentifierGeneratorContext.ops.pop();
+            if (slugIdentifierYieldState[2]) {
+              slugIdentifierCreationState.ops.pop();
             }
-            uniqueIdentifierGeneratorContext.trys.pop();
+            slugIdentifierCreationState.trys.pop();
             continue;
         }
-        handleSlugCharacterDecoding = generateUniqueIdentifierFromSlug.call(
-          createOrFetchUniqueCacheIdentifier,
-          uniqueIdentifierGeneratorContext,
-        );
-      } catch (handleErrorDuringSlugDecoding) {
-        handleSlugCharacterDecoding = [6, handleErrorDuringSlugDecoding];
-        uniqueIdentifierGeneratorState = 0;
+        generateUniqueIdFromSlugSegment =
+          createOrFetchUniqueIdentifierFromSlug.call(
+            retrieveOrGenerateUniqueSlugIdentifier,
+            slugIdentifierCreationState,
+          );
+      } catch (handleSlugDecodingError) {
+        generateUniqueIdFromSlugSegment = [6, handleSlugDecodingError];
+        slugIdentifierLifecycleManager = 0;
       } finally {
-        isUniqueIdentifierGeneratorActive = currentYieldState = 0;
+        isSlugIdentifierCreationAllowed = slugIdentifierYieldState = 0;
       }
     }
-    if (handleSlugCharacterDecoding[0] & 5) {
-      throw handleSlugCharacterDecoding[1];
+    if (generateUniqueIdFromSlugSegment[0] & 5) {
+      throw generateUniqueIdFromSlugSegment[1];
     }
     return {
-      value: handleSlugCharacterDecoding[0]
-        ? handleSlugCharacterDecoding[1]
+      value: generateUniqueIdFromSlugSegment[0]
+        ? generateUniqueIdFromSlugSegment[1]
         : undefined,
       done: true,
     };
   }
 }
-function convertAsyncIterableToAsyncIterator(
-  updateYieldContextFromSlugDecoding,
-) {
+function createAsyncIteratorFromIterable(generateAsyncIterableFromIterator) {
   if (!Symbol.asyncIterator) {
     throw new TypeError("Symbol.asyncIterator is not defined.");
   }
-  var retrieveAsyncIterator =
-    updateYieldContextFromSlugDecoding[Symbol.asyncIterator];
-  var asyncIterableHandlerFunctions;
-  if (retrieveAsyncIterator) {
-    return retrieveAsyncIterator.call(updateYieldContextFromSlugDecoding);
+  var retrieveAsyncIteratorFromIterable =
+    generateAsyncIterableFromIterator[Symbol.asyncIterator];
+  var initializeAsyncIterableBuffer;
+  if (retrieveAsyncIteratorFromIterable) {
+    return retrieveAsyncIteratorFromIterable.call(
+      generateAsyncIterableFromIterator,
+    );
   } else {
     if (typeof __values == "function") {
-      updateYieldContextFromSlugDecoding = __values(
-        updateYieldContextFromSlugDecoding,
+      generateAsyncIterableFromIterator = __values(
+        generateAsyncIterableFromIterator,
       );
     } else {
-      updateYieldContextFromSlugDecoding =
-        updateYieldContextFromSlugDecoding[Symbol.iterator]();
+      generateAsyncIterableFromIterator =
+        generateAsyncIterableFromIterator[Symbol.iterator]();
     }
-    asyncIterableHandlerFunctions = {};
-    setupArrayBufferAsyncIterableHandler("next");
-    setupArrayBufferAsyncIterableHandler("throw");
-    setupArrayBufferAsyncIterableHandler("return");
-    asyncIterableHandlerFunctions[Symbol.asyncIterator] = function () {
+    initializeAsyncIterableBuffer = {};
+    setupAsyncIterableBufferHandler("next");
+    setupAsyncIterableBufferHandler("throw");
+    setupAsyncIterableBufferHandler("return");
+    initializeAsyncIterableBuffer[Symbol.asyncIterator] = function () {
       return this;
     };
-    return asyncIterableHandlerFunctions;
+    return initializeAsyncIterableBuffer;
   }
-  function setupArrayBufferAsyncIterableHandler(
-    setupAsyncIterableHandlersForBuffer,
+  function setupAsyncIterableBufferHandler(
+    initializeAsyncIterableBufferHandlers,
   ) {
-    asyncIterableHandlerFunctions[setupAsyncIterableHandlersForBuffer] =
-      updateYieldContextFromSlugDecoding[setupAsyncIterableHandlersForBuffer] &&
-      function (processAsyncBufferOperation) {
+    initializeAsyncIterableBuffer[initializeAsyncIterableBufferHandlers] =
+      generateAsyncIterableFromIterator[
+        initializeAsyncIterableBufferHandlers
+      ] &&
+      function (initializeAsyncIteratorBufferHandler) {
         return new Promise(function (
-          processAsyncBufferData,
-          processAsyncBufferWithUniqueIdentifier,
+          _initializeAsyncBufferHandler,
+          _initializeAsyncIterableBufferHandlers,
         ) {
-          processAsyncBufferOperation = updateYieldContextFromSlugDecoding[
-            setupAsyncIterableHandlersForBuffer
-          ](processAsyncBufferOperation);
-          handleSlugDecodingWithBufferSupport(
-            processAsyncBufferData,
-            processAsyncBufferWithUniqueIdentifier,
-            processAsyncBufferOperation.done,
-            processAsyncBufferOperation.value,
+          initializeAsyncIteratorBufferHandler =
+            generateAsyncIterableFromIterator[
+              initializeAsyncIterableBufferHandlers
+            ](initializeAsyncIteratorBufferHandler);
+          __initializeAsyncBufferProcessing(
+            _initializeAsyncBufferHandler,
+            _initializeAsyncIterableBufferHandlers,
+            initializeAsyncIteratorBufferHandler.done,
+            initializeAsyncIteratorBufferHandler.value,
           );
         });
       };
   }
-  function handleSlugDecodingWithBufferSupport(
-    processAsyncIterableWithSlugDecoding,
-    getAsyncIterableHandlers,
-    getAsyncIterableHandlerWithBufferSupport,
-    processAsyncBufferOperationWithYield,
+  function __initializeAsyncBufferProcessing(
+    setupAsyncBufferIteratorWithProcess,
+    createAsyncIterableWithBufferProcessing,
+    generateAsyncIterableBuffer,
+    createAsyncIterableBufferFromIterator,
   ) {
-    Promise.resolve(processAsyncBufferOperationWithYield).then(function (
-      _setupAsyncIterableHandlersForBuffer,
+    Promise.resolve(createAsyncIterableBufferFromIterator).then(function (
+      initializeAsyncBufferHandlerFor,
     ) {
-      processAsyncIterableWithSlugDecoding({
-        value: _setupAsyncIterableHandlersForBuffer,
-        done: getAsyncIterableHandlerWithBufferSupport,
+      setupAsyncBufferIteratorWithProcess({
+        value: initializeAsyncBufferHandlerFor,
+        done: generateAsyncIterableBuffer,
       });
-    }, getAsyncIterableHandlers);
+    }, createAsyncIterableWithBufferProcessing);
   }
 }
-function AsyncArrayBufferMapper(handleArrayBufferAsyncIterable) {
-  if (this instanceof AsyncArrayBufferMapper) {
-    this.v = handleArrayBufferAsyncIterable;
+function AsyncIterableBufferManager(initializeAsyncIterableBufferHandler) {
+  if (this instanceof AsyncIterableBufferManager) {
+    this.v = initializeAsyncIterableBufferHandler;
     return this;
   } else {
-    return new AsyncArrayBufferMapper(handleArrayBufferAsyncIterable);
+    return new AsyncIterableBufferManager(initializeAsyncIterableBufferHandler);
   }
 }
-function initializeAsyncDataProcessingIterator(
-  setupAsyncIterableHandlerForBufferEncoding,
-  handleAsyncBufferEncodingProcess,
-  createUniqueIdentifierForBufferProcessing,
+function createAsyncBufferIterator(
+  processAndCreateAsyncIterableBuffer,
+  processAsyncBufferTasks,
+  processAsyncBufferWithIterable,
 ) {
   if (!Symbol.asyncIterator) {
     throw new TypeError("Symbol.asyncIterator is not defined.");
   }
-  var bufferProcessingIdentifier =
-    createUniqueIdentifierForBufferProcessing.apply(
-      setupAsyncIterableHandlerForBufferEncoding,
-      handleAsyncBufferEncodingProcess || [],
-    );
-  var asyncBufferProcessingIterator;
-  var bufferProcessingHandlersQueue = [];
-  asyncBufferProcessingIterator = {};
-  setupAsyncBufferProcessing("next");
-  setupAsyncBufferProcessing("throw");
-  setupAsyncBufferProcessing("return");
-  asyncBufferProcessingIterator[Symbol.asyncIterator] = function () {
+  var processAsyncIterableBuffer = processAsyncBufferWithIterable.apply(
+    processAndCreateAsyncIterableBuffer,
+    processAsyncBufferTasks || [],
+  );
+  var _createAsyncBufferIterator;
+  var asyncBufferTaskQueue = [];
+  _createAsyncBufferIterator = {};
+  setupAsyncBufferProcessor("next");
+  setupAsyncBufferProcessor("throw");
+  setupAsyncBufferProcessor("return");
+  _createAsyncBufferIterator[Symbol.asyncIterator] = function () {
     return this;
   };
-  return asyncBufferProcessingIterator;
-  function setupAsyncBufferProcessing(createUniqueBufferProcessingIdentifier) {
-    if (bufferProcessingIdentifier[createUniqueBufferProcessingIdentifier]) {
-      asyncBufferProcessingIterator[createUniqueBufferProcessingIdentifier] =
-        function (createUniqueBufferProcessingId) {
-          return new Promise(function (
-            initializeAsyncDataIterator,
-            enqueueAsyncDataProcessingTasks,
+  return _createAsyncBufferIterator;
+  function setupAsyncBufferProcessor(initializeAsyncBufferProcessing) {
+    if (processAsyncIterableBuffer[initializeAsyncBufferProcessing]) {
+      _createAsyncBufferIterator[initializeAsyncBufferProcessing] = function (
+        __initializeAsyncBufferProcessor,
+      ) {
+        return new Promise(function (
+          processAsyncBufferQueue,
+          initializeAndScheduleAsyncDataProcessingTasks,
+        ) {
+          if (
+            !(
+              asyncBufferTaskQueue.push([
+                initializeAsyncBufferProcessing,
+                __initializeAsyncBufferProcessor,
+                processAsyncBufferQueue,
+                initializeAndScheduleAsyncDataProcessingTasks,
+              ]) > 1
+            )
           ) {
-            if (
-              !(
-                bufferProcessingHandlersQueue.push([
-                  createUniqueBufferProcessingIdentifier,
-                  createUniqueBufferProcessingId,
-                  initializeAsyncDataIterator,
-                  enqueueAsyncDataProcessingTasks,
-                ]) > 1
-              )
-            ) {
-              handleAsyncDataEncodingProcess(
-                createUniqueBufferProcessingIdentifier,
-                createUniqueBufferProcessingId,
-              );
-            }
-          });
-        };
+            __handleAsyncDataProcessingWithErrorHandling(
+              initializeAsyncBufferProcessing,
+              __initializeAsyncBufferProcessor,
+            );
+          }
+        });
+      };
     }
   }
-  function handleAsyncDataEncodingProcess(
-    encodeDataForAsyncOperations,
-    initializeAsyncProcessingWithIdentifier,
+  function __handleAsyncDataProcessingWithErrorHandling(
+    ___initializeAsyncBufferProcessor,
+    setupAsyncBufferProcessing,
   ) {
     try {
-      processEncodingBasedOnValueType(
-        bufferProcessingIdentifier[encodeDataForAsyncOperations](
-          initializeAsyncProcessingWithIdentifier,
+      processAsyncDataQueue(
+        processAsyncIterableBuffer[___initializeAsyncBufferProcessor](
+          setupAsyncBufferProcessing,
         ),
       );
-    } catch (handleErrorAndRetry) {
-      enqueueAndProcessAsyncData(
-        bufferProcessingHandlersQueue[0][3],
-        handleErrorAndRetry,
+    } catch (___handleAsyncDataProcessingWithErrorHandling) {
+      handleNextAsyncAudioDataProcessing(
+        asyncBufferTaskQueue[0][3],
+        ___handleAsyncDataProcessingWithErrorHandling,
       );
     }
   }
-  function processEncodingBasedOnValueType(
-    handleAsyncValueProcessingBasedOnIdentifier,
-  ) {
+  function processAsyncDataQueue(_initializeAsyncBufferProcessing) {
     if (
-      handleAsyncValueProcessingBasedOnIdentifier.value instanceof
-      AsyncArrayBufferMapper
+      _initializeAsyncBufferProcessing.value instanceof
+      AsyncIterableBufferManager
     ) {
-      Promise.resolve(handleAsyncValueProcessingBasedOnIdentifier.value.v).then(
-        handleNextValueRangeDataEncoding,
-        handleAsyncDataWithEncoding,
+      Promise.resolve(_initializeAsyncBufferProcessing.value.v).then(
+        enqueueNextAudioProcessingTaskAsync,
+        processAsyncBufferWithErrorHandling,
       );
     } else {
-      enqueueAndProcessAsyncData(
-        bufferProcessingHandlersQueue[0][2],
-        handleAsyncValueProcessingBasedOnIdentifier,
+      handleNextAsyncAudioDataProcessing(
+        asyncBufferTaskQueue[0][2],
+        _initializeAsyncBufferProcessing,
       );
     }
   }
-  function handleNextValueRangeDataEncoding(handleAsyncDataEncoding) {
-    handleAsyncDataEncodingProcess("next", handleAsyncDataEncoding);
+  function enqueueNextAudioProcessingTaskAsync(enqueueAudioProcessingTasks) {
+    __handleAsyncDataProcessingWithErrorHandling(
+      "next",
+      enqueueAudioProcessingTasks,
+    );
   }
-  function handleAsyncDataWithEncoding(processDataEncodingAsyncWithId) {
-    handleAsyncDataEncodingProcess("throw", processDataEncodingAsyncWithId);
-  }
-  function enqueueAndProcessAsyncData(
-    enqueueAndProcessAsyncDataWithEncoding,
-    queueAndHandleAsyncDataEncoding,
+  function processAsyncBufferWithErrorHandling(
+    handleAsyncBufferProcessingWithErrorHandling,
   ) {
-    enqueueAndProcessAsyncDataWithEncoding(queueAndHandleAsyncDataEncoding);
-    bufferProcessingHandlersQueue.shift();
-    if (bufferProcessingHandlersQueue.length) {
-      handleAsyncDataEncodingProcess(
-        bufferProcessingHandlersQueue[0][0],
-        bufferProcessingHandlersQueue[0][1],
+    __handleAsyncDataProcessingWithErrorHandling(
+      "throw",
+      handleAsyncBufferProcessingWithErrorHandling,
+    );
+  }
+  function handleNextAsyncAudioDataProcessing(
+    handleAsyncDataProcessingWithErrorHandling,
+    enqueueAndHandleAsyncAudioDataProcessing,
+  ) {
+    handleAsyncDataProcessingWithErrorHandling(
+      enqueueAndHandleAsyncAudioDataProcessing,
+    );
+    asyncBufferTaskQueue.shift();
+    if (asyncBufferTaskQueue.length) {
+      __handleAsyncDataProcessingWithErrorHandling(
+        asyncBufferTaskQueue[0][0],
+        asyncBufferTaskQueue[0][1],
       );
     }
   }
 }
-function isValidStringOrNumberInput(processAndManageAsyncDataEncoding) {
-  var determineInputDataType = typeof processAndManageAsyncDataEncoding;
+function isValidAsyncDataTypeForProcessing(
+  _handleAsyncDataProcessingWithErrorHandling,
+) {
+  var determineInputDataType =
+    typeof _handleAsyncDataProcessingWithErrorHandling;
   return (
     determineInputDataType === "string" || determineInputDataType === "number"
   );
 }
-var encodeDataForAsyncProcessing = -1;
-var maxAsyncDataEncodingDepthLimit = new DataView(new ArrayBuffer(0));
-var queueAndProcessDataForEncoding = new Uint8Array(
-  maxAsyncDataEncodingDepthLimit.buffer,
+var handleAudioProcessingQueue = -1;
+var handleAudioDataProcessing = new DataView(new ArrayBuffer(0));
+var handleAsyncBufferProcessing = new Uint8Array(
+  handleAudioDataProcessing.buffer,
 );
-var queueAndProcessAsyncDataEncoding = (function () {
+var handleAudioDataProcessingAsync = (function () {
   try {
-    maxAsyncDataEncodingDepthLimit.getInt8(0);
-  } catch (errorInstance) {
-    return errorInstance.constructor;
+    handleAudioDataProcessing.getInt8(0);
+  } catch (handleCatchError) {
+    return handleCatchError.constructor;
   }
   throw new Error("never reached");
 })();
-var writeAndProcessUnsignedShortValue = new queueAndProcessAsyncDataEncoding(
+var handleAsyncAudioDataProcessing = new handleAudioDataProcessingAsync(
   "Insufficient data",
 );
-var asyncDataEncodingPreparation = new calculateCacheExpirationDuration();
-var createUniqueDataIdentifier = (function () {
-  function VideoAudioCodecConfiguration(
-    extractTimestampComponentsFromBufferUsingDefaultCodec = extractTimestampComponentsFromBuffer.defaultCodec,
-    defaultSettingValue = undefined,
-    ____maxAllowedUniqueIdentifier = maxAllowedUniqueIdentifier,
-    _maxAllowedUniqueIdentifier = maxAllowedUniqueIdentifier,
-    ___maxAllowedUniqueIdentifier = maxAllowedUniqueIdentifier,
-    maxAllowedUniqueSessionIdentifier = maxAllowedUniqueIdentifier,
-    __maxAllowedUniqueIdentifier = maxAllowedUniqueIdentifier,
-    _asyncDataEncodingPreparation = asyncDataEncodingPreparation,
+var enqueueAndProcessUserAudioTasks = new initializeSlugCacheConfig();
+var processAudioEncodingErrors = (function () {
+  function AsyncAudioCodecConfig(
+    initializeDefaultCodecTimestampHandlers = initializeTimestampEncodingDecodingHandlers.defaultCodec,
+    defaultAppConfigValue = undefined,
+    maxUnsignedIntegerValue = MAX_UNSIGNED_INT_VALUE,
+    ___maxUnsignedIntegerValue = MAX_UNSIGNED_INT_VALUE,
+    __maxUnsignedIntegerValue = MAX_UNSIGNED_INT_VALUE,
+    _maxUnsignedIntegerValue = MAX_UNSIGNED_INT_VALUE,
+    maxUnsignedIntValue = MAX_UNSIGNED_INT_VALUE,
+    _enqueueAndProcessUserAudioTasks = enqueueAndProcessUserAudioTasks,
   ) {
-    this.extensionCodec = extractTimestampComponentsFromBufferUsingDefaultCodec;
-    this.context = defaultSettingValue;
-    this.maxStrLength = ____maxAllowedUniqueIdentifier;
-    this.maxBinLength = _maxAllowedUniqueIdentifier;
-    this.maxArrayLength = ___maxAllowedUniqueIdentifier;
-    this.maxMapLength = maxAllowedUniqueSessionIdentifier;
-    this.maxExtLength = __maxAllowedUniqueIdentifier;
-    this.keyDecoder = _asyncDataEncodingPreparation;
+    this.extensionCodec = initializeDefaultCodecTimestampHandlers;
+    this.context = defaultAppConfigValue;
+    this.maxStrLength = maxUnsignedIntegerValue;
+    this.maxBinLength = ___maxUnsignedIntegerValue;
+    this.maxArrayLength = __maxUnsignedIntegerValue;
+    this.maxMapLength = _maxUnsignedIntegerValue;
+    this.maxExtLength = maxUnsignedIntValue;
+    this.keyDecoder = _enqueueAndProcessUserAudioTasks;
     this.totalPos = 0;
     this.pos = 0;
-    this.view = maxAsyncDataEncodingDepthLimit;
-    this.bytes = queueAndProcessDataForEncoding;
-    this.headByte = encodeDataForAsyncProcessing;
+    this.view = handleAudioDataProcessing;
+    this.bytes = handleAsyncBufferProcessing;
+    this.headByte = handleAudioProcessingQueue;
     this.stack = [];
   }
-  VideoAudioCodecConfiguration.prototype.reinitializeState = function () {
+  AsyncAudioCodecConfig.prototype.reinitializeState = function () {
     this.totalPos = 0;
-    this.headByte = encodeDataForAsyncProcessing;
+    this.headByte = handleAudioProcessingQueue;
     this.stack.length = 0;
   };
-  VideoAudioCodecConfiguration.prototype.setBuffer = function (
-    serializeUserDataToBuffer,
+  AsyncAudioCodecConfig.prototype.setBuffer = function (
+    extractUserDataForProcessing,
   ) {
-    this.bytes = convertToUint8ArrayFromInputValue(serializeUserDataToBuffer);
-    this.view = generateDataViewFromInput(this.bytes);
+    this.bytes = convertToUint8Array(extractUserDataForProcessing);
+    this.view = createDataViewFromInput(this.bytes);
     this.pos = 0;
   };
-  VideoAudioCodecConfiguration.prototype.appendBuffer = function (
-    setupAudioVideoCodecSettingsWithSessionIdentifier,
+  AsyncAudioCodecConfig.prototype.appendBuffer = function (
+    setupAudioBufferWithSessionId,
   ) {
-    if (
-      this.headByte === encodeDataForAsyncProcessing &&
-      !this.hasRemaining(1)
-    ) {
-      this.setBuffer(setupAudioVideoCodecSettingsWithSessionIdentifier);
+    if (this.headByte === handleAudioProcessingQueue && !this.hasRemaining(1)) {
+      this.setBuffer(setupAudioBufferWithSessionId);
     } else {
-      var extractCurrentAudioBufferWithIdentifier = this.bytes.subarray(
-        this.pos,
+      var extractAudioBufferFromSession = this.bytes.subarray(this.pos);
+      var createAudioCodecSettingsBuffer = convertToUint8Array(
+        setupAudioBufferWithSessionId,
       );
-      var getSessionIdentifierAsUint8Array = convertToUint8ArrayFromInputValue(
-        setupAudioVideoCodecSettingsWithSessionIdentifier,
+      var mergedAudioBufferWithCodecSettings = new Uint8Array(
+        extractAudioBufferFromSession.length +
+          createAudioCodecSettingsBuffer.length,
       );
-      var audioBufferWithSessionIdentifier = new Uint8Array(
-        extractCurrentAudioBufferWithIdentifier.length +
-          getSessionIdentifierAsUint8Array.length,
+      mergedAudioBufferWithCodecSettings.set(extractAudioBufferFromSession);
+      mergedAudioBufferWithCodecSettings.set(
+        createAudioCodecSettingsBuffer,
+        extractAudioBufferFromSession.length,
       );
-      audioBufferWithSessionIdentifier.set(
-        extractCurrentAudioBufferWithIdentifier,
-      );
-      audioBufferWithSessionIdentifier.set(
-        getSessionIdentifierAsUint8Array,
-        extractCurrentAudioBufferWithIdentifier.length,
-      );
-      this.setBuffer(audioBufferWithSessionIdentifier);
+      this.setBuffer(mergedAudioBufferWithCodecSettings);
     }
   };
-  VideoAudioCodecConfiguration.prototype.hasRemaining = function (
-    appendUniqueSessionIdentifierToBuffer,
+  AsyncAudioCodecConfig.prototype.hasRemaining = function (
+    appendUniqueSessionIdToAudioBuffer,
   ) {
     return (
-      this.view.byteLength - this.pos >= appendUniqueSessionIdentifierToBuffer
+      this.view.byteLength - this.pos >= appendUniqueSessionIdToAudioBuffer
     );
   };
-  VideoAudioCodecConfiguration.prototype.createExtraByteError = function (
-    addUniqueDataToProcessingBuffer,
+  AsyncAudioCodecConfig.prototype.createExtraByteError = function (
+    extractErrorIndexFromAudioBuffer,
   ) {
-    var processingBufferHandler = this;
-    var processingBufferView = processingBufferHandler.view;
-    var currentBufferOffset = processingBufferHandler.pos;
+    var generateAudioBufferRangeError = this;
+    var audioBufferErrorView = generateAudioBufferRangeError.view;
+    var currentAudioBufferPosition = generateAudioBufferRangeError.pos;
     return new RangeError(
-      `Extra ${processingBufferView.byteLength - currentBufferOffset} of ${processingBufferView.byteLength} byte(s) found at buffer[${addUniqueDataToProcessingBuffer}]`,
+      `Extra ${audioBufferErrorView.byteLength - currentAudioBufferPosition} of ${audioBufferErrorView.byteLength} byte(s) found at buffer[${extractErrorIndexFromAudioBuffer}]`,
     );
   };
-  VideoAudioCodecConfiguration.prototype.decode = function (
-    prependSessionIdentifierToBuffer,
+  AsyncAudioCodecConfig.prototype.decode = function (
+    prepareAudioBufferWithSessionId,
   ) {
     this.reinitializeState();
-    this.setBuffer(prependSessionIdentifierToBuffer);
-    var decodedBufferWithSessionId = this.doDecodeSync();
+    this.setBuffer(prepareAudioBufferWithSessionId);
+    var decodedAudioBuffer = this.doDecodeSync();
     if (this.hasRemaining(1)) {
       throw this.createExtraByteError(this.pos);
     }
-    return decodedBufferWithSessionId;
+    return decodedAudioBuffer;
   };
-  VideoAudioCodecConfiguration.prototype.decodeMulti = function (
-    maxBufferValidityWithSessionHandling,
+  AsyncAudioCodecConfig.prototype.decodeMulti = function (
+    maxAudioVideoEncodingDurationInMilliseconds,
   ) {
-    return createUniqueIdentifierGeneratorHandlers(
+    return manageSlugIdentifierLifecycle(
       this,
-      function (maxAllowedKeyValueBufferLength) {
-        switch (maxAllowedKeyValueBufferLength.label) {
+      function (maxAudioBufferSessionIdLength) {
+        switch (maxAudioBufferSessionIdLength.label) {
           case 0:
             this.reinitializeState();
-            this.setBuffer(maxBufferValidityWithSessionHandling);
-            maxAllowedKeyValueBufferLength.label = 1;
+            this.setBuffer(maxAudioVideoEncodingDurationInMilliseconds);
+            maxAudioBufferSessionIdLength.label = 1;
           case 1:
             if (this.hasRemaining(1)) {
               return [4, this.doDecodeSync()];
@@ -2364,7 +2385,7 @@ var createUniqueDataIdentifier = (function () {
               return [3, 3];
             }
           case 2:
-            maxAllowedKeyValueBufferLength.sent();
+            maxAudioBufferSessionIdLength.sent();
             return [3, 1];
           case 3:
             return [2];
@@ -2372,128 +2393,123 @@ var createUniqueDataIdentifier = (function () {
       },
     );
   };
-  VideoAudioCodecConfiguration.prototype.decodeAsync = function (
-    AudioVideoBufferDecoder,
+  AsyncAudioCodecConfig.prototype.decodeAsync = function (
+    decodeAudioMessageDuration,
   ) {
-    var audioVideoBufferAsyncDecoder;
-    var durationEncodingProgress;
-    var isInitialAudioVideoEncodingComplete;
-    var isEncodingDurationInProgress;
-    return getOrCreateUniqueIdentifierPromise(
+    var calculateAudioVideoDurationFromMessage;
+    var encodingProgressPercentage;
+    var isEncodingCompletedForAudioVideo;
+    var isAudioVideoEncodingOngoing;
+    return initializeCacheIdentifierIfNeeded(
       this,
       undefined,
       undefined,
       function () {
-        var checkIfTimestampIncludesDurationEncoding;
-        var decodedAudioVideoDuration;
-        var encodedDurationTimestamp;
-        var audioVideoDurationProcessingResult;
-        var durationEncodingOutcomeResult;
-        var audioVideoDurationEncodingResult;
-        var processAudioVideoTimestampWithDuration;
-        var durationEncodingValue;
-        return createUniqueIdentifierGeneratorHandlers(
+        var shouldIncludeDurationInTimestampProcessing;
+        var audioVideoMessageDurationInMillis;
+        var audioVideoDurationEncodingParameter;
+        var handleAudioVideoDurationExtractionForProcessing;
+        var processAudioVideoDurationEncodingOutcome;
+        var audioVideoProcessingOutcome;
+        var handleAudioVideoTimestampDecodingWithDuration;
+        var processAudioVideoTimestampsAndDurations;
+        return manageSlugIdentifierLifecycle(
           this,
-          function (decodeAndProcessAudioVideoMessageDuration) {
-            switch (decodeAndProcessAudioVideoMessageDuration.label) {
+          function (decodeAudioVideoTimestampDuration) {
+            switch (decodeAudioVideoTimestampDuration.label) {
               case 0:
-                checkIfTimestampIncludesDurationEncoding = false;
-                decodeAndProcessAudioVideoMessageDuration.label = 1;
+                shouldIncludeDurationInTimestampProcessing = false;
+                decodeAudioVideoTimestampDuration.label = 1;
               case 1:
-                decodeAndProcessAudioVideoMessageDuration.trys.push([
-                  1, 6, 7, 12,
-                ]);
-                audioVideoBufferAsyncDecoder =
-                  convertAsyncIterableToAsyncIterator(AudioVideoBufferDecoder);
-                decodeAndProcessAudioVideoMessageDuration.label = 2;
+                decodeAudioVideoTimestampDuration.trys.push([1, 6, 7, 12]);
+                calculateAudioVideoDurationFromMessage =
+                  createAsyncIteratorFromIterable(decodeAudioMessageDuration);
+                decodeAudioVideoTimestampDuration.label = 2;
               case 2:
-                return [4, audioVideoBufferAsyncDecoder.next()];
+                return [4, calculateAudioVideoDurationFromMessage.next()];
               case 3:
-                durationEncodingProgress =
-                  decodeAndProcessAudioVideoMessageDuration.sent();
-                if (durationEncodingProgress.done) {
+                encodingProgressPercentage =
+                  decodeAudioVideoTimestampDuration.sent();
+                if (encodingProgressPercentage.done) {
                   return [3, 5];
                 }
-                encodedDurationTimestamp = durationEncodingProgress.value;
-                if (checkIfTimestampIncludesDurationEncoding) {
+                audioVideoDurationEncodingParameter =
+                  encodingProgressPercentage.value;
+                if (shouldIncludeDurationInTimestampProcessing) {
                   throw this.createExtraByteError(this.totalPos);
                 }
-                this.appendBuffer(encodedDurationTimestamp);
+                this.appendBuffer(audioVideoDurationEncodingParameter);
                 try {
-                  decodedAudioVideoDuration = this.doDecodeSync();
-                  checkIfTimestampIncludesDurationEncoding = true;
-                } catch (processingDataError) {
+                  audioVideoMessageDurationInMillis = this.doDecodeSync();
+                  shouldIncludeDurationInTimestampProcessing = true;
+                } catch (handleQueueProcessingError) {
                   if (
                     !(
-                      processingDataError instanceof
-                      queueAndProcessAsyncDataEncoding
+                      handleQueueProcessingError instanceof
+                      handleAudioDataProcessingAsync
                     )
                   ) {
-                    throw processingDataError;
+                    throw handleQueueProcessingError;
                   }
                 }
                 this.totalPos += this.pos;
-                decodeAndProcessAudioVideoMessageDuration.label = 4;
+                decodeAudioVideoTimestampDuration.label = 4;
               case 4:
                 return [3, 2];
               case 5:
                 return [3, 12];
               case 6:
-                audioVideoDurationProcessingResult =
-                  decodeAndProcessAudioVideoMessageDuration.sent();
-                isInitialAudioVideoEncodingComplete = {
-                  error: audioVideoDurationProcessingResult,
+                handleAudioVideoDurationExtractionForProcessing =
+                  decodeAudioVideoTimestampDuration.sent();
+                isEncodingCompletedForAudioVideo = {
+                  error: handleAudioVideoDurationExtractionForProcessing,
                 };
                 return [3, 12];
               case 7:
-                decodeAndProcessAudioVideoMessageDuration.trys.push([
-                  7,
-                  ,
-                  10,
-                  11,
-                ]);
+                decodeAudioVideoTimestampDuration.trys.push([7, , 10, 11]);
                 if (
-                  durationEncodingProgress &&
-                  !durationEncodingProgress.done &&
-                  (isEncodingDurationInProgress =
-                    audioVideoBufferAsyncDecoder.return)
+                  encodingProgressPercentage &&
+                  !encodingProgressPercentage.done &&
+                  (isAudioVideoEncodingOngoing =
+                    calculateAudioVideoDurationFromMessage.return)
                 ) {
                   return [
                     4,
-                    isEncodingDurationInProgress.call(
-                      audioVideoBufferAsyncDecoder,
+                    isAudioVideoEncodingOngoing.call(
+                      calculateAudioVideoDurationFromMessage,
                     ),
                   ];
                 } else {
                   return [3, 9];
                 }
               case 8:
-                decodeAndProcessAudioVideoMessageDuration.sent();
-                decodeAndProcessAudioVideoMessageDuration.label = 9;
+                decodeAudioVideoTimestampDuration.sent();
+                decodeAudioVideoTimestampDuration.label = 9;
               case 9:
                 return [3, 11];
               case 10:
-                if (isInitialAudioVideoEncodingComplete) {
-                  throw isInitialAudioVideoEncodingComplete.error;
+                if (isEncodingCompletedForAudioVideo) {
+                  throw isEncodingCompletedForAudioVideo.error;
                 }
                 return [7];
               case 11:
                 return [7];
               case 12:
-                if (checkIfTimestampIncludesDurationEncoding) {
+                if (shouldIncludeDurationInTimestampProcessing) {
                   if (this.hasRemaining(1)) {
                     throw this.createExtraByteError(this.totalPos);
                   }
-                  return [2, decodedAudioVideoDuration];
+                  return [2, audioVideoMessageDurationInMillis];
                 }
-                durationEncodingOutcomeResult = this;
-                audioVideoDurationEncodingResult =
-                  durationEncodingOutcomeResult.headByte;
-                processAudioVideoTimestampWithDuration =
-                  durationEncodingOutcomeResult.pos;
-                durationEncodingValue = durationEncodingOutcomeResult.totalPos;
+                processAudioVideoDurationEncodingOutcome = this;
+                audioVideoProcessingOutcome =
+                  processAudioVideoDurationEncodingOutcome.headByte;
+                handleAudioVideoTimestampDecodingWithDuration =
+                  processAudioVideoDurationEncodingOutcome.pos;
+                processAudioVideoTimestampsAndDurations =
+                  processAudioVideoDurationEncodingOutcome.totalPos;
                 throw new RangeError(
-                  `Insufficient data in parsing ${convertIntegerToSignedHexadecimalString(audioVideoDurationEncodingResult)} at ${durationEncodingValue} (${processAudioVideoTimestampWithDuration} in the current buffer)`,
+                  `Insufficient data in parsing ${formatIntegerAsSignedHexadecimal(audioVideoProcessingOutcome)} at ${processAudioVideoTimestampsAndDurations} (${handleAudioVideoTimestampDecodingWithDuration} in the current buffer)`,
                 );
             }
           },
@@ -2501,87 +2517,85 @@ var createUniqueDataIdentifier = (function () {
       },
     );
   };
-  VideoAudioCodecConfiguration.prototype.decodeArrayStream = function (
-    generateMessageIdentifier,
+  AsyncAudioCodecConfig.prototype.decodeArrayStream = function (
+    createChatMessageIdForMediaStream,
   ) {
-    return this.decodeMultiAsync(generateMessageIdentifier, true);
+    return this.decodeMultiAsync(createChatMessageIdForMediaStream, true);
   };
-  VideoAudioCodecConfiguration.prototype.decodeStream = function (
-    generateUniqueIdentifierForDurationEncoding,
+  AsyncAudioCodecConfig.prototype.decodeStream = function (
+    processAudioVideoDurationAndTimestamp,
   ) {
-    return this.decodeMultiAsync(
-      generateUniqueIdentifierForDurationEncoding,
-      false,
-    );
+    return this.decodeMultiAsync(processAudioVideoDurationAndTimestamp, false);
   };
-  VideoAudioCodecConfiguration.prototype.decodeMultiAsync = function (
-    processAudioVideoWithDurationValidation,
-    generateUniqueMessageIdentifier,
+  AsyncAudioCodecConfig.prototype.decodeMultiAsync = function (
+    handleAndValidateMediaStreamInitialization,
+    createUniqueIdentifierForMediaMessages,
   ) {
-    return initializeAsyncDataProcessingIterator(this, arguments, function () {
-      var generateUniqueIdentifierForMessages;
-      var defaultMessageIdentifier;
-      var initAsyncIteratorForMediaStreamDecoding;
-      var currentActiveMessageIdentifier;
-      var generateUniqueTemporaryMessageIdentifier;
-      var currentMessageIdentifier;
-      var activeMediaStreamIdentifier;
-      var generateMessageIdentifier;
-      var createMessageIdentifierForDecoding;
-      return createUniqueIdentifierGeneratorHandlers(
+    return createAsyncBufferIterator(this, arguments, function () {
+      var generateChatMessageIdentifier;
+      var defaultChatMessageIdentifier;
+      var initializeMediaStreamDecoderAsync;
+      var currentActiveChatMessageIdentifier;
+      var generateChatMessageId;
+      var currentChatMessageIdentifier;
+      var currentActiveMediaStreamIdentifier;
+      var generateChatMessageIdForCurrentInteraction;
+      var generateChatMessageIdForDecoding;
+      return manageSlugIdentifierLifecycle(
         this,
-        function (generateUniqueMessageIdentifier) {
-          switch (generateUniqueMessageIdentifier.label) {
+        function (createUniqueChatMessageIdForMediaStream) {
+          switch (createUniqueChatMessageIdForMediaStream.label) {
             case 0:
-              generateUniqueIdentifierForMessages =
-                generateUniqueMessageIdentifier;
-              defaultMessageIdentifier = -1;
-              generateUniqueMessageIdentifier.label = 1;
+              generateChatMessageIdentifier =
+                createUniqueChatMessageIdForMediaStream;
+              defaultChatMessageIdentifier = -1;
+              createUniqueChatMessageIdForMediaStream.label = 1;
             case 1:
-              generateUniqueMessageIdentifier.trys.push([1, 13, 14, 19]);
-              initAsyncIteratorForMediaStreamDecoding =
-                convertAsyncIterableToAsyncIterator(
-                  processAudioVideoWithDurationValidation,
+              createUniqueChatMessageIdForMediaStream.trys.push([
+                1, 13, 14, 19,
+              ]);
+              initializeMediaStreamDecoderAsync =
+                createAsyncIteratorFromIterable(
+                  handleAndValidateMediaStreamInitialization,
                 );
-              generateUniqueMessageIdentifier.label = 2;
+              createUniqueChatMessageIdForMediaStream.label = 2;
             case 2:
               return [
                 4,
-                AsyncArrayBufferMapper(
-                  initAsyncIteratorForMediaStreamDecoding.next(),
+                AsyncIterableBufferManager(
+                  initializeMediaStreamDecoderAsync.next(),
                 ),
               ];
             case 3:
-              currentActiveMessageIdentifier =
-                generateUniqueMessageIdentifier.sent();
-              if (currentActiveMessageIdentifier.done) {
+              currentActiveChatMessageIdentifier =
+                createUniqueChatMessageIdForMediaStream.sent();
+              if (currentActiveChatMessageIdentifier.done) {
                 return [3, 12];
               }
-              generateUniqueTemporaryMessageIdentifier =
-                currentActiveMessageIdentifier.value;
+              generateChatMessageId = currentActiveChatMessageIdentifier.value;
               if (
-                generateUniqueMessageIdentifier &&
-                defaultMessageIdentifier === 0
+                createUniqueChatMessageIdForMediaStream &&
+                defaultChatMessageIdentifier === 0
               ) {
                 throw this.createExtraByteError(this.totalPos);
               }
-              this.appendBuffer(generateUniqueTemporaryMessageIdentifier);
-              if (generateUniqueIdentifierForMessages) {
-                defaultMessageIdentifier = this.readArraySize();
-                generateUniqueIdentifierForMessages = false;
+              this.appendBuffer(generateChatMessageId);
+              if (generateChatMessageIdentifier) {
+                defaultChatMessageIdentifier = this.readArraySize();
+                generateChatMessageIdentifier = false;
                 this.complete();
               }
-              generateUniqueMessageIdentifier.label = 4;
+              createUniqueChatMessageIdForMediaStream.label = 4;
             case 4:
-              generateUniqueMessageIdentifier.trys.push([4, 9, , 10]);
-              generateUniqueMessageIdentifier.label = 5;
+              createUniqueChatMessageIdForMediaStream.trys.push([4, 9, , 10]);
+              createUniqueChatMessageIdForMediaStream.label = 5;
             case 5:
-              return [4, AsyncArrayBufferMapper(this.doDecodeSync())];
+              return [4, AsyncIterableBufferManager(this.doDecodeSync())];
             case 6:
-              return [4, generateUniqueMessageIdentifier.sent()];
+              return [4, createUniqueChatMessageIdForMediaStream.sent()];
             case 7:
-              generateUniqueMessageIdentifier.sent();
-              if (--defaultMessageIdentifier === 0) {
+              createUniqueChatMessageIdForMediaStream.sent();
+              if (--defaultChatMessageIdentifier === 0) {
                 return [3, 8];
               } else {
                 return [3, 5];
@@ -2589,43 +2603,44 @@ var createUniqueDataIdentifier = (function () {
             case 8:
               return [3, 10];
             case 9:
-              currentMessageIdentifier = generateUniqueMessageIdentifier.sent();
+              currentChatMessageIdentifier =
+                createUniqueChatMessageIdForMediaStream.sent();
               if (
                 !(
-                  currentMessageIdentifier instanceof
-                  queueAndProcessAsyncDataEncoding
+                  currentChatMessageIdentifier instanceof
+                  handleAudioDataProcessingAsync
                 )
               ) {
-                throw currentMessageIdentifier;
+                throw currentChatMessageIdentifier;
               }
               return [3, 10];
             case 10:
               this.totalPos += this.pos;
-              generateUniqueMessageIdentifier.label = 11;
+              createUniqueChatMessageIdForMediaStream.label = 11;
             case 11:
               return [3, 2];
             case 12:
               return [3, 19];
             case 13:
-              activeMediaStreamIdentifier =
-                generateUniqueMessageIdentifier.sent();
-              generateMessageIdentifier = {
-                error: activeMediaStreamIdentifier,
+              currentActiveMediaStreamIdentifier =
+                createUniqueChatMessageIdForMediaStream.sent();
+              generateChatMessageIdForCurrentInteraction = {
+                error: currentActiveMediaStreamIdentifier,
               };
               return [3, 19];
             case 14:
-              generateUniqueMessageIdentifier.trys.push([14, , 17, 18]);
+              createUniqueChatMessageIdForMediaStream.trys.push([14, , 17, 18]);
               if (
-                currentActiveMessageIdentifier &&
-                !currentActiveMessageIdentifier.done &&
-                (createMessageIdentifierForDecoding =
-                  initAsyncIteratorForMediaStreamDecoding.return)
+                currentActiveChatMessageIdentifier &&
+                !currentActiveChatMessageIdentifier.done &&
+                (generateChatMessageIdForDecoding =
+                  initializeMediaStreamDecoderAsync.return)
               ) {
                 return [
                   4,
-                  AsyncArrayBufferMapper(
-                    createMessageIdentifierForDecoding.call(
-                      initAsyncIteratorForMediaStreamDecoding,
+                  AsyncIterableBufferManager(
+                    generateChatMessageIdForDecoding.call(
+                      initializeMediaStreamDecoderAsync,
                     ),
                   ),
                 ];
@@ -2633,13 +2648,13 @@ var createUniqueDataIdentifier = (function () {
                 return [3, 16];
               }
             case 15:
-              generateUniqueMessageIdentifier.sent();
-              generateUniqueMessageIdentifier.label = 16;
+              createUniqueChatMessageIdForMediaStream.sent();
+              createUniqueChatMessageIdForMediaStream.label = 16;
             case 16:
               return [3, 18];
             case 17:
-              if (generateMessageIdentifier) {
-                throw generateMessageIdentifier.error;
+              if (generateChatMessageIdForCurrentInteraction) {
+                throw generateChatMessageIdForCurrentInteraction.error;
               }
               return [7];
             case 18:
@@ -2651,486 +2666,485 @@ var createUniqueDataIdentifier = (function () {
       );
     });
   };
-  VideoAudioCodecConfiguration.prototype.doDecodeSync = function () {
+  AsyncAudioCodecConfig.prototype.doDecodeSync = function () {
     _0x197063: while (true) {
-      var getAdjustedHeaderByteValue = this.readHeadByte();
-      var adjustedHeaderByteValueBasedOnRange = undefined;
-      if (getAdjustedHeaderByteValue >= 224) {
-        adjustedHeaderByteValueBasedOnRange = getAdjustedHeaderByteValue - 256;
-      } else if (getAdjustedHeaderByteValue < 192) {
-        if (getAdjustedHeaderByteValue < 128) {
-          adjustedHeaderByteValueBasedOnRange = getAdjustedHeaderByteValue;
-        } else if (getAdjustedHeaderByteValue < 144) {
-          var headerByteAdjustment = getAdjustedHeaderByteValue - 128;
-          if (headerByteAdjustment !== 0) {
-            this.pushMapState(headerByteAdjustment);
+      var getAndNormalizeHeaderByteValue = this.readHeadByte();
+      var normalizedHeaderValueForProcessing = undefined;
+      if (getAndNormalizeHeaderByteValue >= 224) {
+        normalizedHeaderValueForProcessing =
+          getAndNormalizeHeaderByteValue - 256;
+      } else if (getAndNormalizeHeaderByteValue < 192) {
+        if (getAndNormalizeHeaderByteValue < 128) {
+          normalizedHeaderValueForProcessing = getAndNormalizeHeaderByteValue;
+        } else if (getAndNormalizeHeaderByteValue < 144) {
+          var normalizedHeaderByteAdjustment =
+            getAndNormalizeHeaderByteValue - 128;
+          if (normalizedHeaderByteAdjustment !== 0) {
+            this.pushMapState(normalizedHeaderByteAdjustment);
             this.complete();
             continue _0x197063;
           } else {
-            adjustedHeaderByteValueBasedOnRange = {};
+            normalizedHeaderValueForProcessing = {};
           }
-        } else if (getAdjustedHeaderByteValue < 160) {
-          var headerByteAdjustment = getAdjustedHeaderByteValue - 144;
-          if (headerByteAdjustment !== 0) {
-            this.pushArrayState(headerByteAdjustment);
+        } else if (getAndNormalizeHeaderByteValue < 160) {
+          var normalizedHeaderByteAdjustment =
+            getAndNormalizeHeaderByteValue - 144;
+          if (normalizedHeaderByteAdjustment !== 0) {
+            this.pushArrayState(normalizedHeaderByteAdjustment);
             this.complete();
             continue _0x197063;
           } else {
-            adjustedHeaderByteValueBasedOnRange = [];
+            normalizedHeaderValueForProcessing = [];
           }
         } else {
-          var adjustedHeaderByteValueForUtf8Decoder =
-            getAdjustedHeaderByteValue - 160;
-          adjustedHeaderByteValueBasedOnRange = this.decodeUtf8String(
-            adjustedHeaderByteValueForUtf8Decoder,
+          var adjustedHeaderValueForUtf8 = getAndNormalizeHeaderByteValue - 160;
+          normalizedHeaderValueForProcessing = this.decodeUtf8String(
+            adjustedHeaderValueForUtf8,
             0,
           );
         }
-      } else if (getAdjustedHeaderByteValue === 192) {
-        adjustedHeaderByteValueBasedOnRange = null;
-      } else if (getAdjustedHeaderByteValue === 194) {
-        adjustedHeaderByteValueBasedOnRange = false;
-      } else if (getAdjustedHeaderByteValue === 195) {
-        adjustedHeaderByteValueBasedOnRange = true;
-      } else if (getAdjustedHeaderByteValue === 202) {
-        adjustedHeaderByteValueBasedOnRange = this.readF32();
-      } else if (getAdjustedHeaderByteValue === 203) {
-        adjustedHeaderByteValueBasedOnRange = this.readF64();
-      } else if (getAdjustedHeaderByteValue === 204) {
-        adjustedHeaderByteValueBasedOnRange = this.readU8();
-      } else if (getAdjustedHeaderByteValue === 205) {
-        adjustedHeaderByteValueBasedOnRange = this.readU16();
-      } else if (getAdjustedHeaderByteValue === 206) {
-        adjustedHeaderByteValueBasedOnRange = this.readU32();
-      } else if (getAdjustedHeaderByteValue === 207) {
-        adjustedHeaderByteValueBasedOnRange = this.readU64();
-      } else if (getAdjustedHeaderByteValue === 208) {
-        adjustedHeaderByteValueBasedOnRange = this.readI8();
-      } else if (getAdjustedHeaderByteValue === 209) {
-        adjustedHeaderByteValueBasedOnRange = this.readI16();
-      } else if (getAdjustedHeaderByteValue === 210) {
-        adjustedHeaderByteValueBasedOnRange = this.readI32();
-      } else if (getAdjustedHeaderByteValue === 211) {
-        adjustedHeaderByteValueBasedOnRange = this.readI64();
-      } else if (getAdjustedHeaderByteValue === 217) {
-        var adjustedHeaderByteValueForUtf8Decoder = this.lookU8();
-        adjustedHeaderByteValueBasedOnRange = this.decodeUtf8String(
-          adjustedHeaderByteValueForUtf8Decoder,
+      } else if (getAndNormalizeHeaderByteValue === 192) {
+        normalizedHeaderValueForProcessing = null;
+      } else if (getAndNormalizeHeaderByteValue === 194) {
+        normalizedHeaderValueForProcessing = false;
+      } else if (getAndNormalizeHeaderByteValue === 195) {
+        normalizedHeaderValueForProcessing = true;
+      } else if (getAndNormalizeHeaderByteValue === 202) {
+        normalizedHeaderValueForProcessing = this.readF32();
+      } else if (getAndNormalizeHeaderByteValue === 203) {
+        normalizedHeaderValueForProcessing = this.readF64();
+      } else if (getAndNormalizeHeaderByteValue === 204) {
+        normalizedHeaderValueForProcessing = this.readU8();
+      } else if (getAndNormalizeHeaderByteValue === 205) {
+        normalizedHeaderValueForProcessing = this.readU16();
+      } else if (getAndNormalizeHeaderByteValue === 206) {
+        normalizedHeaderValueForProcessing = this.readU32();
+      } else if (getAndNormalizeHeaderByteValue === 207) {
+        normalizedHeaderValueForProcessing = this.readU64();
+      } else if (getAndNormalizeHeaderByteValue === 208) {
+        normalizedHeaderValueForProcessing = this.readI8();
+      } else if (getAndNormalizeHeaderByteValue === 209) {
+        normalizedHeaderValueForProcessing = this.readI16();
+      } else if (getAndNormalizeHeaderByteValue === 210) {
+        normalizedHeaderValueForProcessing = this.readI32();
+      } else if (getAndNormalizeHeaderByteValue === 211) {
+        normalizedHeaderValueForProcessing = this.readI64();
+      } else if (getAndNormalizeHeaderByteValue === 217) {
+        var adjustedHeaderValueForUtf8 = this.lookU8();
+        normalizedHeaderValueForProcessing = this.decodeUtf8String(
+          adjustedHeaderValueForUtf8,
           1,
         );
-      } else if (getAdjustedHeaderByteValue === 218) {
-        var adjustedHeaderByteValueForUtf8Decoder = this.lookU16();
-        adjustedHeaderByteValueBasedOnRange = this.decodeUtf8String(
-          adjustedHeaderByteValueForUtf8Decoder,
+      } else if (getAndNormalizeHeaderByteValue === 218) {
+        var adjustedHeaderValueForUtf8 = this.lookU16();
+        normalizedHeaderValueForProcessing = this.decodeUtf8String(
+          adjustedHeaderValueForUtf8,
           2,
         );
-      } else if (getAdjustedHeaderByteValue === 219) {
-        var adjustedHeaderByteValueForUtf8Decoder = this.lookU32();
-        adjustedHeaderByteValueBasedOnRange = this.decodeUtf8String(
-          adjustedHeaderByteValueForUtf8Decoder,
+      } else if (getAndNormalizeHeaderByteValue === 219) {
+        var adjustedHeaderValueForUtf8 = this.lookU32();
+        normalizedHeaderValueForProcessing = this.decodeUtf8String(
+          adjustedHeaderValueForUtf8,
           4,
         );
-      } else if (getAdjustedHeaderByteValue === 220) {
-        var headerByteAdjustment = this.readU16();
-        if (headerByteAdjustment !== 0) {
-          this.pushArrayState(headerByteAdjustment);
+      } else if (getAndNormalizeHeaderByteValue === 220) {
+        var normalizedHeaderByteAdjustment = this.readU16();
+        if (normalizedHeaderByteAdjustment !== 0) {
+          this.pushArrayState(normalizedHeaderByteAdjustment);
           this.complete();
           continue _0x197063;
         } else {
-          adjustedHeaderByteValueBasedOnRange = [];
+          normalizedHeaderValueForProcessing = [];
         }
-      } else if (getAdjustedHeaderByteValue === 221) {
-        var headerByteAdjustment = this.readU32();
-        if (headerByteAdjustment !== 0) {
-          this.pushArrayState(headerByteAdjustment);
+      } else if (getAndNormalizeHeaderByteValue === 221) {
+        var normalizedHeaderByteAdjustment = this.readU32();
+        if (normalizedHeaderByteAdjustment !== 0) {
+          this.pushArrayState(normalizedHeaderByteAdjustment);
           this.complete();
           continue _0x197063;
         } else {
-          adjustedHeaderByteValueBasedOnRange = [];
+          normalizedHeaderValueForProcessing = [];
         }
-      } else if (getAdjustedHeaderByteValue === 222) {
-        var headerByteAdjustment = this.readU16();
-        if (headerByteAdjustment !== 0) {
-          this.pushMapState(headerByteAdjustment);
+      } else if (getAndNormalizeHeaderByteValue === 222) {
+        var normalizedHeaderByteAdjustment = this.readU16();
+        if (normalizedHeaderByteAdjustment !== 0) {
+          this.pushMapState(normalizedHeaderByteAdjustment);
           this.complete();
           continue _0x197063;
         } else {
-          adjustedHeaderByteValueBasedOnRange = {};
+          normalizedHeaderValueForProcessing = {};
         }
-      } else if (getAdjustedHeaderByteValue === 223) {
-        var headerByteAdjustment = this.readU32();
-        if (headerByteAdjustment !== 0) {
-          this.pushMapState(headerByteAdjustment);
+      } else if (getAndNormalizeHeaderByteValue === 223) {
+        var normalizedHeaderByteAdjustment = this.readU32();
+        if (normalizedHeaderByteAdjustment !== 0) {
+          this.pushMapState(normalizedHeaderByteAdjustment);
           this.complete();
           continue _0x197063;
         } else {
-          adjustedHeaderByteValueBasedOnRange = {};
+          normalizedHeaderValueForProcessing = {};
         }
-      } else if (getAdjustedHeaderByteValue === 196) {
-        var headerByteAdjustment = this.lookU8();
-        adjustedHeaderByteValueBasedOnRange = this.decodeBinary(
-          headerByteAdjustment,
+      } else if (getAndNormalizeHeaderByteValue === 196) {
+        var normalizedHeaderByteAdjustment = this.lookU8();
+        normalizedHeaderValueForProcessing = this.decodeBinary(
+          normalizedHeaderByteAdjustment,
           1,
         );
-      } else if (getAdjustedHeaderByteValue === 197) {
-        var headerByteAdjustment = this.lookU16();
-        adjustedHeaderByteValueBasedOnRange = this.decodeBinary(
-          headerByteAdjustment,
+      } else if (getAndNormalizeHeaderByteValue === 197) {
+        var normalizedHeaderByteAdjustment = this.lookU16();
+        normalizedHeaderValueForProcessing = this.decodeBinary(
+          normalizedHeaderByteAdjustment,
           2,
         );
-      } else if (getAdjustedHeaderByteValue === 198) {
-        var headerByteAdjustment = this.lookU32();
-        adjustedHeaderByteValueBasedOnRange = this.decodeBinary(
-          headerByteAdjustment,
+      } else if (getAndNormalizeHeaderByteValue === 198) {
+        var normalizedHeaderByteAdjustment = this.lookU32();
+        normalizedHeaderValueForProcessing = this.decodeBinary(
+          normalizedHeaderByteAdjustment,
           4,
         );
-      } else if (getAdjustedHeaderByteValue === 212) {
-        adjustedHeaderByteValueBasedOnRange = this.decodeExtension(1, 0);
-      } else if (getAdjustedHeaderByteValue === 213) {
-        adjustedHeaderByteValueBasedOnRange = this.decodeExtension(2, 0);
-      } else if (getAdjustedHeaderByteValue === 214) {
-        adjustedHeaderByteValueBasedOnRange = this.decodeExtension(4, 0);
-      } else if (getAdjustedHeaderByteValue === 215) {
-        adjustedHeaderByteValueBasedOnRange = this.decodeExtension(8, 0);
-      } else if (getAdjustedHeaderByteValue === 216) {
-        adjustedHeaderByteValueBasedOnRange = this.decodeExtension(16, 0);
-      } else if (getAdjustedHeaderByteValue === 199) {
-        var headerByteAdjustment = this.lookU8();
-        adjustedHeaderByteValueBasedOnRange = this.decodeExtension(
-          headerByteAdjustment,
+      } else if (getAndNormalizeHeaderByteValue === 212) {
+        normalizedHeaderValueForProcessing = this.decodeExtension(1, 0);
+      } else if (getAndNormalizeHeaderByteValue === 213) {
+        normalizedHeaderValueForProcessing = this.decodeExtension(2, 0);
+      } else if (getAndNormalizeHeaderByteValue === 214) {
+        normalizedHeaderValueForProcessing = this.decodeExtension(4, 0);
+      } else if (getAndNormalizeHeaderByteValue === 215) {
+        normalizedHeaderValueForProcessing = this.decodeExtension(8, 0);
+      } else if (getAndNormalizeHeaderByteValue === 216) {
+        normalizedHeaderValueForProcessing = this.decodeExtension(16, 0);
+      } else if (getAndNormalizeHeaderByteValue === 199) {
+        var normalizedHeaderByteAdjustment = this.lookU8();
+        normalizedHeaderValueForProcessing = this.decodeExtension(
+          normalizedHeaderByteAdjustment,
           1,
         );
-      } else if (getAdjustedHeaderByteValue === 200) {
-        var headerByteAdjustment = this.lookU16();
-        adjustedHeaderByteValueBasedOnRange = this.decodeExtension(
-          headerByteAdjustment,
+      } else if (getAndNormalizeHeaderByteValue === 200) {
+        var normalizedHeaderByteAdjustment = this.lookU16();
+        normalizedHeaderValueForProcessing = this.decodeExtension(
+          normalizedHeaderByteAdjustment,
           2,
         );
-      } else if (getAdjustedHeaderByteValue === 201) {
-        var headerByteAdjustment = this.lookU32();
-        adjustedHeaderByteValueBasedOnRange = this.decodeExtension(
-          headerByteAdjustment,
+      } else if (getAndNormalizeHeaderByteValue === 201) {
+        var normalizedHeaderByteAdjustment = this.lookU32();
+        normalizedHeaderValueForProcessing = this.decodeExtension(
+          normalizedHeaderByteAdjustment,
           4,
         );
       } else {
-        throw new processSlugForUniqueness(
-          `Unrecognized type byte: ${convertIntegerToSignedHexadecimalString(getAdjustedHeaderByteValue)}`,
+        throw new generateAndEnsureUniqueSlug(
+          `Unrecognized type byte: ${formatIntegerAsSignedHexadecimal(getAndNormalizeHeaderByteValue)}`,
         );
       }
       this.complete();
       for (
-        var processingStackItemsQueue = this.stack;
-        processingStackItemsQueue.length > 0;
+        var itemProcessingStack = this.stack;
+        itemProcessingStack.length > 0;
 
       ) {
-        var activeProcessingStackItem =
-          processingStackItemsQueue[processingStackItemsQueue.length - 1];
-        if (activeProcessingStackItem.type === 0) {
-          activeProcessingStackItem.array[activeProcessingStackItem.position] =
-            adjustedHeaderByteValueBasedOnRange;
-          activeProcessingStackItem.position++;
+        var topItemProcessingContext =
+          itemProcessingStack[itemProcessingStack.length - 1];
+        if (topItemProcessingContext.type === 0) {
+          topItemProcessingContext.array[topItemProcessingContext.position] =
+            normalizedHeaderValueForProcessing;
+          topItemProcessingContext.position++;
           if (
-            activeProcessingStackItem.position ===
-            activeProcessingStackItem.size
+            topItemProcessingContext.position === topItemProcessingContext.size
           ) {
-            processingStackItemsQueue.pop();
-            adjustedHeaderByteValueBasedOnRange =
-              activeProcessingStackItem.array;
+            itemProcessingStack.pop();
+            normalizedHeaderValueForProcessing = topItemProcessingContext.array;
           } else {
             continue _0x197063;
           }
-        } else if (activeProcessingStackItem.type === 1) {
+        } else if (topItemProcessingContext.type === 1) {
           if (
-            !isValidStringOrNumberInput(adjustedHeaderByteValueBasedOnRange)
+            !isValidAsyncDataTypeForProcessing(
+              normalizedHeaderValueForProcessing,
+            )
           ) {
-            throw new processSlugForUniqueness(
+            throw new generateAndEnsureUniqueSlug(
               "The type of key must be string or number but " +
-                typeof adjustedHeaderByteValueBasedOnRange,
+                typeof normalizedHeaderValueForProcessing,
             );
           }
-          if (adjustedHeaderByteValueBasedOnRange === "__proto__") {
-            throw new processSlugForUniqueness(
+          if (normalizedHeaderValueForProcessing === "__proto__") {
+            throw new generateAndEnsureUniqueSlug(
               "The key __proto__ is not allowed",
             );
           }
-          activeProcessingStackItem.key = adjustedHeaderByteValueBasedOnRange;
-          activeProcessingStackItem.type = 2;
+          topItemProcessingContext.key = normalizedHeaderValueForProcessing;
+          topItemProcessingContext.type = 2;
           continue _0x197063;
         } else {
-          activeProcessingStackItem.map[activeProcessingStackItem.key] =
-            adjustedHeaderByteValueBasedOnRange;
-          activeProcessingStackItem.readCount++;
+          topItemProcessingContext.map[topItemProcessingContext.key] =
+            normalizedHeaderValueForProcessing;
+          topItemProcessingContext.readCount++;
           if (
-            activeProcessingStackItem.readCount ===
-            activeProcessingStackItem.size
+            topItemProcessingContext.readCount === topItemProcessingContext.size
           ) {
-            processingStackItemsQueue.pop();
-            adjustedHeaderByteValueBasedOnRange = activeProcessingStackItem.map;
+            itemProcessingStack.pop();
+            normalizedHeaderValueForProcessing = topItemProcessingContext.map;
           } else {
-            activeProcessingStackItem.key = null;
-            activeProcessingStackItem.type = 1;
+            topItemProcessingContext.key = null;
+            topItemProcessingContext.type = 1;
             continue _0x197063;
           }
         }
       }
-      return adjustedHeaderByteValueBasedOnRange;
+      return normalizedHeaderValueForProcessing;
     }
   };
-  VideoAudioCodecConfiguration.prototype.readHeadByte = function () {
-    if (this.headByte === encodeDataForAsyncProcessing) {
+  AsyncAudioCodecConfig.prototype.readHeadByte = function () {
+    if (this.headByte === handleAudioProcessingQueue) {
       this.headByte = this.readU8();
     }
     return this.headByte;
   };
-  VideoAudioCodecConfiguration.prototype.complete = function () {
-    this.headByte = encodeDataForAsyncProcessing;
+  AsyncAudioCodecConfig.prototype.complete = function () {
+    this.headByte = handleAudioProcessingQueue;
   };
-  VideoAudioCodecConfiguration.prototype.readArraySize = function () {
-    var getArrayElementSizeBasedOnType = this.readHeadByte();
-    switch (getArrayElementSizeBasedOnType) {
+  AsyncAudioCodecConfig.prototype.readArraySize = function () {
+    var readElementSizeFromHeaderByte = this.readHeadByte();
+    switch (readElementSizeFromHeaderByte) {
       case 220:
         return this.readU16();
       case 221:
         return this.readU32();
       default: {
-        if (getArrayElementSizeBasedOnType < 160) {
-          return getArrayElementSizeBasedOnType - 144;
+        if (readElementSizeFromHeaderByte < 160) {
+          return readElementSizeFromHeaderByte - 144;
         }
-        throw new processSlugForUniqueness(
-          `Unrecognized array type byte: ${convertIntegerToSignedHexadecimalString(getArrayElementSizeBasedOnType)}`,
+        throw new generateAndEnsureUniqueSlug(
+          `Unrecognized array type byte: ${formatIntegerAsSignedHexadecimal(readElementSizeFromHeaderByte)}`,
         );
       }
     }
   };
-  VideoAudioCodecConfiguration.prototype.pushMapState = function (
-    handleActiveStackItem,
+  AsyncAudioCodecConfig.prototype.pushMapState = function (
+    processAndValidatePlaybackTrackData,
   ) {
-    if (handleActiveStackItem > this.maxMapLength) {
-      throw new processSlugForUniqueness(
-        `Max length exceeded: map length (${handleActiveStackItem}) > maxMapLengthLength (${this.maxMapLength})`,
+    if (processAndValidatePlaybackTrackData > this.maxMapLength) {
+      throw new generateAndEnsureUniqueSlug(
+        `Max length exceeded: map length (${processAndValidatePlaybackTrackData}) > maxMapLengthLength (${this.maxMapLength})`,
       );
     }
     this.stack.push({
       type: 1,
-      size: handleActiveStackItem,
+      size: processAndValidatePlaybackTrackData,
       key: null,
       readCount: 0,
       map: {},
     });
   };
-  VideoAudioCodecConfiguration.prototype.pushArrayState = function (
-    getArraySizeFromHeader,
+  AsyncAudioCodecConfig.prototype.pushArrayState = function (
+    getPlaybackTrackArraySizeFromHeaderByte,
   ) {
-    if (getArraySizeFromHeader > this.maxArrayLength) {
-      throw new processSlugForUniqueness(
-        `Max length exceeded: array length (${getArraySizeFromHeader}) > maxArrayLength (${this.maxArrayLength})`,
+    if (getPlaybackTrackArraySizeFromHeaderByte > this.maxArrayLength) {
+      throw new generateAndEnsureUniqueSlug(
+        `Max length exceeded: array length (${getPlaybackTrackArraySizeFromHeaderByte}) > maxArrayLength (${this.maxArrayLength})`,
       );
     }
     this.stack.push({
       type: 0,
-      size: getArraySizeFromHeader,
-      array: new Array(getArraySizeFromHeader),
+      size: getPlaybackTrackArraySizeFromHeaderByte,
+      array: new Array(getPlaybackTrackArraySizeFromHeaderByte),
       position: 0,
     });
   };
-  VideoAudioCodecConfiguration.prototype.decodeUtf8String = function (
-    maxAllowedPlaybackTracks,
-    maxAllowedMapEntries,
+  AsyncAudioCodecConfig.prototype.decodeUtf8String = function (
+    maximumPlaybackTrackData,
+    maxConcurrentDecodingEntries,
   ) {
-    var isKeyDecoderEligibleForCaching;
-    if (maxAllowedPlaybackTracks > this.maxStrLength) {
-      throw new processSlugForUniqueness(
-        `Max length exceeded: UTF-8 byte length (${maxAllowedPlaybackTracks}) > maxStrLength (${this.maxStrLength})`,
+    var isDecodingKeyCacheable;
+    if (maximumPlaybackTrackData > this.maxStrLength) {
+      throw new generateAndEnsureUniqueSlug(
+        `Max length exceeded: UTF-8 byte length (${maximumPlaybackTrackData}) > maxStrLength (${this.maxStrLength})`,
       );
     }
     if (
       this.bytes.byteLength <
-      this.pos + maxAllowedMapEntries + maxAllowedPlaybackTracks
+      this.pos + maxConcurrentDecodingEntries + maximumPlaybackTrackData
     ) {
-      throw writeAndProcessUnsignedShortValue;
+      throw handleAsyncAudioDataProcessing;
     }
-    var startPositionForDecodingKey = this.pos + maxAllowedMapEntries;
-    var decodedMapKey;
+    var calculateDecodingKeyOffset = this.pos + maxConcurrentDecodingEntries;
+    var decodedTrackKey;
     if (
       this.stateIsMapKey() &&
-      ((isKeyDecoderEligibleForCaching = this.keyDecoder) === null ||
-      isKeyDecoderEligibleForCaching === undefined
+      ((isDecodingKeyCacheable = this.keyDecoder) === null ||
+      isDecodingKeyCacheable === undefined
         ? undefined
-        : isKeyDecoderEligibleForCaching.canBeCached(maxAllowedPlaybackTracks))
+        : isDecodingKeyCacheable.canBeCached(maximumPlaybackTrackData))
     ) {
-      decodedMapKey = this.keyDecoder.decode(
+      decodedTrackKey = this.keyDecoder.decode(
         this.bytes,
-        startPositionForDecodingKey,
-        maxAllowedPlaybackTracks,
+        calculateDecodingKeyOffset,
+        maximumPlaybackTrackData,
       );
-    } else if (maxAllowedPlaybackTracks > getEncodedUniqueIdentifierValue) {
-      decodedMapKey = decodeSlugCharactersFromBuffer(
+    } else if (maximumPlaybackTrackData > getMaxUniqueIdentifierValue) {
+      decodedTrackKey = extractUniqueIdentifiersFromBufferSlice(
         this.bytes,
-        startPositionForDecodingKey,
-        maxAllowedPlaybackTracks,
+        calculateDecodingKeyOffset,
+        maximumPlaybackTrackData,
       );
     } else {
-      decodedMapKey = combineAndProcessUniqueIdentifiers(
+      decodedTrackKey = extractAndAggregateUniqueIdentifiers(
         this.bytes,
-        startPositionForDecodingKey,
-        maxAllowedPlaybackTracks,
+        calculateDecodingKeyOffset,
+        maximumPlaybackTrackData,
       );
     }
-    this.pos += maxAllowedMapEntries + maxAllowedPlaybackTracks;
-    return decodedMapKey;
+    this.pos += maxConcurrentDecodingEntries + maximumPlaybackTrackData;
+    return decodedTrackKey;
   };
-  VideoAudioCodecConfiguration.prototype.stateIsMapKey = function () {
+  AsyncAudioCodecConfig.prototype.stateIsMapKey = function () {
     if (this.stack.length > 0) {
-      var getCurrentStackType = this.stack[this.stack.length - 1];
-      return getCurrentStackType.type === 1;
+      var retrieveTopStackElementType = this.stack[this.stack.length - 1];
+      return retrieveTopStackElementType.type === 1;
     }
     return false;
   };
-  VideoAudioCodecConfiguration.prototype.decodeBinary = function (
-    checkSlugUniquenessAndStoreBinaryData,
-    calculateRemainingBytesForDecoding,
+  AsyncAudioCodecConfig.prototype.decodeBinary = function (
+    validateAndExtractPlaybackMetadata,
+    decodeTrackIdentifierUsingCache,
   ) {
-    if (checkSlugUniquenessAndStoreBinaryData > this.maxBinLength) {
-      throw new processSlugForUniqueness(
-        `Max length exceeded: bin length (${checkSlugUniquenessAndStoreBinaryData}) > maxBinLength (${this.maxBinLength})`,
+    if (validateAndExtractPlaybackMetadata > this.maxBinLength) {
+      throw new generateAndEnsureUniqueSlug(
+        `Max length exceeded: bin length (${validateAndExtractPlaybackMetadata}) > maxBinLength (${this.maxBinLength})`,
       );
     }
     if (
       !this.hasRemaining(
-        checkSlugUniquenessAndStoreBinaryData +
-          calculateRemainingBytesForDecoding,
+        validateAndExtractPlaybackMetadata + decodeTrackIdentifierUsingCache,
       )
     ) {
-      throw writeAndProcessUnsignedShortValue;
+      throw handleAsyncAudioDataProcessing;
     }
-    var calculateNewPositionAfterWritingBinaryData =
-      this.pos + calculateRemainingBytesForDecoding;
-    var extractedBinaryChunk = this.bytes.subarray(
-      calculateNewPositionAfterWritingBinaryData,
-      calculateNewPositionAfterWritingBinaryData +
-        checkSlugUniquenessAndStoreBinaryData,
+    var getNextExtractionPosition = this.pos + decodeTrackIdentifierUsingCache;
+    var playbackDataBuffer = this.bytes.subarray(
+      getNextExtractionPosition,
+      getNextExtractionPosition + validateAndExtractPlaybackMetadata,
     );
     this.pos +=
-      calculateRemainingBytesForDecoding +
-      checkSlugUniquenessAndStoreBinaryData;
-    return extractedBinaryChunk;
+      decodeTrackIdentifierUsingCache + validateAndExtractPlaybackMetadata;
+    return playbackDataBuffer;
   };
-  VideoAudioCodecConfiguration.prototype.decodeExtension = function (
-    getBufferOffsetForDecodingKey,
-    decodeBinaryDataBufferBySlugUniqueness,
+  AsyncAudioCodecConfig.prototype.decodeExtension = function (
+    retrieveNextInt32ValueAndUpdatePosition,
+    calculateBinaryDataOffsetForTrackChunk,
   ) {
-    if (getBufferOffsetForDecodingKey > this.maxExtLength) {
-      throw new processSlugForUniqueness(
-        `Max length exceeded: ext length (${getBufferOffsetForDecodingKey}) > maxExtLength (${this.maxExtLength})`,
+    if (retrieveNextInt32ValueAndUpdatePosition > this.maxExtLength) {
+      throw new generateAndEnsureUniqueSlug(
+        `Max length exceeded: ext length (${retrieveNextInt32ValueAndUpdatePosition}) > maxExtLength (${this.maxExtLength})`,
       );
     }
-    var binaryDataFormatIdentifier = this.view.getInt8(
-      this.pos + decodeBinaryDataBufferBySlugUniqueness,
+    var dataFormatCode = this.view.getInt8(
+      this.pos + calculateBinaryDataOffsetForTrackChunk,
     );
-    var decodedBufferData = this.decodeBinary(
-      getBufferOffsetForDecodingKey,
-      decodeBinaryDataBufferBySlugUniqueness + 1,
+    var decodedTrackPlaybackData = this.decodeBinary(
+      retrieveNextInt32ValueAndUpdatePosition,
+      calculateBinaryDataOffsetForTrackChunk + 1,
     );
     return this.extensionCodec.decode(
-      decodedBufferData,
-      binaryDataFormatIdentifier,
+      decodedTrackPlaybackData,
+      dataFormatCode,
       this.context,
     );
   };
-  VideoAudioCodecConfiguration.prototype.lookU8 = function () {
+  AsyncAudioCodecConfig.prototype.lookU8 = function () {
     return this.view.getUint8(this.pos);
   };
-  VideoAudioCodecConfiguration.prototype.lookU16 = function () {
+  AsyncAudioCodecConfig.prototype.lookU16 = function () {
     return this.view.getUint16(this.pos);
   };
-  VideoAudioCodecConfiguration.prototype.lookU32 = function () {
+  AsyncAudioCodecConfig.prototype.lookU32 = function () {
     return this.view.getUint32(this.pos);
   };
-  VideoAudioCodecConfiguration.prototype.readU8 = function () {
+  AsyncAudioCodecConfig.prototype.readU8 = function () {
     var retrieveNextByteFromBuffer = this.view.getUint8(this.pos);
     this.pos++;
     return retrieveNextByteFromBuffer;
   };
-  VideoAudioCodecConfiguration.prototype.readI8 = function () {
-    var retrieveNextInt8 = this.view.getInt8(this.pos);
+  AsyncAudioCodecConfig.prototype.readI8 = function () {
+    var retrieveNextInt8FromBuffer = this.view.getInt8(this.pos);
     this.pos++;
-    return retrieveNextInt8;
+    return retrieveNextInt8FromBuffer;
   };
-  VideoAudioCodecConfiguration.prototype.readU16 = function () {
-    var retrieveNextUint16AndUpdatePosition = this.view.getUint16(this.pos);
+  AsyncAudioCodecConfig.prototype.readU16 = function () {
+    var readUInt16AndAdvancePosition = this.view.getUint16(this.pos);
     this.pos += 2;
-    return retrieveNextUint16AndUpdatePosition;
+    return readUInt16AndAdvancePosition;
   };
-  VideoAudioCodecConfiguration.prototype.readI16 = function () {
-    var getNextInt16FromBuffer = this.view.getInt16(this.pos);
+  AsyncAudioCodecConfig.prototype.readI16 = function () {
+    var retrieveNextInt16FromBuffer = this.view.getInt16(this.pos);
     this.pos += 2;
-    return getNextInt16FromBuffer;
+    return retrieveNextInt16FromBuffer;
   };
-  VideoAudioCodecConfiguration.prototype.readU32 = function () {
-    var getUint32AndIncrementPosition = this.view.getUint32(this.pos);
+  AsyncAudioCodecConfig.prototype.readU32 = function () {
+    var readUint32AndAdvancePosition = this.view.getUint32(this.pos);
     this.pos += 4;
-    return getUint32AndIncrementPosition;
+    return readUint32AndAdvancePosition;
   };
-  VideoAudioCodecConfiguration.prototype.readI32 = function () {
-    var fetchInt32AndAdvancePosition = this.view.getInt32(this.pos);
+  AsyncAudioCodecConfig.prototype.readI32 = function () {
+    var getInt32AndAdvancePosition = this.view.getInt32(this.pos);
     this.pos += 4;
-    return fetchInt32AndAdvancePosition;
+    return getInt32AndAdvancePosition;
   };
-  VideoAudioCodecConfiguration.prototype.readU64 = function () {
-    var generateIdentifierFromViewBuffer = createUniqueIdFromBuffer(
+  AsyncAudioCodecConfig.prototype.readU64 = function () {
+    var generateIdentifierFromViewBuffer = createIdentifierFromBufferData(
       this.view,
       this.pos,
     );
     this.pos += 8;
     return generateIdentifierFromViewBuffer;
   };
-  VideoAudioCodecConfiguration.prototype.readI64 = function () {
-    var fetchNextRandomIntegerFromBuffer = generateRandomLargeIntegerFromBuffer(
+  AsyncAudioCodecConfig.prototype.readI64 = function () {
+    var retrieveRandomIntegerFromBuffer = createLargeRandomIntegerFromBuffer(
       this.view,
       this.pos,
     );
     this.pos += 8;
-    return fetchNextRandomIntegerFromBuffer;
+    return retrieveRandomIntegerFromBuffer;
   };
-  VideoAudioCodecConfiguration.prototype.readF32 = function () {
-    var retrieveNextFloat32Value = this.view.getFloat32(this.pos);
+  AsyncAudioCodecConfig.prototype.readF32 = function () {
+    var readFloat32AndAdvancePosition = this.view.getFloat32(this.pos);
     this.pos += 4;
-    return retrieveNextFloat32Value;
+    return readFloat32AndAdvancePosition;
   };
-  VideoAudioCodecConfiguration.prototype.readF64 = function () {
-    var fetchNextFloat64FromBuffer = this.view.getFloat64(this.pos);
+  AsyncAudioCodecConfig.prototype.readF64 = function () {
+    var retrieveNextValueAsFloat64 = this.view.getFloat64(this.pos);
     this.pos += 8;
-    return fetchNextFloat64FromBuffer;
+    return retrieveNextValueAsFloat64;
   };
-  return VideoAudioCodecConfiguration;
+  return AsyncAudioCodecConfig;
 })();
-var getTimestampDurationFromBuffer = {};
-function extractAndDecodeTimestampDurations(
-  getNextTimestampDuration,
-  getDurationBetweenTimestampsFromBuffer = getTimestampDurationFromBuffer,
+var getPlaybackDurationFromBuffer = {};
+function decodeAudioTimestampDurations(
+  readNextUnsignedInt16AndUpdatePosition,
+  _getPlaybackDurationFromBuffer = getPlaybackDurationFromBuffer,
 ) {
-  var dataIdentifierDecoder = new createUniqueDataIdentifier(
-    getDurationBetweenTimestampsFromBuffer.extensionCodec,
-    getDurationBetweenTimestampsFromBuffer.context,
-    getDurationBetweenTimestampsFromBuffer.maxStrLength,
-    getDurationBetweenTimestampsFromBuffer.maxBinLength,
-    getDurationBetweenTimestampsFromBuffer.maxArrayLength,
-    getDurationBetweenTimestampsFromBuffer.maxMapLength,
-    getDurationBetweenTimestampsFromBuffer.maxExtLength,
+  var audioPlaybackDurationProcessor = new processAudioEncodingErrors(
+    _getPlaybackDurationFromBuffer.extensionCodec,
+    _getPlaybackDurationFromBuffer.context,
+    _getPlaybackDurationFromBuffer.maxStrLength,
+    _getPlaybackDurationFromBuffer.maxBinLength,
+    _getPlaybackDurationFromBuffer.maxArrayLength,
+    _getPlaybackDurationFromBuffer.maxMapLength,
+    _getPlaybackDurationFromBuffer.maxExtLength,
   );
-  return dataIdentifierDecoder.decode(getNextTimestampDuration);
+  return audioPlaybackDurationProcessor.decode(
+    readNextUnsignedInt16AndUpdatePosition,
+  );
 }
-var createDisposerForEventListener = class {
-  onWillDisposeEmitter = new disposeEventEmitter();
+var generateCleanupFunctionForEventListener = class {
+  onWillDisposeEmitter = new EventListenerManager();
   onWillDispose = this.onWillDisposeEmitter.event;
-  onDidDisposeEmitter = new disposeEventEmitter();
+  onDidDisposeEmitter = new EventListenerManager();
   onDidDispose = this.onDidDisposeEmitter.event;
   toDispose = [];
   isDisposed = false;
-  onDispose(disposeEventListenerForTimestampDuration) {
+  onDispose(registerEventCleanupOnDispose) {
     this.toDispose.push(
-      createDisposerForEventListener.create(
-        disposeEventListenerForTimestampDuration,
+      generateCleanupFunctionForEventListener.create(
+        registerEventCleanupOnDispose,
       ),
     );
   }
@@ -3138,179 +3152,180 @@ var createDisposerForEventListener = class {
     if (!this.isDisposed) {
       this.onWillDisposeEmitter.fire(null);
       this.isDisposed = true;
-      this.toDispose.forEach((disposeAndCleanupComponent) => {
-        disposeAndCleanupComponent.dispose();
+      this.toDispose.forEach((disposeComponentResources) => {
+        disposeComponentResources.dispose();
       });
       this.onDidDisposeEmitter.fire(null);
       this.onWillDisposeEmitter.dispose();
       this.onDidDisposeEmitter.dispose();
     }
   }
-  static is(isObjectDisposable) {
-    return typeof isObjectDisposable.dispose == "function";
+  static is(isDisposableInstance) {
+    return typeof isDisposableInstance.dispose == "function";
   }
-  static create(cleanupFunction) {
+  static create(createDisposeHandler) {
     return {
-      dispose: cleanupFunction,
+      dispose: createDisposeHandler,
     };
   }
 };
-var disposeEventEmitter = class {
+var EventListenerManager = class {
   registeredListeners = new Set();
   _event;
   get event() {
     this._event ||= (addEventListenerWithCleanup) => {
       this.registeredListeners.add(addEventListenerWithCleanup);
-      return createDisposerForEventListener.create(() => {
+      return generateCleanupFunctionForEventListener.create(() => {
         this.registeredListeners.delete(addEventListenerWithCleanup);
       });
     };
     return this._event;
   }
-  fire(invokeRegisteredListeners) {
-    this.registeredListeners.forEach((invokeRegisteredEventListeners) => {
-      invokeRegisteredEventListeners(invokeRegisteredListeners);
+  fire(invokeRegisteredEventHandlers) {
+    this.registeredListeners.forEach((invokeEventHandlers) => {
+      invokeEventHandlers(invokeRegisteredEventHandlers);
     });
   }
   dispose() {
     this.registeredListeners = new Set();
   }
 };
-var generateErrorSourceIdentifier = (0,
-initializeUniqueIdentifierGenerator.default)();
-var EventListenerDisposer = (_createAndEncodeUserSlug) =>
-  createAndEncodeUserSlug(_createAndEncodeUserSlug, {
+var createEventListenerCleanupHandler = (0,
+initializeBindingWithUniqueId.default)();
+var EventListenerCleanupManager = (_createTimestampedSlugFromUser) =>
+  createTimestampedSlugFromUser(_createTimestampedSlugFromUser, {
     ignoreUndefined: true,
   });
-var _createDisposerForEventListener = class {
+var registerEventCleanupListener = class {
   endpoints = new Map();
   nodeMap = new Map();
-  onMessageEmitter = new disposeEventEmitter();
+  onMessageEmitter = new EventListenerManager();
   onMessage = this.onMessageEmitter.event;
   constructor() {}
   getEndpointForNode(getEndpointForNodeId) {
-    let endpointNode = this.nodeMap.get(getEndpointForNodeId);
-    if (endpointNode) {
-      let getEndpointFromNode = this.endpoints.get(endpointNode);
-      if (getEndpointFromNode) {
-        return getEndpointFromNode;
+    let nodeIdToEndpointMappingByNodeId =
+      this.nodeMap.get(getEndpointForNodeId);
+    if (nodeIdToEndpointMappingByNodeId) {
+      let getEndpointForNodeMapping = this.endpoints.get(
+        nodeIdToEndpointMappingByNodeId,
+      );
+      if (getEndpointForNodeMapping) {
+        return getEndpointForNodeMapping;
       }
     }
   }
-  addEndpoint(addEndpointWithKey, messageDispatcher) {
-    this.endpoints.set(addEndpointWithKey, messageDispatcher);
-    messageDispatcher.onMessage((handleMessageWithEndpointKey) =>
-      this.handleMessage(handleMessageWithEndpointKey, addEndpointWithKey),
+  addEndpoint(
+    addEndpointWithMessageHandler,
+    registerMessageHandlerForEndpoint,
+  ) {
+    this.endpoints.set(
+      addEndpointWithMessageHandler,
+      registerMessageHandlerForEndpoint,
     );
-    let generateRouterAnnouncementEvent = EventListenerDisposer({
+    registerMessageHandlerForEndpoint.onMessage((processAndDispatchMessage) =>
+      this.handleMessage(
+        processAndDispatchMessage,
+        addEndpointWithMessageHandler,
+      ),
+    );
+    let generateRouterAnnouncementPayload = EventListenerCleanupManager({
       $type: "router-announce",
-      $origin: generateErrorSourceIdentifier,
+      $origin: createEventListenerCleanupHandler,
     });
-    messageDispatcher.send(generateRouterAnnouncementEvent, [
-      generateRouterAnnouncementEvent.buffer,
+    registerMessageHandlerForEndpoint.send(generateRouterAnnouncementPayload, [
+      generateRouterAnnouncementPayload.buffer,
     ]);
   }
   removeEndpoint(deleteEndpointById) {
     this.endpoints.delete(deleteEndpointById);
   }
-  send(
-    targetNodeIdentifierForRouting,
-    routerMessagePayload,
-    _userLoginStatus = true,
-  ) {
-    let createRouterMessage = {
+  send(targetNodeId, routingPayload, isUserLoggedIn = true) {
+    let routerMessage = {
       $type: "router-message",
-      $origin: generateErrorSourceIdentifier,
-      $target: targetNodeIdentifierForRouting,
-      $data: routerMessagePayload,
+      $origin: createEventListenerCleanupHandler,
+      $target: targetNodeId,
+      $data: routingPayload,
     };
-    if (targetNodeIdentifierForRouting !== generateErrorSourceIdentifier) {
-      let getNodeConnectionEndpointForRouting = this.getEndpointForNode(
-        targetNodeIdentifierForRouting,
-      );
-      if (!getNodeConnectionEndpointForRouting) {
-        throw new Error(
-          "Endpoint " + targetNodeIdentifierForRouting + " not registered",
-        );
+    if (targetNodeId !== createEventListenerCleanupHandler) {
+      let getNodeRoutingEndpointById = this.getEndpointForNode(targetNodeId);
+      if (!getNodeRoutingEndpointById) {
+        throw new Error("Endpoint " + targetNodeId + " not registered");
       }
-      if (_userLoginStatus) {
-        let createRouterMessageEventListener =
-          EventListenerDisposer(createRouterMessage);
-        getNodeConnectionEndpointForRouting.send(
-          createRouterMessageEventListener,
-          [createRouterMessageEventListener.buffer],
-        );
+      if (isUserLoggedIn) {
+        let generateAndDispatchRouterEventPayload =
+          EventListenerCleanupManager(routerMessage);
+        getNodeRoutingEndpointById.send(generateAndDispatchRouterEventPayload, [
+          generateAndDispatchRouterEventPayload.buffer,
+        ]);
       } else {
-        getNodeConnectionEndpointForRouting.send(createRouterMessage, []);
+        getNodeRoutingEndpointById.send(routerMessage, []);
       }
     } else {
-      this.onMessageEmitter.fire(createRouterMessage);
+      this.onMessageEmitter.fire(routerMessage);
     }
   }
-  broadcast(messagePayloadForBroadcast, ignoredEndpoint, sourceIdentifier) {
-    let buildBroadcastMessagePayload = {
+  broadcast(broadcastMessagePayload, excludedEndpointId, initiatingEndpointId) {
+    let assembleBroadcastMessage = {
       $type: "router-broadcast",
-      $origin: sourceIdentifier ?? generateErrorSourceIdentifier,
-      $data: messagePayloadForBroadcast,
+      $origin: initiatingEndpointId ?? createEventListenerCleanupHandler,
+      $data: broadcastMessagePayload,
     };
-    if (!ignoredEndpoint && !sourceIdentifier) {
-      this.onMessageEmitter.fire(buildBroadcastMessagePayload);
+    if (!excludedEndpointId && !initiatingEndpointId) {
+      this.onMessageEmitter.fire(assembleBroadcastMessage);
     }
     for (let [
-      endpointIdentifier,
-      broadcastWebSocket,
+      currentEndpointId,
+      broadcastChannelForEndpointMessaging,
     ] of this.endpoints.entries()) {
-      if (endpointIdentifier === ignoredEndpoint) {
+      if (currentEndpointId === excludedEndpointId) {
         continue;
       }
-      let messagePayloadForWebSocketBroadcast = EventListenerDisposer(
-        buildBroadcastMessagePayload,
+      let generateBroadcastMessageForActiveEndpoint =
+        EventListenerCleanupManager(assembleBroadcastMessage);
+      broadcastChannelForEndpointMessaging.send(
+        generateBroadcastMessageForActiveEndpoint,
+        [generateBroadcastMessageForActiveEndpoint.buffer],
       );
-      broadcastWebSocket.send(messagePayloadForWebSocketBroadcast, [
-        messagePayloadForWebSocketBroadcast.buffer,
-      ]);
     }
   }
-  handleMessage(processRouterMessageWithPayload, registerAndHandleNodeMessage) {
-    let isMessagePayloadArrayBuffer =
-      processRouterMessageWithPayload instanceof Uint8Array;
-    let messagePayloadMetadata = isMessagePayloadArrayBuffer
-      ? extractAndDecodeTimestampDurations(processRouterMessageWithPayload)
-      : processRouterMessageWithPayload;
-    if (messagePayloadMetadata.$origin) {
-      if (!this.nodeMap.has(messagePayloadMetadata.$origin)) {
+  handleMessage(processRouterPayloadMessage, registerNodeIdentifierHandler) {
+    let isPayloadArrayBuffer =
+      processRouterPayloadMessage instanceof Uint8Array;
+    let processedMessagePayload = isPayloadArrayBuffer
+      ? decodeAudioTimestampDurations(processRouterPayloadMessage)
+      : processRouterPayloadMessage;
+    if (processedMessagePayload.$origin) {
+      if (!this.nodeMap.has(processedMessagePayload.$origin)) {
         this.nodeMap.set(
-          messagePayloadMetadata.$origin,
-          registerAndHandleNodeMessage,
+          processedMessagePayload.$origin,
+          registerNodeIdentifierHandler,
         );
       }
-      if (messagePayloadMetadata.$type === "router-broadcast") {
-        let messagePayload = messagePayloadMetadata;
+      if (processedMessagePayload.$type === "router-broadcast") {
+        let broadcastMessagePayload = processedMessagePayload;
         this.broadcast(
-          messagePayload.$data,
-          registerAndHandleNodeMessage,
-          messagePayload.$origin,
+          broadcastMessagePayload.$data,
+          registerNodeIdentifierHandler,
+          broadcastMessagePayload.$origin,
         );
-        this.onMessageEmitter.fire(messagePayloadMetadata);
+        this.onMessageEmitter.fire(processedMessagePayload);
         return;
       }
-      if (messagePayloadMetadata.$type === "router-message") {
-        let messagePayloadWithTargetMetadata = messagePayloadMetadata;
+      if (processedMessagePayload.$type === "router-message") {
+        let processedMessageForTarget = processedMessagePayload;
         if (
-          messagePayloadWithTargetMetadata.$target ===
-          generateErrorSourceIdentifier
+          processedMessageForTarget.$target ===
+          createEventListenerCleanupHandler
         ) {
-          this.onMessageEmitter.fire(messagePayloadMetadata);
+          this.onMessageEmitter.fire(processedMessagePayload);
         } else {
-          let targetNodeConnectionEndpoint = this.getEndpointForNode(
-            messagePayloadWithTargetMetadata.$target,
+          let targetNodeSendEndpoint = this.getEndpointForNode(
+            processedMessageForTarget.$target,
           );
-          if (targetNodeConnectionEndpoint) {
-            targetNodeConnectionEndpoint.send(
-              processRouterMessageWithPayload,
-              isMessagePayloadArrayBuffer
-                ? [processRouterMessageWithPayload.buffer]
-                : [],
+          if (targetNodeSendEndpoint) {
+            targetNodeSendEndpoint.send(
+              processRouterPayloadMessage,
+              isPayloadArrayBuffer ? [processRouterPayloadMessage.buffer] : [],
             );
           }
         }
@@ -3319,78 +3334,83 @@ var _createDisposerForEventListener = class {
     }
   }
 };
-var initializeOrFetchMessageBuffer;
-function getOrInitializeMessageBuffer() {
-  initializeOrFetchMessageBuffer ||= new _createDisposerForEventListener();
-  return initializeOrFetchMessageBuffer;
+var fetchOrCreateBroadcastMessagePayload;
+function setupBroadcastMessageCleanupListener() {
+  fetchOrCreateBroadcastMessagePayload ||= new registerEventCleanupListener();
+  return fetchOrCreateBroadcastMessagePayload;
 }
-function initializeDefaultServerPort(generateUniqueIdentifier) {
-  let setDefaultServerPort = 8000;
-  if (isNaN(setDefaultServerPort)) {
+function setDefaultHttpServerPort(registerAndHandleNodeIdentifier) {
+  let getDefaultHttpServerPort = 8000;
+  if (isNaN(getDefaultHttpServerPort)) {
     throw new Error("Invalid port");
   }
-  return setDefaultServerPort;
+  return getDefaultHttpServerPort;
 }
-function checkServiceWorkerStatus(processRouterBroadcastMessage) {
+function isServiceWorkerActiveOrWaiting(handleRouterBroadcastMessage) {
   return (
-    processRouterBroadcastMessage.installing ||
-    processRouterBroadcastMessage.waiting ||
-    processRouterBroadcastMessage.active
+    handleRouterBroadcastMessage.installing ||
+    handleRouterBroadcastMessage.waiting ||
+    handleRouterBroadcastMessage.active
   );
 }
-var _handleRouterMessage = initializePlaceholderTransformer("bridge");
-var createUniqueIdentifierAsync = initializeDefaultServerPort(
+var initializeOrRetrieveMessageBuffer =
+  generatePlaceholderReplacementFunction("bridge");
+var getOrInitializeEventListener = setDefaultHttpServerPort(
   window.location.hostname,
 );
-var _generateErrorSourceIdentifier = {
-  $channel_name: previewManagerId,
+var setupDataCommunicationForNode = {
+  $channel_name: previewManagerIdentifier,
   $type: PREVIEW_STATUS_READY,
-  port: createUniqueIdentifierAsync,
+  port: getOrInitializeEventListener,
 };
-var processRouterMessage = getOrInitializeMessageBuffer();
-var initializeMessageBufferIfNecessary = new MessageChannel();
-var _initializeUniqueIDBufferIfNeeded =
-  new initializeStorageValueFromSource.DeferredPromise();
-var initializeUniqueIDBufferIfNecessary =
-  new initializeStorageValueFromSource.DeferredPromise();
-_initializeUniqueIDBufferIfNeeded.then((messageChannelWorkerPort) => {
-  _handleRouterMessage("worker is ready, initializing MessageChannel...");
-  messageChannelWorkerPort.postMessage(
+var routeMessageToEndpoint = setupBroadcastMessageCleanupListener();
+var initializeMessageBufferAndSetupPort = new MessageChannel();
+var fetchOrCreateEventListener = new bindStorageToDataSource.DeferredPromise();
+var handleRouterMessageCommunication =
+  new bindStorageToDataSource.DeferredPromise();
+fetchOrCreateEventListener.then((messageChannelPort) => {
+  initializeOrRetrieveMessageBuffer(
+    "worker is ready, initializing MessageChannel...",
+  );
+  messageChannelPort.postMessage(
     {
       type: "bridge-channel-init",
     },
-    [initializeMessageBufferIfNecessary.port2],
+    [initializeMessageBufferAndSetupPort.port2],
   );
-  return messageChannelWorkerPort;
+  return messageChannelPort;
 });
 window.addEventListener("unload", () => {
-  initializeMessageBufferIfNecessary.port1.postMessage({
-    $type: generateBridgeCloseIdentifier,
+  initializeMessageBufferAndSetupPort.port1.postMessage({
+    $type: bridgeCloseConnectionEndpoint,
   });
 });
-window.addEventListener("message", (initializeDataCommunicationChannel) => {
-  switch (initializeDataCommunicationChannel.data.$type) {
-    case bridgeInitializationUrl: {
-      let dataCommunicationPort = initializeDataCommunicationChannel.ports[0];
-      let messagePortStatusContainer = document.getElementById("previews-list");
+window.addEventListener("message", (setupDataCommunicationBridge) => {
+  switch (setupDataCommunicationBridge.data.$type) {
+    case bridgeInitializationEndpoint: {
+      let dataCommunicationSocket = setupDataCommunicationBridge.ports[0];
+      let dataPortPreviewsList = document.getElementById("previews-list");
       let dataPortStatusIndicator = document.createElement("span");
       dataPortStatusIndicator.setAttribute(
         "data-port",
-        String(createUniqueIdentifierAsync),
+        String(getOrInitializeEventListener),
       );
       dataPortStatusIndicator.innerText =
-        "localhost:" + createUniqueIdentifierAsync;
-      messagePortStatusContainer?.appendChild(dataPortStatusIndicator);
-      initializeUniqueIDBufferIfNecessary.resolve(dataCommunicationPort);
-      processRouterMessage.addEndpoint("parent", {
-        send: (sendMessageWithOptions, sendMessagePayloadWithOptions) =>
-          dataCommunicationPort.postMessage(
-            sendMessageWithOptions,
-            sendMessagePayloadWithOptions,
+        "localhost:" + getOrInitializeEventListener;
+      dataPortPreviewsList?.appendChild(dataPortStatusIndicator);
+      handleRouterMessageCommunication.resolve(dataCommunicationSocket);
+      routeMessageToEndpoint.addEndpoint("parent", {
+        send: (
+          transmitDataWithOptionsToCommPort,
+          sendPayloadToCommunicationPort,
+        ) =>
+          dataCommunicationSocket.postMessage(
+            transmitDataWithOptionsToCommPort,
+            sendPayloadToCommunicationPort,
           ),
-        onMessage: (processIncomingMessage) => {
-          dataCommunicationPort.onmessage = (handleIncomingMessage) => {
-            processIncomingMessage(handleIncomingMessage.data);
+        onMessage: (handleSocketMessage) => {
+          dataCommunicationSocket.onmessage = (handleIncomingSocketMessage) => {
+            handleSocketMessage(handleIncomingSocketMessage.data);
           };
         },
       });
@@ -3398,165 +3418,169 @@ window.addEventListener("message", (initializeDataCommunicationChannel) => {
     }
   }
 });
-var handleFetchErrorResponseData =
-  new initializeStorageValueFromSource.DeferredPromise();
-processRouterMessage.onMessage((handleIncomingMessageProcessing) => {
-  switch (handleIncomingMessageProcessing.$data.$type) {
-    case generatePreviewManagerAcknowledgementId: {
-      handleFetchErrorResponseData.resolve(
-        handleIncomingMessageProcessing.$origin,
+var setupDataCommunicationEndpoint =
+  new bindStorageToDataSource.DeferredPromise();
+routeMessageToEndpoint.onMessage((handleIncomingPreviewMessage) => {
+  switch (handleIncomingPreviewMessage.$data.$type) {
+    case previewManagerAcknowledgmentToken: {
+      setupDataCommunicationEndpoint.resolve(
+        handleIncomingPreviewMessage.$origin,
       );
       break;
     }
-    case previewResponseKey: {
-      initializeMessageBufferIfNecessary.port1.postMessage(
-        handleIncomingMessageProcessing.$data,
+    case previewResponsePayloadKey: {
+      initializeMessageBufferAndSetupPort.port1.postMessage(
+        handleIncomingPreviewMessage.$data,
       );
       break;
     }
-    case generateRuntimeResponseIdentifier: {
-      initializeMessageBufferIfNecessary.port1.postMessage(
-        handleIncomingMessageProcessing.$data,
+    case previewResponseRuntimePath: {
+      initializeMessageBufferAndSetupPort.port1.postMessage(
+        handleIncomingPreviewMessage.$data,
       );
       break;
     }
   }
 });
-initializeMessageBufferIfNecessary.port1.onmessage = async (
-  handleIncomingWorkerMessage,
+initializeMessageBufferAndSetupPort.port1.onmessage = async (
+  handleWorkerMessage,
 ) => {
-  let workerMessagePayload = handleIncomingWorkerMessage.data;
-  _handleRouterMessage(
+  let workerMessagePayload = handleWorkerMessage.data;
+  initializeOrRetrieveMessageBuffer(
     "incoming message from the worker",
-    handleIncomingWorkerMessage.data,
+    handleWorkerMessage.data,
   );
-  if (workerMessagePayload.$channel_name === previewManagerId) {
-    let fetchAndValidateErrorResponseData = await handleFetchErrorResponseData;
-    validateAndThrowIfInvalid(
-      fetchAndValidateErrorResponseData,
+  if (workerMessagePayload.$channel_name === previewManagerIdentifier) {
+    let setupAndValidateCommunicationResponse =
+      await setupDataCommunicationEndpoint;
+    validateAndThrowErrorIfInvalid(
+      setupAndValidateCommunicationResponse,
       "[bridge] Failed to forward worker message to the PreviewManager: manager node ID is not defined.",
     );
     let _workerMessagePayload = workerMessagePayload;
-    processRouterMessage.send(
-      fetchAndValidateErrorResponseData,
+    routeMessageToEndpoint.send(
+      setupAndValidateCommunicationResponse,
       _workerMessagePayload,
     );
   }
 };
-var currentServiceWorkerURL = new URL("__csb_sw.js", location.origin).href;
-function initializeServiceWorkerPing(initializeServiceWorkerCommunication) {
-  let serviceWorkerPingIntervalId = setInterval(() => {
-    let notifyServiceWorkerOfPing = {
+var dataProcessorFilePath = new URL("__csb_sw.js", location.origin).href;
+function initializeServiceWorkerPingHeartbeat(
+  configureWorkerCommunicationRouting,
+) {
+  let serviceWorkerHeartbeatInterval = setInterval(() => {
+    let sendPingToWorker = {
       type: "ping",
     };
-    initializeServiceWorkerCommunication.postMessage(notifyServiceWorkerOfPing);
+    configureWorkerCommunicationRouting.postMessage(sendPingToWorker);
   }, 5000);
-  initializeServiceWorkerCommunication.addEventListener("statechange", () => {
-    if (initializeServiceWorkerCommunication.state === "redundant") {
-      clearInterval(serviceWorkerPingIntervalId);
+  configureWorkerCommunicationRouting.addEventListener("statechange", () => {
+    if (configureWorkerCommunicationRouting.state === "redundant") {
+      clearInterval(serviceWorkerHeartbeatInterval);
     }
   });
 }
-async function initializeAndMonitorServiceWorker() {
-  validateAndThrowIfInvalid(
+async function setupAndMonitorServiceWorker() {
+  validateAndThrowErrorIfInvalid(
     "serviceWorker" in navigator,
     "Failed to start the bridge Service Worker: Service Worker API is not supported in this browser",
   );
   let registerAndValidateServiceWorker = async () => {
-    let serviceWorkerRegistration = await navigator.serviceWorker.register(
-      "__csb_sw.js",
-      {
+    let serviceWorkerRegistrationPromise =
+      await navigator.serviceWorker.register("__csb_sw.js", {
         scope: ".",
-      },
-    );
-    return checkServiceWorkerStatus(serviceWorkerRegistration);
+      });
+    return isServiceWorkerActiveOrWaiting(serviceWorkerRegistrationPromise);
   };
   let activeServiceWorkerRegistrations =
     await navigator.serviceWorker.getRegistrations();
-  _handleRouterMessage(
+  initializeOrRetrieveMessageBuffer(
     "all registrations",
     location,
     activeServiceWorkerRegistrations,
   );
   await Promise.all(
-    activeServiceWorkerRegistrations.map((activeServiceWorkerRegistration) => {
-      let getActiveServiceWorkerDetails = checkServiceWorkerStatus(
-        activeServiceWorkerRegistration,
+    activeServiceWorkerRegistrations.map((currentServiceWorkerRegistration) => {
+      let unregisterIrrelevantServiceWorker = isServiceWorkerActiveOrWaiting(
+        currentServiceWorkerRegistration,
       );
       if (
-        getActiveServiceWorkerDetails &&
-        getActiveServiceWorkerDetails.scriptURL !== currentServiceWorkerURL
+        unregisterIrrelevantServiceWorker &&
+        unregisterIrrelevantServiceWorker.scriptURL !== dataProcessorFilePath
       ) {
-        _handleRouterMessage(
+        initializeOrRetrieveMessageBuffer(
           "found irrelevant worker registration, unregistering...",
-          getActiveServiceWorkerDetails,
-          activeServiceWorkerRegistration,
+          unregisterIrrelevantServiceWorker,
+          currentServiceWorkerRegistration,
         );
-        return activeServiceWorkerRegistration.unregister();
+        return currentServiceWorkerRegistration.unregister();
       }
     }),
   );
-  let { controller: handleServiceWorkerRegistration } = navigator.serviceWorker;
-  if (!handleServiceWorkerRegistration) {
-    _handleRouterMessage(
+  let { controller: _setupAndMonitorServiceWorker } = navigator.serviceWorker;
+  if (!_setupAndMonitorServiceWorker) {
+    initializeOrRetrieveMessageBuffer(
       "bridge is not controlled, registering a new worker...",
     );
     return registerAndValidateServiceWorker();
   }
-  if (handleServiceWorkerRegistration.scriptURL === currentServiceWorkerURL) {
-    _handleRouterMessage(
+  if (_setupAndMonitorServiceWorker.scriptURL === dataProcessorFilePath) {
+    initializeOrRetrieveMessageBuffer(
       "bridge is controlled by the correct worker",
-      handleServiceWorkerRegistration.scriptURL,
+      _setupAndMonitorServiceWorker.scriptURL,
     );
-    return handleServiceWorkerRegistration;
+    return _setupAndMonitorServiceWorker;
   }
-  let [
-    initializeAndMonitorServiceWorkerRegistration,
-    registerAndManageServiceWorker,
-  ] = await Promise.all([
-    navigator.serviceWorker.getRegistration(
-      handleServiceWorkerRegistration.scriptURL,
-    ),
-    navigator.serviceWorker.getRegistration(currentServiceWorkerURL),
-  ]);
-  _handleRouterMessage(
+  let [_registerAndValidateServiceWorker, __setupAndMonitorServiceWorker] =
+    await Promise.all([
+      navigator.serviceWorker.getRegistration(
+        _setupAndMonitorServiceWorker.scriptURL,
+      ),
+      navigator.serviceWorker.getRegistration(dataProcessorFilePath),
+    ]);
+  initializeOrRetrieveMessageBuffer(
     "controller registration:",
-    initializeAndMonitorServiceWorkerRegistration,
+    _registerAndValidateServiceWorker,
   );
-  _handleRouterMessage("worker registration:", registerAndManageServiceWorker);
-  if (!registerAndManageServiceWorker) {
-    _handleRouterMessage(
+  initializeOrRetrieveMessageBuffer(
+    "worker registration:",
+    __setupAndMonitorServiceWorker,
+  );
+  if (!__setupAndMonitorServiceWorker) {
+    initializeOrRetrieveMessageBuffer(
       'no registration found for "%s", unregistering controller and registering a new worker...',
-      currentServiceWorkerURL,
+      dataProcessorFilePath,
     );
-    await initializeAndMonitorServiceWorkerRegistration?.unregister();
+    await _registerAndValidateServiceWorker?.unregister();
     return registerAndValidateServiceWorker();
   }
-  if (registerAndManageServiceWorker.waiting) {
-    _handleRouterMessage("found waiting registration, promoting...");
-    await registerAndManageServiceWorker.update();
-    let activeServiceWorkerInstance = checkServiceWorkerStatus(
-      registerAndManageServiceWorker,
+  if (__setupAndMonitorServiceWorker.waiting) {
+    initializeOrRetrieveMessageBuffer(
+      "found waiting registration, promoting...",
     );
-    validateAndThrowIfInvalid(
-      activeServiceWorkerInstance,
+    await __setupAndMonitorServiceWorker.update();
+    let currentActiveServiceWorker = isServiceWorkerActiveOrWaiting(
+      __setupAndMonitorServiceWorker,
+    );
+    validateAndThrowErrorIfInvalid(
+      currentActiveServiceWorker,
       "Failed to retrieve the worker instance after promotion: worked does not exist",
     );
-    validateAndThrowIfInvalid(
-      registerAndManageServiceWorker.active,
+    validateAndThrowErrorIfInvalid(
+      __setupAndMonitorServiceWorker.active,
       'Failed to promove a waiting Service Worker: expected the worker state to be "active" but got "%s"',
-      activeServiceWorkerInstance.state,
+      currentActiveServiceWorker.state,
     );
-    return activeServiceWorkerInstance;
+    return currentActiveServiceWorker;
   }
   return null;
 }
-async function setupServiceWorkerWithIdentifierManagement() {
-  _handleRouterMessage("starting the bridge...", {
-    workerUrl: currentServiceWorkerURL,
+async function initializeServiceWorkerAndManageUniqueIDs() {
+  initializeOrRetrieveMessageBuffer("starting the bridge...", {
+    workerUrl: dataProcessorFilePath,
   });
-  let currentActiveServiceWorker =
-    await initializeAndMonitorServiceWorker().catch(
+  let initializedServiceWorkerRegistration =
+    await setupAndMonitorServiceWorker().catch(
       (logServiceWorkerRegistrationError) => {
         console.error(
           "Failed to ensure the bridge has a Service Worker registered. See details below.",
@@ -3565,18 +3589,18 @@ async function setupServiceWorkerWithIdentifierManagement() {
       },
     );
   await navigator.serviceWorker.ready;
-  validateAndThrowIfInvalid(
-    currentActiveServiceWorker,
+  validateAndThrowErrorIfInvalid(
+    initializedServiceWorkerRegistration,
     "Failed to retrieve the worker instance: worker not found",
   );
-  initializeServiceWorkerPing(currentActiveServiceWorker);
-  _initializeUniqueIDBufferIfNeeded.resolve(currentActiveServiceWorker);
-  let waitForUniqueIDBufferInitialization =
-    await initializeUniqueIDBufferIfNecessary;
-  _handleRouterMessage(
+  initializeServiceWorkerPingHeartbeat(initializedServiceWorkerRegistration);
+  fetchOrCreateEventListener.resolve(initializedServiceWorkerRegistration);
+  let setupUniqueIDBufferForServiceCommunication =
+    await handleRouterMessageCommunication;
+  initializeOrRetrieveMessageBuffer(
     "preview manager port received",
-    waitForUniqueIDBufferInitialization,
+    setupUniqueIDBufferForServiceCommunication,
   );
-  processRouterMessage.broadcast(_generateErrorSourceIdentifier);
+  routeMessageToEndpoint.broadcast(setupDataCommunicationForNode);
 }
-setupServiceWorkerWithIdentifierManagement();
+initializeServiceWorkerAndManageUniqueIDs();

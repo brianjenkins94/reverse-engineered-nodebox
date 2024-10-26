@@ -1,288 +1,313 @@
-var initializeAndRetrieveModuleExports =
-  (setupModuleExports, __initializeAndRetrieveModuleExports) => () => {
-    if (!__initializeAndRetrieveModuleExports) {
-      setupModuleExports(
-        (__initializeAndRetrieveModuleExports = {
+var initializeModuleAndGetExports =
+  (setupModuleAndReturnExports, _initializeModuleAndGetExports) => () => {
+    if (!_initializeModuleAndGetExports) {
+      setupModuleAndReturnExports(
+        (_initializeModuleAndGetExports = {
           exports: {},
         }).exports,
-        __initializeAndRetrieveModuleExports,
+        _initializeModuleAndGetExports,
       );
     }
-    return __initializeAndRetrieveModuleExports.exports;
+    return _initializeModuleAndGetExports.exports;
   };
-var copyObjectPropertiesWithDescriptors = (
+var transferNonEnumerableProperties = (
+  copyNonEnumerablePropertiesFromSourceObject,
+  sourceObjectWithNonEnumerableProps,
   copyNonEnumerablePropertiesFromSource,
-  sourceObjectForProperties,
-  nonEnumerableSourceProperties,
-  propertyDescriptor,
+  getNonEnumerablePropertyDescriptor,
 ) => {
   if (
-    (sourceObjectForProperties &&
-      typeof sourceObjectForProperties == "object") ||
-    typeof sourceObjectForProperties == "function"
+    (sourceObjectWithNonEnumerableProps &&
+      typeof sourceObjectWithNonEnumerableProps == "object") ||
+    typeof sourceObjectWithNonEnumerableProps == "function"
   ) {
-    for (let propertyKey of Object.getOwnPropertyNames(
-      sourceObjectForProperties,
+    for (let nonEnumerablePropertyName of Object.getOwnPropertyNames(
+      sourceObjectWithNonEnumerableProps,
     )) {
       if (
         !Object.prototype.hasOwnProperty.call(
-          copyNonEnumerablePropertiesFromSource,
-          propertyKey,
+          copyNonEnumerablePropertiesFromSourceObject,
+          nonEnumerablePropertyName,
         ) &&
-        propertyKey !== nonEnumerableSourceProperties
+        nonEnumerablePropertyName !== copyNonEnumerablePropertiesFromSource
       ) {
         Object.defineProperty(
-          copyNonEnumerablePropertiesFromSource,
-          propertyKey,
+          copyNonEnumerablePropertiesFromSourceObject,
+          nonEnumerablePropertyName,
           {
-            get: () => sourceObjectForProperties[propertyKey],
+            get: () =>
+              sourceObjectWithNonEnumerableProps[nonEnumerablePropertyName],
             enumerable:
-              !(propertyDescriptor = Object.getOwnPropertyDescriptor(
-                sourceObjectForProperties,
-                propertyKey,
-              )) || propertyDescriptor.enumerable,
+              !(getNonEnumerablePropertyDescriptor =
+                Object.getOwnPropertyDescriptor(
+                  sourceObjectWithNonEnumerableProps,
+                  nonEnumerablePropertyName,
+                )) || getNonEnumerablePropertyDescriptor.enumerable,
           },
         );
       }
     }
   }
-  return copyNonEnumerablePropertiesFromSource;
+  return copyNonEnumerablePropertiesFromSourceObject;
 };
-var defineModuleDefaultExport = (
+var initializeModuleWithDefaultExportingProperties = (
   inputObject,
-  inputObjectProperties,
-  derivedPrototypeObject,
+  propertiesToTransfer,
+  createPrototypeBasedOnInputObject,
 ) => {
   if (inputObject != null) {
-    derivedPrototypeObject = Object.create(Object.getPrototypeOf(inputObject));
+    createPrototypeBasedOnInputObject = Object.create(
+      Object.getPrototypeOf(inputObject),
+    );
   } else {
-    derivedPrototypeObject = {};
+    createPrototypeBasedOnInputObject = {};
   }
-  return copyObjectPropertiesWithDescriptors(
-    inputObjectProperties || !inputObject || !inputObject.__esModule
-      ? Object.defineProperty(derivedPrototypeObject, "default", {
+  return transferNonEnumerableProperties(
+    propertiesToTransfer || !inputObject || !inputObject.__esModule
+      ? Object.defineProperty(createPrototypeBasedOnInputObject, "default", {
           value: inputObject,
           enumerable: true,
         })
-      : derivedPrototypeObject,
+      : createPrototypeBasedOnInputObject,
     inputObject,
   );
 };
-var generatePaddedString = initializeAndRetrieveModuleExports(
-  (padNumberWithLeadingZeros, padNumberWithLeadingZerosToFixedLength) => {
-    padNumberWithLeadingZerosToFixedLength.exports = function (
-      _padStringWithZerosToLength,
-      desiredPaddedStringLength,
+var formatAndPadNumberWithLeadingZeros = initializeModuleAndGetExports(
+  (formatNumberWithLeadingZeros, padNumberToLengthWithLeadingZeros) => {
+    padNumberToLengthWithLeadingZeros.exports = function (
+      padNumberWithLeadingZeros,
+      desiredStringLengthForPadding,
     ) {
-      var zeroPaddedString = "000000000" + _padStringWithZerosToLength;
-      return zeroPaddedString.substr(
-        zeroPaddedString.length - desiredPaddedStringLength,
+      var formatAndPadNumberWithLeadingZeros =
+        "000000000" + padNumberWithLeadingZeros;
+      return formatAndPadNumberWithLeadingZeros.substr(
+        formatAndPadNumberWithLeadingZeros.length -
+          desiredStringLengthForPadding,
       );
     };
   },
 );
-var createAndExportPaddedNavigatorInfoFunction =
-  initializeAndRetrieveModuleExports(
-    (createPaddedNavigatorSummary, createAndExportPaddedNavigatorSummary) => {
-      var _createPaddedNavigatorSummary = generatePaddedString();
-      var globalScope = typeof window == "object" ? window : self;
-      var totalGlobalObjectPropertiesCount = Object.keys(globalScope).length;
-      var countOfNavigatorMimeTypes = navigator.mimeTypes
+var initializeAndExportNavigatorSummaryWithPadding =
+  initializeModuleAndGetExports(
+    (
+      createPaddedNavigatorSummaryForExport,
+      createAndExportFormattedNavigatorSummary,
+    ) => {
+      var createPaddedAndFormattedNavigatorSummaryOutput =
+        formatAndPadNumberWithLeadingZeros();
+      var executionEnvironment = typeof window == "object" ? window : self;
+      var executionEnvironmentPropertiesCount =
+        Object.keys(executionEnvironment).length;
+      var getTotalMimeTypesCount = navigator.mimeTypes
         ? navigator.mimeTypes.length
         : 0;
-      var getPaddedNavigatorSummary = _createPaddedNavigatorSummary(
-        (countOfNavigatorMimeTypes + navigator.userAgent.length).toString(36) +
-          totalGlobalObjectPropertiesCount.toString(36),
-        4,
-      );
-      createAndExportPaddedNavigatorSummary.exports = function () {
-        return getPaddedNavigatorSummary;
+      var createFormattedNavigatorSummaryWithPadding =
+        createPaddedAndFormattedNavigatorSummaryOutput(
+          (getTotalMimeTypesCount + navigator.userAgent.length).toString(36) +
+            executionEnvironmentPropertiesCount.toString(36),
+          4,
+        );
+      createAndExportFormattedNavigatorSummary.exports = function () {
+        return createFormattedNavigatorSummaryWithPadding;
       };
     },
   );
-var initializeRandomValueGenerator = initializeAndRetrieveModuleExports(
+var initializeCryptoRandomValueGenerator = initializeModuleAndGetExports(
   (
-    generateRandomNormalizedValueBasedOnCrypto,
-    getNormalizedRandomValueUsingCrypto,
+    initializeNormalizedRandomValueGenerator,
+    setupNormalizedRandomValueGeneratorForOutput,
   ) => {
     var generateNormalizedRandomValue;
-    var getNormalizedRandomValue =
+    var isSecureRandomGeneratorAvailable =
       (typeof window !== "undefined" && (window.crypto || window.msCrypto)) ||
       (typeof self !== "undefined" && self.crypto);
-    if (getNormalizedRandomValue) {
-      maxSecureRandomValue = Math.pow(2, 32) - 1;
+    if (isSecureRandomGeneratorAvailable) {
+      maxUInt32ForNormalization = Math.pow(2, 32) - 1;
       generateNormalizedRandomValue = function () {
         return Math.abs(
-          getNormalizedRandomValue.getRandomValues(new Uint32Array(1))[0] /
-            maxSecureRandomValue,
+          isSecureRandomGeneratorAvailable.getRandomValues(
+            new Uint32Array(1),
+          )[0] / maxUInt32ForNormalization,
         );
       };
     } else {
       generateNormalizedRandomValue = Math.random;
     }
-    var maxSecureRandomValue;
-    getNormalizedRandomValueUsingCrypto.exports = generateNormalizedRandomValue;
+    var maxUInt32ForNormalization;
+    setupNormalizedRandomValueGeneratorForOutput.exports =
+      generateNormalizedRandomValue;
   },
 );
-var generateUniqueSlug = initializeAndRetrieveModuleExports(
-  (createUniqueSlugAndIdentifier, generateUniqueSlug) => {
-    var createUniqueSlug = createAndExportPaddedNavigatorInfoFunction();
-    var generateUniqueIdentifierFromIndex = generatePaddedString();
-    var _initializeRandomValueGenerator = initializeRandomValueGenerator();
-    var uniqueSlugCounter = 0;
-    var slugCharacterCount = 4;
-    var base36NumberSystem = 36;
-    var totalPossibleUniqueSlugs = Math.pow(
-      base36NumberSystem,
-      slugCharacterCount,
+var generateAndStoreUniqueSlug = initializeModuleAndGetExports(
+  (
+    generateUniqueContentSlugWithIndex,
+    generateUniqueSlugFromContentWithIndex,
+  ) => {
+    var initializeSlugGeneratorForContent =
+      initializeAndExportNavigatorSummaryWithPadding();
+    var generateSlugFromRandomIndex = formatAndPadNumberWithLeadingZeros();
+    var initializeSlugIndexGenerator = initializeCryptoRandomValueGenerator();
+    var currentUniqueSlugIndex = 0;
+    var maxSlugLength = 4;
+    var base36NumericalSystem = 36;
+    var maxUniqueSlugsForGivenLength = Math.pow(
+      base36NumericalSystem,
+      maxSlugLength,
     );
-    function generateUniqueSlugForContent() {
-      return generateUniqueIdentifierFromIndex(
+    function generateUniqueSlugBasedOnContent() {
+      return generateSlugFromRandomIndex(
         (
-          (_initializeRandomValueGenerator() * totalPossibleUniqueSlugs) <<
+          (initializeSlugIndexGenerator() * maxUniqueSlugsForGivenLength) <<
           0
-        ).toString(base36NumberSystem),
-        slugCharacterCount,
+        ).toString(base36NumericalSystem),
+        maxSlugLength,
       );
     }
-    function getNextAvailableSlugIndex() {
-      if (uniqueSlugCounter < totalPossibleUniqueSlugs) {
-        uniqueSlugCounter = uniqueSlugCounter;
+    function findNextUniqueSlugIndex() {
+      if (currentUniqueSlugIndex < maxUniqueSlugsForGivenLength) {
+        currentUniqueSlugIndex = currentUniqueSlugIndex;
       } else {
-        uniqueSlugCounter = 0;
+        currentUniqueSlugIndex = 0;
       }
-      uniqueSlugCounter++;
-      return uniqueSlugCounter - 1;
+      currentUniqueSlugIndex++;
+      return currentUniqueSlugIndex - 1;
     }
-    function createUniqueIdentifierForSlug() {
-      var slugIdentifierPrefix = "c";
-      var currentTimestampInBase36 = new Date()
+    function generateUniqueContentIdentifier() {
+      var contentSlugPrefix = "c";
+      var timestampInBase36 = new Date()
         .getTime()
-        .toString(base36NumberSystem);
-      var slugUniqueIdentifier = generateUniqueIdentifierFromIndex(
-        getNextAvailableSlugIndex().toString(base36NumberSystem),
-        slugCharacterCount,
+        .toString(base36NumericalSystem);
+      var createSlugSuffixFromRandomIndex = generateSlugFromRandomIndex(
+        findNextUniqueSlugIndex().toString(base36NumericalSystem),
+        maxSlugLength,
       );
-      var createUniqueSlugIdentifier = createUniqueSlug();
-      var randomSlugParts =
-        generateUniqueSlugForContent() + generateUniqueSlugForContent();
+      var _initializeSlugGeneratorForContent =
+        initializeSlugGeneratorForContent();
+      var uniqueContentSlugCombination =
+        generateUniqueSlugBasedOnContent() + generateUniqueSlugBasedOnContent();
       return (
-        slugIdentifierPrefix +
-        currentTimestampInBase36 +
-        slugUniqueIdentifier +
-        createUniqueSlugIdentifier +
-        randomSlugParts
+        contentSlugPrefix +
+        timestampInBase36 +
+        createSlugSuffixFromRandomIndex +
+        _initializeSlugGeneratorForContent +
+        uniqueContentSlugCombination
       );
     }
-    createUniqueIdentifierForSlug.slug = function () {
-      var _currentTimestampInBase36 = new Date().getTime().toString(36);
-      var lastFourUniqueIndexDigits = getNextAvailableSlugIndex()
+    generateUniqueContentIdentifier.slug = function () {
+      var base36TimestampForSlugCreation = new Date().getTime().toString(36);
+      var getGeneratedUniqueSlugIndex = findNextUniqueSlugIndex()
         .toString(36)
         .slice(-4);
-      var uniqueIdentifierSlug =
-        createUniqueSlug().slice(0, 1) + createUniqueSlug().slice(-1);
-      var lastTwoDigitsOfUniqueSlug = generateUniqueSlugForContent().slice(-2);
+      var _contentSlugPrefix =
+        initializeSlugGeneratorForContent().slice(0, 1) +
+        initializeSlugGeneratorForContent().slice(-1);
+      var getLastTwoSlugCharactersFromContent =
+        generateUniqueSlugBasedOnContent().slice(-2);
       return (
-        _currentTimestampInBase36.slice(-2) +
-        lastFourUniqueIndexDigits +
-        uniqueIdentifierSlug +
-        lastTwoDigitsOfUniqueSlug
+        base36TimestampForSlugCreation.slice(-2) +
+        getGeneratedUniqueSlugIndex +
+        _contentSlugPrefix +
+        getLastTwoSlugCharactersFromContent
       );
     };
-    createUniqueIdentifierForSlug.isCuid = function (isCuidStringValid) {
-      if (typeof isCuidStringValid != "string") {
+    generateUniqueContentIdentifier.isCuid = function (isValidCuidFormat) {
+      if (typeof isValidCuidFormat != "string") {
         return false;
       } else {
-        return !!isCuidStringValid.startsWith("c");
+        return !!isValidCuidFormat.startsWith("c");
       }
     };
-    createUniqueIdentifierForSlug.isSlug = function (isSlugLengthValid) {
-      if (typeof isSlugLengthValid != "string") {
+    generateUniqueContentIdentifier.isSlug = function (isSlugValidLength) {
+      if (typeof isSlugValidLength != "string") {
         return false;
       }
-      var slugLength = isSlugLengthValid.length;
-      return slugLength >= 7 && slugLength <= 10;
+      var isSlugLengthAppropriate = isSlugValidLength.length;
+      return isSlugLengthAppropriate >= 7 && isSlugLengthAppropriate <= 10;
     };
-    createUniqueIdentifierForSlug.fingerprint = createUniqueSlug;
-    generateUniqueSlug.exports = createUniqueIdentifierForSlug;
+    generateUniqueContentIdentifier.fingerprint =
+      initializeSlugGeneratorForContent;
+    generateUniqueSlugFromContentWithIndex.exports =
+      generateUniqueContentIdentifier;
   },
 );
-var initializeAndExportDeferredExecutor = initializeAndRetrieveModuleExports(
-  (PromiseExecutorFactory) => {
+var initializeAndExportAsyncPromiseManager = initializeModuleAndGetExports(
+  (AsyncPromiseStateManager) => {
     "use strict";
 
-    Object.defineProperty(PromiseExecutorFactory, "__esModule", {
+    Object.defineProperty(AsyncPromiseStateManager, "__esModule", {
       value: true,
     });
-    PromiseExecutorFactory.createDeferredExecutor = undefined;
-    function initializePromiseHandler() {
-      let initializePromise = (
-        processPromiseRejection,
-        processPromiseRejectionCallback,
+    AsyncPromiseStateManager.createDeferredExecutor = undefined;
+    function handlePromiseLifecycle() {
+      let manageAsyncPromiseState = (
+        processPromiseOutcome,
+        handlePendingPromiseRejection,
       ) => {
-        initializePromise.state = "pending";
-        initializePromise.resolve = (handlePromiseResolutionAndRejection) => {
-          if (initializePromise.state !== "pending") {
+        manageAsyncPromiseState.state = "pending";
+        manageAsyncPromiseState.resolve = (handleAsyncPromiseResult) => {
+          if (manageAsyncPromiseState.state !== "pending") {
             return;
           }
-          initializePromise.result = handlePromiseResolutionAndRejection;
-          let resolveAndFulfillPromise = (createFulfilledPromise) => {
-            initializePromise.state = "fulfilled";
-            return createFulfilledPromise;
+          manageAsyncPromiseState.result = handleAsyncPromiseResult;
+          let markPromiseAsFulfilledAndReturnResult = (
+            setPromiseStateToFulfilled,
+          ) => {
+            manageAsyncPromiseState.state = "fulfilled";
+            return setPromiseStateToFulfilled;
           };
-          return processPromiseRejection(
-            handlePromiseResolutionAndRejection instanceof Promise
-              ? handlePromiseResolutionAndRejection
-              : Promise.resolve(handlePromiseResolutionAndRejection).then(
-                  resolveAndFulfillPromise,
+          return processPromiseOutcome(
+            handleAsyncPromiseResult instanceof Promise
+              ? handleAsyncPromiseResult
+              : Promise.resolve(handleAsyncPromiseResult).then(
+                  markPromiseAsFulfilledAndReturnResult,
                 ),
           );
         };
-        initializePromise.reject = (processPendingPromiseRejection) => {
-          if (initializePromise.state === "pending") {
+        manageAsyncPromiseState.reject = (handlePendingPromiseRejection) => {
+          if (manageAsyncPromiseState.state === "pending") {
             queueMicrotask(() => {
-              initializePromise.state = "rejected";
+              manageAsyncPromiseState.state = "rejected";
             });
-            return processPromiseRejectionCallback(
-              (initializePromise.rejectionReason =
-                processPendingPromiseRejection),
+            return handlePendingPromiseRejection(
+              (manageAsyncPromiseState.rejectionReason =
+                handlePendingPromiseRejection),
             );
           }
         };
       };
-      return initializePromise;
+      return manageAsyncPromiseState;
     }
-    PromiseExecutorFactory.createDeferredExecutor = initializePromiseHandler;
+    AsyncPromiseStateManager.createDeferredExecutor = handlePromiseLifecycle;
   },
 );
-var initializeDeferredPromise = initializeAndRetrieveModuleExports(
-  (DeferredExecutorPromise) => {
+var initializeAndExportDeferredPromiseHandler = initializeModuleAndGetExports(
+  (AsyncDeferredPromiseHandler) => {
     "use strict";
 
-    Object.defineProperty(DeferredExecutorPromise, "__esModule", {
+    Object.defineProperty(AsyncDeferredPromiseHandler, "__esModule", {
       value: true,
     });
-    DeferredExecutorPromise.DeferredPromise = undefined;
-    var __initializeAndExportDeferredExecutor =
-      initializeAndExportDeferredExecutor();
-    var CustomPromiseWithDeferredExecutor = class extends Promise {
+    AsyncDeferredPromiseHandler.DeferredPromise = undefined;
+    var _initializeAndExportDeferredPromiseHandler =
+      initializeAndExportAsyncPromiseManager();
+    var AsyncDeferredPromiseExecutor = class extends Promise {
       #e;
       resolve;
       reject;
       constructor(currentUserSession = null) {
-        let deferredExecutionHandler = (0,
-        __initializeAndExportDeferredExecutor.createDeferredExecutor)();
-        super((executionDelayOptions, deferredExecutionCallback) => {
-          deferredExecutionHandler(
-            executionDelayOptions,
-            deferredExecutionCallback,
+        let createAndInitializeDeferredExecutor = (0,
+        _initializeAndExportDeferredPromiseHandler.createDeferredExecutor)();
+        super((deferredExecutionSettings, setupDeferredExecutionHandler) => {
+          createAndInitializeDeferredExecutor(
+            deferredExecutionSettings,
+            setupDeferredExecutionHandler,
           );
           currentUserSession?.(
-            deferredExecutionHandler.resolve,
-            deferredExecutionHandler.reject,
+            createAndInitializeDeferredExecutor.resolve,
+            createAndInitializeDeferredExecutor.reject,
           );
         });
-        this.#e = deferredExecutionHandler;
+        this.#e = createAndInitializeDeferredExecutor;
         this.resolve = this.#e.resolve;
         this.reject = this.#e.reject;
       }
@@ -292,19 +317,17 @@ var initializeDeferredPromise = initializeAndRetrieveModuleExports(
       get rejectionReason() {
         return this.#e.rejectionReason;
       }
-      then(handlePromiseResolution, handlePromiseRejection) {
-        return this.#t(
-          super.then(handlePromiseResolution, handlePromiseRejection),
-        );
+      then(handlePromiseOutcome, handlePromiseError) {
+        return this.#t(super.then(handlePromiseOutcome, handlePromiseError));
       }
-      catch(handleError) {
-        return this.#t(super.catch(handleError));
+      catch(handleApiRequestError) {
+        return this.#t(super.catch(handleApiRequestError));
       }
-      finally(completePromiseHandling) {
-        return this.#t(super.finally(completePromiseHandling));
+      finally(performFinalPromiseCleanup) {
+        return this.#t(super.finally(performFinalPromiseCleanup));
       }
-      #t(createResolutionHandlers) {
-        return Object.defineProperties(createResolutionHandlers, {
+      #t(setupPromiseResolutionHandlers) {
+        return Object.defineProperties(setupPromiseResolutionHandlers, {
           resolve: {
             configurable: true,
             value: this.resolve,
@@ -316,364 +339,376 @@ var initializeDeferredPromise = initializeAndRetrieveModuleExports(
         });
       }
     };
-    DeferredExecutorPromise.DeferredPromise = CustomPromiseWithDeferredExecutor;
+    AsyncDeferredPromiseHandler.DeferredPromise = AsyncDeferredPromiseExecutor;
   },
 );
-var _initializeAndRetrieveModuleExports = initializeAndRetrieveModuleExports(
-  (deferredModuleExports) => {
+var initializeAndExposeDeferredModule = initializeModuleAndGetExports(
+  (defineModuleProxyBinding) => {
     "use strict";
 
-    var createDeferredBinding =
-      (deferredModuleExports && deferredModuleExports.__createBinding) ||
+    var createModuleProxyBinding =
+      (defineModuleProxyBinding && defineModuleProxyBinding.__createBinding) ||
       (Object.create
         ? function (
-            createBindingForDeferredExecution,
-            _createBindingForDeferredExecution,
-            createDeferredExecutionHandler,
-            ___createDeferredExecutionHandler = createDeferredExecutionHandler,
+            __defineProxyBindingForModule,
+            defineProxyBindingForDeferredModule,
+            defineDeferredBindingProperty,
+            _defineDeferredBindingProperty = defineDeferredBindingProperty,
           ) {
-            var propertyDescriptor = Object.getOwnPropertyDescriptor(
-              _createBindingForDeferredExecution,
-              createDeferredExecutionHandler,
-            );
+            var deferredBindingPropertyDescriptor =
+              Object.getOwnPropertyDescriptor(
+                defineProxyBindingForDeferredModule,
+                defineDeferredBindingProperty,
+              );
             if (
-              !propertyDescriptor ||
-              ("get" in propertyDescriptor
-                ? !_createBindingForDeferredExecution.__esModule
-                : propertyDescriptor.writable ||
-                  propertyDescriptor.configurable)
+              !deferredBindingPropertyDescriptor ||
+              ("get" in deferredBindingPropertyDescriptor
+                ? !defineProxyBindingForDeferredModule.__esModule
+                : deferredBindingPropertyDescriptor.writable ||
+                  deferredBindingPropertyDescriptor.configurable)
             ) {
-              propertyDescriptor = {
+              deferredBindingPropertyDescriptor = {
                 enumerable: true,
                 get() {
-                  return _createBindingForDeferredExecution[
-                    createDeferredExecutionHandler
+                  return defineProxyBindingForDeferredModule[
+                    defineDeferredBindingProperty
                   ];
                 },
               };
             }
             Object.defineProperty(
-              createBindingForDeferredExecution,
-              ___createDeferredExecutionHandler,
-              propertyDescriptor,
+              __defineProxyBindingForModule,
+              _defineDeferredBindingProperty,
+              deferredBindingPropertyDescriptor,
             );
           }
         : function (
-            deferredBindingHandler,
-            logDeferredPromiseRejection,
-            _createDeferredExecutionHandler,
-            __createDeferredExecutionHandler = _createDeferredExecutionHandler,
+            bindDeferredPromiseHandling,
+            handleDeferredPromiseRejectionsAndLogErrors,
+            handlePromiseBinding,
+            _handlePromiseBinding = handlePromiseBinding,
           ) {
-            deferredBindingHandler[__createDeferredExecutionHandler] =
-              logDeferredPromiseRejection[_createDeferredExecutionHandler];
+            bindDeferredPromiseHandling[_handlePromiseBinding] =
+              handleDeferredPromiseRejectionsAndLogErrors[handlePromiseBinding];
           });
-    var createDeferredBindingForModuleExport =
-      (deferredModuleExports && deferredModuleExports.__exportStar) ||
+    var _createModuleProxyBinding =
+      (defineModuleProxyBinding && defineModuleProxyBinding.__exportStar) ||
       function (
-        configurePromiseExportProperties,
-        configurePromiseErrorHandling,
+        createDeferredExportsWithRejectionHandler,
+        exportPromiseRejectionsWithLogging,
       ) {
-        for (var exportedPromiseProperty in configurePromiseExportProperties) {
+        for (var propertyKeyToExport in createDeferredExportsWithRejectionHandler) {
           if (
-            exportedPromiseProperty !== "default" &&
+            propertyKeyToExport !== "default" &&
             !Object.prototype.hasOwnProperty.call(
-              configurePromiseErrorHandling,
-              exportedPromiseProperty,
+              exportPromiseRejectionsWithLogging,
+              propertyKeyToExport,
             )
           ) {
-            createDeferredBinding(
-              configurePromiseErrorHandling,
-              configurePromiseExportProperties,
-              exportedPromiseProperty,
+            createModuleProxyBinding(
+              exportPromiseRejectionsWithLogging,
+              createDeferredExportsWithRejectionHandler,
+              propertyKeyToExport,
             );
           }
         }
       };
-    Object.defineProperty(deferredModuleExports, "__esModule", {
+    Object.defineProperty(defineModuleProxyBinding, "__esModule", {
       value: true,
     });
-    createDeferredBindingForModuleExport(
-      initializeAndExportDeferredExecutor(),
-      deferredModuleExports,
+    _createModuleProxyBinding(
+      initializeAndExportAsyncPromiseManager(),
+      defineModuleProxyBinding,
     );
-    createDeferredBindingForModuleExport(
-      initializeDeferredPromise(),
-      deferredModuleExports,
+    _createModuleProxyBinding(
+      initializeAndExportDeferredPromiseHandler(),
+      defineModuleProxyBinding,
     );
   },
 );
-var initializeDeferredExecutorBinding =
-  defineModuleDefaultExport(generateUniqueSlug());
-var initializeAndExportDeferredPromise = /(%?)(%([sdjo]))/g;
-function processBindingValue(
-  bindExportedProperties,
-  _initializeAndExportDeferredExecutor,
+var initializeAndExportPromiseExecutorWithUniqueSlugs =
+  initializeModuleWithDefaultExportingProperties(generateAndStoreUniqueSlug());
+var promiseFormatSpecifierPattern = /(%?)(%([sdjo]))/g;
+function transformValueForDataType(
+  convertValueToDataType,
+  convertValueBasedOnType,
 ) {
-  switch (_initializeAndExportDeferredExecutor) {
+  switch (convertValueBasedOnType) {
     case "s":
-      return bindExportedProperties;
+      return convertValueToDataType;
     case "d":
     case "i":
-      return Number(bindExportedProperties);
+      return Number(convertValueToDataType);
     case "j":
-      return JSON.stringify(bindExportedProperties);
+      return JSON.stringify(convertValueToDataType);
     case "o": {
-      if (typeof bindExportedProperties == "string") {
-        return bindExportedProperties;
+      if (typeof convertValueToDataType == "string") {
+        return convertValueToDataType;
       }
-      let serializeBindExportedProperties = JSON.stringify(
-        bindExportedProperties,
-      );
+      let serializeAndReturnValidJSON = JSON.stringify(convertValueToDataType);
       if (
-        serializeBindExportedProperties === "{}" ||
-        serializeBindExportedProperties === "[]" ||
-        /^\[object .+?\]$/.test(serializeBindExportedProperties)
+        serializeAndReturnValidJSON === "{}" ||
+        serializeAndReturnValidJSON === "[]" ||
+        /^\[object .+?\]$/.test(serializeAndReturnValidJSON)
       ) {
-        return bindExportedProperties;
+        return convertValueToDataType;
       } else {
-        return serializeBindExportedProperties;
+        return serializeAndReturnValidJSON;
       }
     }
   }
 }
-function formatCallbackStringWithValues(
-  deferredCallbackExecutorProperty,
-  ...callbackArguments
+function replacePlaceholdersWithFormattedValues(
+  formatStringWithValuesAndCallback,
+  ...replacePlaceholdersWithValues
 ) {
-  if (callbackArguments.length === 0) {
-    return deferredCallbackExecutorProperty;
+  if (replacePlaceholdersWithValues.length === 0) {
+    return formatStringWithValuesAndCallback;
   }
-  let currentArgumentIndex = 0;
-  let formattedCallbackArgumentsString =
-    deferredCallbackExecutorProperty.replace(
-      initializeAndExportDeferredPromise,
+  let currentPlaceholderValueIndex = 0;
+  let replacePlaceholdersInFormatString =
+    formatStringWithValuesAndCallback.replace(
+      promiseFormatSpecifierPattern,
       (
-        retrieveBindingValueOrUpdate,
+        retrieveOrUpdateBindingValue,
         hasBindingValueChanged,
-        processPlaceholderValue,
-        convertAndRetrieveBindingValue,
+        updateBindingValueBasedOnChangeStatus,
+        handleBindingValueUpdates,
       ) => {
-        let currentCallbackArgumentValue =
-          callbackArguments[currentArgumentIndex];
-        let processedBindingValue = processBindingValue(
-          currentCallbackArgumentValue,
-          convertAndRetrieveBindingValue,
+        let processedCallbackValue =
+          replacePlaceholdersWithValues[currentPlaceholderValueIndex];
+        let transformedCallbackValue = transformValueForDataType(
+          processedCallbackValue,
+          handleBindingValueUpdates,
         );
         if (hasBindingValueChanged) {
-          return retrieveBindingValueOrUpdate;
+          return retrieveOrUpdateBindingValue;
         } else {
-          currentArgumentIndex++;
-          return processedBindingValue;
+          currentPlaceholderValueIndex++;
+          return transformedCallbackValue;
         }
       },
     );
-  if (currentArgumentIndex < callbackArguments.length) {
-    formattedCallbackArgumentsString +=
-      " " + callbackArguments.slice(currentArgumentIndex).join(" ");
+  if (currentPlaceholderValueIndex < replacePlaceholdersWithValues.length) {
+    replacePlaceholdersInFormatString +=
+      " " +
+      replacePlaceholdersWithValues
+        .slice(currentPlaceholderValueIndex)
+        .join(" ");
   }
-  formattedCallbackArgumentsString = formattedCallbackArgumentsString.replace(
+  replacePlaceholdersInFormatString = replacePlaceholdersInFormatString.replace(
     /%{2,2}/g,
     "%",
   );
-  return formattedCallbackArgumentsString;
+  return replacePlaceholdersInFormatString;
 }
-var bindExportedPropertiesDependingOnString = 2;
-function sanitizePromiseStackTrace(_replaceCallbackPlaceholdersWithValues) {
-  if (!_replaceCallbackPlaceholdersWithValues.stack) {
+var errorStackTraceOffset = 2;
+function sanitizePromiseErrorStack(_cleanErrorStackTraceForPromise) {
+  if (!_cleanErrorStackTraceForPromise.stack) {
     return;
   }
-  let getStackTraceLines =
-    _replaceCallbackPlaceholdersWithValues.stack.split("\n");
-  getStackTraceLines.splice(1, bindExportedPropertiesDependingOnString);
-  _replaceCallbackPlaceholdersWithValues.stack = getStackTraceLines.join("\n");
+  let getCleanErrorStackLines =
+    _cleanErrorStackTraceForPromise.stack.split("\n");
+  getCleanErrorStackLines.splice(1, errorStackTraceOffset);
+  _cleanErrorStackTraceForPromise.stack = getCleanErrorStackLines.join("\n");
 }
-var formatCallbackWithBindingValues = class extends Error {
-  constructor(formattedErrorMessage, ...callbackValuesForErrorFormatting) {
-    super(formattedErrorMessage);
-    this.message = formattedErrorMessage;
+var InvariantViolationException = class extends Error {
+  constructor(
+    generateInvariantViolationMessage,
+    ...formattedErrorValuesForMessage
+  ) {
+    super(generateInvariantViolationMessage);
+    this.message = generateInvariantViolationMessage;
     this.name = "Invariant Violation";
-    this.message = formatCallbackStringWithValues(
-      formattedErrorMessage,
-      ...callbackValuesForErrorFormatting,
+    this.message = replacePlaceholdersWithFormattedValues(
+      generateInvariantViolationMessage,
+      ...formattedErrorValuesForMessage,
     );
-    sanitizePromiseStackTrace(this);
+    sanitizePromiseErrorStack(this);
   }
 };
-var __replaceCallbackPlaceholdersWithValues = (
-  validateDataBinding,
-  handleDataBindingErrors,
-  ...dataBindingErrorArguments
+var validateDataBindingConfirmationAndThrowErrors = (
+  isDataBindingConfirmed,
+  checkDataBindingValidationAndThrow,
+  ...collectErrorDetailsForBindingValidation
 ) => {
-  if (!validateDataBinding) {
-    throw new formatCallbackWithBindingValues(
-      handleDataBindingErrors,
-      ...dataBindingErrorArguments,
+  if (!isDataBindingConfirmed) {
+    throw new InvariantViolationException(
+      checkDataBindingValidationAndThrow,
+      ...collectErrorDetailsForBindingValidation,
     );
   }
 };
-__replaceCallbackPlaceholdersWithValues.as = (
-  handleErrorAndRetryCallback,
-  isErrorRecoverable,
-  callbackPlaceholderValues,
-  ...callbackArguments
+validateDataBindingConfirmationAndThrowErrors.as = (
+  processErrorAndDetermineRetryPolicy,
+  shouldRetryOnError,
+  createDetailedErrorMessageForRetry,
+  ...errorDetailsForRetryAttempt
 ) => {
-  if (!isErrorRecoverable) {
-    throw handleErrorAndRetryCallback.prototype.name != null
-      ? new handleErrorAndRetryCallback(
-          formatCallbackStringWithValues(
-            callbackPlaceholderValues,
-            callbackArguments,
+  if (!shouldRetryOnError) {
+    throw processErrorAndDetermineRetryPolicy.prototype.name != null
+      ? new processErrorAndDetermineRetryPolicy(
+          replacePlaceholdersWithFormattedValues(
+            createDetailedErrorMessageForRetry,
+            errorDetailsForRetryAttempt,
           ),
         )
-      : handleErrorAndRetryCallback(
-          formatCallbackStringWithValues(
-            callbackPlaceholderValues,
-            callbackArguments,
+      : processErrorAndDetermineRetryPolicy(
+          replacePlaceholdersWithFormattedValues(
+            createDetailedErrorMessageForRetry,
+            errorDetailsForRetryAttempt,
           ),
         );
   }
 };
-var replaceCallbackPlaceholderWithValues = defineModuleDefaultExport(
-  _initializeAndRetrieveModuleExports(),
-);
-var callbackPlaceholderValues = "preview-manager";
-var replaceCallbackPlaceholdersWithValuesHandler = "preview/request";
-var validateAndFormatCallbackError = "preview/response";
-var replaceCallbackPlaceholdersWithParameters = "preview/runtime-request";
-var ___replaceCallbackPlaceholdersWithValues = "preview/runtime-response";
-var replacePlaceholdersWithValuesInMessage = "bridge/close";
-function retrieveDefaultServerPort(____replaceCallbackPlaceholdersWithValues) {
-  let defaultServerPort = 8000;
-  if (isNaN(defaultServerPort)) {
+var initializeAndExposePreviewResponseFormatter =
+  initializeModuleWithDefaultExportingProperties(
+    initializeAndExposeDeferredModule(),
+  );
+var previewModuleIdentifier = "preview-manager";
+var previewRequestUrl = "preview/request";
+var previewResponseJsonPath = "preview/response";
+var previewRequestPayloadPath = "preview/runtime-request";
+var previewResponseFormatterPath = "preview/runtime-response";
+var bridgeCloseAction = "bridge/close";
+function retrieveDefaultWebServerPort(getDefaultHttpServerPort) {
+  let defaultHttpPort = 8000;
+  if (isNaN(defaultHttpPort)) {
     throw new Error("Invalid port");
   }
-  return defaultServerPort;
+  return defaultHttpPort;
 }
-function removeFirstSegmentAndJoin(getCallbackValueOrDefault) {
-  let removeFirstSegmentAndJoinString = getCallbackValueOrDefault.split(".");
-  removeFirstSegmentAndJoinString.shift();
-  return removeFirstSegmentAndJoinString.join(".");
+function joinSegmentsAfterFirst(_concatenateAfterFirstSegment) {
+  let joinSegmentsExcludingFirst = _concatenateAfterFirstSegment.split(".");
+  joinSegmentsExcludingFirst.shift();
+  return joinSegmentsExcludingFirst.join(".");
 }
 self.addEventListener("install", function () {
   self.skipWaiting();
 });
-self.addEventListener("activate", async (waitForClientsToClaim) => {
-  waitForClientsToClaim.waitUntil(self.clients.claim());
-});
-var _____replaceCallbackPlaceholdersWithValues = new Map();
-var handleCallbackPlaceholders = new Map();
-function sendMessageToActiveDataBinding(handleRetryCallback) {
-  if (handleRetryCallback.runtimeId) {
-    let currentDataBindingContext = handleCallbackPlaceholders.get(
-      handleRetryCallback.runtimeId,
+self.addEventListener(
+  "activate",
+  async (requestClientClaimingForServiceWorker) => {
+    requestClientClaimingForServiceWorker.waitUntil(self.clients.claim());
+  },
+);
+var messageHandlerCallbackMapping = new Map();
+var messageHandlerRegistry = new Map();
+function sendMessageToActiveProcessor(dispatchMessageWithRetry) {
+  if (dispatchMessageWithRetry.runtimeId) {
+    let currentMessageHandler = messageHandlerRegistry.get(
+      dispatchMessageWithRetry.runtimeId,
     );
-    if (currentDataBindingContext) {
-      currentDataBindingContext.postMessage(handleRetryCallback);
+    if (currentMessageHandler) {
+      currentMessageHandler.postMessage(dispatchMessageWithRetry);
     }
   }
 }
-function processBridgeMessage(handleCallbackErrorInPromiseExecution) {
-  handleCallbackErrorInPromiseExecution.onmessage = (_handleBridgeMessage) => {
-    let { data: handleBridgeMessageData } = _handleBridgeMessage;
-    switch (handleBridgeMessageData.$type) {
-      case validateAndFormatCallbackError: {
-        let bridgeMessageHandler = handleBridgeMessageData;
-        let currentBridgeMessageCallback =
-          _____replaceCallbackPlaceholdersWithValues.get(
-            bridgeMessageHandler.id,
-          );
-        __replaceCallbackPlaceholdersWithValues(
-          currentBridgeMessageCallback,
+function processIncomingBridgeMessages(handleIncomingMessageFromBridge) {
+  handleIncomingMessageFromBridge.onmessage = (handleBridgeMessage) => {
+    let { data: getBridgeMessageData } = handleBridgeMessage;
+    switch (getBridgeMessageData.$type) {
+      case previewResponseJsonPath: {
+        let processBridgePreviewResponse = getBridgeMessageData;
+        let handleBridgePreviewResponse = messageHandlerCallbackMapping.get(
+          processBridgePreviewResponse.id,
+        );
+        validateDataBindingConfirmationAndThrowErrors(
+          handleBridgePreviewResponse,
           'Failed to handle "PREVIEW_RESPONSE_TYPE" message from the bridge: unknown request ID "%s"',
-          bridgeMessageHandler.id,
+          processBridgePreviewResponse.id,
         );
-        _____replaceCallbackPlaceholdersWithValues.delete(
-          bridgeMessageHandler.id,
+        messageHandlerCallbackMapping.delete(processBridgePreviewResponse.id);
+        handleBridgePreviewResponse.resolve(
+          processBridgePreviewResponse.response,
         );
-        currentBridgeMessageCallback.resolve(bridgeMessageHandler.response);
         break;
       }
-      case ___replaceCallbackPlaceholdersWithValues: {
-        sendMessageToActiveDataBinding(handleBridgeMessageData);
+      case previewResponseFormatterPath: {
+        sendMessageToActiveProcessor(getBridgeMessageData);
         break;
       }
-      case replacePlaceholdersWithValuesInMessage: {
-        validateAndThrowIfCallbackInvalid =
-          initializeDeferredPromiseForBridgeMessageHandling();
+      case bridgeCloseAction: {
+        incomingBridgeMessagePortPromise =
+          createAndHandleIncomingMessagePromise();
         break;
       }
     }
   };
 }
-function initializeDeferredPromiseForBridgeMessageHandling() {
-  let createBridgeMessageHandlerPromise =
-    new replaceCallbackPlaceholderWithValues.DeferredPromise();
-  createBridgeMessageHandlerPromise.then((handleBridgeMessage) => {
-    processBridgeMessage(handleBridgeMessage);
-    return handleBridgeMessage;
-  });
-  return createBridgeMessageHandlerPromise;
-}
-var validateAndThrowIfCallbackInvalid =
-  initializeDeferredPromiseForBridgeMessageHandling();
-async function postValidationResultToBridge(handleValidationForBindingResult) {
-  let validationResultMessagePort = await validateAndThrowIfCallbackInvalid;
-  __replaceCallbackPlaceholdersWithValues(
-    validationResultMessagePort,
-    "Failed to send message to the bridge: bridge message port is not defined",
-    handleValidationForBindingResult,
+function createAndHandleIncomingMessagePromise() {
+  let createIncomingBridgeMessageHandlerPromise =
+    new initializeAndExposePreviewResponseFormatter.DeferredPromise();
+  createIncomingBridgeMessageHandlerPromise.then(
+    (processIncomingBridgeMessage) => {
+      processIncomingBridgeMessage(processIncomingBridgeMessage);
+      return processIncomingBridgeMessage;
+    },
   );
-  validationResultMessagePort.postMessage(handleValidationForBindingResult);
+  return createIncomingBridgeMessageHandlerPromise;
 }
-self.addEventListener("message", async (handleBridgeMessages) => {
-  if (!handleBridgeMessages.data?.type) {
+var incomingBridgeMessagePortPromise = createAndHandleIncomingMessagePromise();
+async function postValidationResultToMessageBridge(
+  sendValidationResultToMessageBridge,
+) {
+  let incomingMessagePort = await incomingBridgeMessagePortPromise;
+  validateDataBindingConfirmationAndThrowErrors(
+    incomingMessagePort,
+    "Failed to send message to the bridge: bridge message port is not defined",
+    sendValidationResultToMessageBridge,
+  );
+  incomingMessagePort.postMessage(sendValidationResultToMessageBridge);
+}
+self.addEventListener("message", async (processBridgeMessageEvent) => {
+  if (!processBridgeMessageEvent.data?.type) {
     return;
   }
-  switch (handleBridgeMessages.data.type) {
+  switch (processBridgeMessageEvent.data.type) {
     case "bridge-channel-init": {
-      let bridgePort = handleBridgeMessages.ports[0];
-      __replaceCallbackPlaceholdersWithValues(
-        validateAndThrowIfCallbackInvalid.state === "pending",
+      let initializationBridgePort = processBridgeMessageEvent.ports[0];
+      validateDataBindingConfirmationAndThrowErrors(
+        incomingBridgeMessagePortPromise.state === "pending",
         "Failed to initialize bridge: bridge port promise already fulfilled from previous evaluation.",
       );
-      validateAndThrowIfCallbackInvalid.resolve(bridgePort);
+      incomingBridgeMessagePortPromise.resolve(initializationBridgePort);
       break;
     }
     case "runtime-init": {
-      let messageBridgePort = handleBridgeMessages.ports[0];
-      let deferredExecutorBindingId = (0,
-      initializeDeferredExecutorBinding.default)();
-      handleCallbackPlaceholders.set(
-        deferredExecutorBindingId,
-        messageBridgePort,
+      let messagePortForBridgeCommunication =
+        processBridgeMessageEvent.ports[0];
+      let promiseExecutorId = (0,
+      initializeAndExportPromiseExecutorWithUniqueSlugs.default)();
+      messageHandlerRegistry.set(
+        promiseExecutorId,
+        messagePortForBridgeCommunication,
       );
-      messageBridgePort.addEventListener(
+      messagePortForBridgeCommunication.addEventListener(
         "message",
-        (initializeBindingDataForBridge) => {
-          let initializeBindingPayload = {
-            $channel_name: callbackPlaceholderValues,
-            $type: replaceCallbackPlaceholdersWithParameters,
-            runtimeId: deferredExecutorBindingId,
-            data: initializeBindingDataForBridge.data,
+        (createBridgeBindingRequestPayload) => {
+          let createBridgeRequestPayload = {
+            $channel_name: previewModuleIdentifier,
+            $type: previewRequestPayloadPath,
+            runtimeId: promiseExecutorId,
+            data: createBridgeBindingRequestPayload.data,
           };
-          postValidationResultToBridge(initializeBindingPayload);
+          postValidationResultToMessageBridge(createBridgeRequestPayload);
         },
       );
-      messageBridgePort.start();
-      messageBridgePort.postMessage({
+      messagePortForBridgeCommunication.start();
+      messagePortForBridgeCommunication.postMessage({
         type: "ready",
       });
       break;
     }
     case "ping": {
-      if (!(handleBridgeMessages.source instanceof Client)) {
+      if (!(processBridgeMessageEvent.source instanceof Client)) {
         return;
       }
-      let connectedClient = await self.clients.get(
-        handleBridgeMessages.source.id,
+      let activeClient = await self.clients.get(
+        processBridgeMessageEvent.source.id,
       );
-      if (connectedClient) {
-        connectedClient.postMessage({
+      if (activeClient) {
+        activeClient.postMessage({
           type: "pong",
         });
       }
@@ -681,124 +716,136 @@ self.addEventListener("message", async (handleBridgeMessages) => {
     }
   }
 });
-var _handleBridgeMessage = ["127.0.0.1", "localhost"];
-function getPortFromBridgeMessageHandler(
-  bridgeMessageEventHandler,
-  handleBridgeMessageEvent,
+var localhostTrustedSources = ["127.0.0.1", "localhost"];
+function getPortFromMessageBasedOnSource(
+  extractPortFromTrustedBridgeMessage,
+  extractPortFromIncomingMessage,
 ) {
-  if (_handleBridgeMessage.includes(bridgeMessageEventHandler.hostname)) {
-    return +bridgeMessageEventHandler.port;
+  if (
+    localhostTrustedSources.includes(
+      extractPortFromTrustedBridgeMessage.hostname,
+    )
+  ) {
+    return +extractPortFromTrustedBridgeMessage.port;
   }
-  let extractHandlerPortFromEvent = removeFirstSegmentAndJoin(
-    handleBridgeMessageEvent.hostname,
+  let getDefaultPortFromIncomingMessageHostname = joinSegmentsAfterFirst(
+    extractPortFromIncomingMessage.hostname,
   );
-  let extractedHandlerPort = removeFirstSegmentAndJoin(
-    bridgeMessageEventHandler.hostname,
+  let getPortFromBridgeMessageHostname = joinSegmentsAfterFirst(
+    extractPortFromTrustedBridgeMessage.hostname,
   );
-  if (extractHandlerPortFromEvent === extractedHandlerPort) {
-    return retrieveDefaultServerPort(bridgeMessageEventHandler.hostname);
+  if (
+    getDefaultPortFromIncomingMessageHostname ===
+    getPortFromBridgeMessageHostname
+  ) {
+    return retrieveDefaultWebServerPort(
+      extractPortFromTrustedBridgeMessage.hostname,
+    );
   } else {
     return null;
   }
 }
-function sendBroadcastChannelRequestWithTimeout(
-  promiseValidationHandler,
-  handleBridgePortResponse,
+function broadcastRequestWithTimeoutAndResponseValidation(
+  sendBroadcastRequestWithTimeoutAndHandleResponse,
+  processBroadcastChannelResponse,
 ) {
-  let deferredBroadcastRequestId = (0,
-  initializeDeferredExecutorBinding.default)();
-  let deferredResponsePromise =
-    new replaceCallbackPlaceholderWithValues.DeferredPromise();
-  let broadcastChannelTimeoutId = setTimeout(() => {
-    _____replaceCallbackPlaceholdersWithValues.delete(
-      deferredBroadcastRequestId,
-    );
-    deferredResponsePromise.reject(
+  let uniqueBroadcastRequestId = (0,
+  initializeAndExportPromiseExecutorWithUniqueSlugs.default)();
+  let pendingBroadcastResponsePromise =
+    new initializeAndExposePreviewResponseFormatter.DeferredPromise();
+  let broadcastChannelResponseTimeout = setTimeout(() => {
+    messageHandlerCallbackMapping.delete(uniqueBroadcastRequestId);
+    pendingBroadcastResponsePromise.reject(
       new Error(
         "Failed to handle " +
-          handleBridgePortResponse.method +
+          processBroadcastChannelResponse.method +
           " " +
-          handleBridgePortResponse.url +
+          processBroadcastChannelResponse.url +
           " request: no response received from the BroadcastChannel within timeout. There's likely an issue with the bridge/worker communication.",
       ),
     );
   }, 20000);
-  let broadcastRequestPayload = {
-    $channel_name: callbackPlaceholderValues,
-    $type: replaceCallbackPlaceholdersWithValuesHandler,
-    port: promiseValidationHandler,
-    id: deferredBroadcastRequestId,
-    request: handleBridgePortResponse,
+  let broadcastRequestDetails = {
+    $channel_name: previewModuleIdentifier,
+    $type: previewRequestUrl,
+    port: sendBroadcastRequestWithTimeoutAndHandleResponse,
+    id: uniqueBroadcastRequestId,
+    request: processBroadcastChannelResponse,
   };
-  _____replaceCallbackPlaceholdersWithValues.set(
-    deferredBroadcastRequestId,
-    deferredResponsePromise,
+  messageHandlerCallbackMapping.set(
+    uniqueBroadcastRequestId,
+    pendingBroadcastResponsePromise,
   );
-  postValidationResultToBridge(broadcastRequestPayload);
-  return deferredResponsePromise.finally(() =>
-    clearTimeout(broadcastChannelTimeoutId),
+  postValidationResultToMessageBridge(broadcastRequestDetails);
+  return pendingBroadcastResponsePromise.finally(() =>
+    clearTimeout(broadcastChannelResponseTimeout),
   );
 }
-self.addEventListener("fetch", (processProprietaryRequestWithFetch) => {
-  let clonedRequestForProprietaryProcess =
-    processProprietaryRequestWithFetch.request.clone();
-  let parsedRequestURL = new URL(clonedRequestForProprietaryProcess.url);
+self.addEventListener("fetch", (processProprietaryFetchRequest) => {
+  let cloneFetchRequestForProcessingToHandle =
+    processProprietaryFetchRequest.request.clone();
+  let generateProprietaryURLFromFetchRequest = new URL(
+    cloneFetchRequestForProcessingToHandle.url,
+  );
   if (
-    parsedRequestURL.pathname.includes("/proprietary/") &&
-    !parsedRequestURL.pathname.includes("/escape-hatch/")
+    generateProprietaryURLFromFetchRequest.pathname.includes("/proprietary/") &&
+    !generateProprietaryURLFromFetchRequest.pathname.includes("/escape-hatch/")
   ) {
-    if (parsedRequestURL.pathname === "/__csb_runtime.js") {
-      return processProprietaryRequestWithFetch.respondWith(
+    if (
+      generateProprietaryURLFromFetchRequest.pathname === "/__csb_runtime.js"
+    ) {
+      return processProprietaryFetchRequest.respondWith(
         fetch("/__csb_runtime.js"),
       );
     } else {
       return undefined;
     }
   }
-  let getPortFromParsedURL = getPortFromBridgeMessageHandler(
-    parsedRequestURL,
+  let getPortFromURL = getPortFromMessageBasedOnSource(
+    generateProprietaryURLFromFetchRequest,
     location,
   );
   if (
-    parsedRequestURL.pathname.includes("/escape-hatch/") ||
-    getPortFromParsedURL == null ||
-    isNaN(getPortFromParsedURL)
+    generateProprietaryURLFromFetchRequest.pathname.includes(
+      "/escape-hatch/",
+    ) ||
+    getPortFromURL == null ||
+    isNaN(getPortFromURL)
   ) {
     return;
   }
-  let processRequestForProprietaryPort = async (
-    handleRequestForLocalHostWithTimeout,
-  ) => {
-    let localRequestHeaders = {
-      host: "localhost:" + handleRequestForLocalHostWithTimeout,
+  let processProprietaryPortFetchRequest = async (sendRequestWithTimeout) => {
+    let compiledRequestHeaders = {
+      host: "localhost:" + sendRequestWithTimeout,
     };
-    clonedRequestForProprietaryProcess.headers.forEach(
-      (updateRequestHeader, requestHeaderKey) => {
-        localRequestHeaders[requestHeaderKey] = updateRequestHeader;
+    cloneFetchRequestForProcessingToHandle.headers.forEach(
+      (updateRequestHeaderByKey, updateRequestHeaderValue) => {
+        compiledRequestHeaders[updateRequestHeaderValue] =
+          updateRequestHeaderByKey;
       },
     );
-    let proprietaryRequestInfo = {
-      url: clonedRequestForProprietaryProcess.url,
-      method: clonedRequestForProprietaryProcess.method,
-      body: clonedRequestForProprietaryProcess.body,
-      headers: localRequestHeaders,
+    let createFetchRequestConfig = {
+      url: cloneFetchRequestForProcessingToHandle.url,
+      method: cloneFetchRequestForProcessingToHandle.method,
+      body: cloneFetchRequestForProcessingToHandle.body,
+      headers: compiledRequestHeaders,
     };
-    let proprietaryResponse = await sendBroadcastChannelRequestWithTimeout(
-      handleRequestForLocalHostWithTimeout,
-      proprietaryRequestInfo,
+    let fetchResponse = await broadcastRequestWithTimeoutAndResponseValidation(
+      sendRequestWithTimeout,
+      createFetchRequestConfig,
     );
-    __replaceCallbackPlaceholdersWithValues(
-      proprietaryResponse,
+    validateDataBindingConfirmationAndThrowErrors(
+      fetchResponse,
       "Failed to respond to %s %s: no response received",
-      proprietaryRequestInfo.method,
-      proprietaryRequestInfo.url,
+      createFetchRequestConfig.method,
+      createFetchRequestConfig.url,
     );
-    return new Response(proprietaryResponse.body, {
-      headers: proprietaryResponse.headers,
-      status: proprietaryResponse.status,
+    return new Response(fetchResponse.body, {
+      headers: fetchResponse.headers,
+      status: fetchResponse.status,
     });
   };
-  return processProprietaryRequestWithFetch.respondWith(
-    processRequestForProprietaryPort(getPortFromParsedURL),
+  return processProprietaryFetchRequest.respondWith(
+    processProprietaryPortFetchRequest(getPortFromURL),
   );
 });

@@ -1,320 +1,339 @@
-var assignPropertyIfDefined = (
-  definePropertyIfExists,
-  propertyKey,
-  propertyValueToSet,
+var defineAndSetPropertyIfExists = (
+  defineOrSetDefaultProperty,
+  setDefaultPropertyIfMissing,
+  defaultValueForProperty,
 ) =>
-  propertyKey in definePropertyIfExists
-    ? Object.defineProperty(definePropertyIfExists, propertyKey, {
-        enumerable: true,
-        configurable: true,
-        writable: true,
-        value: propertyValueToSet,
-      })
-    : (definePropertyIfExists[propertyKey] = propertyValueToSet);
-var initializeP5ModuleIfRequired =
-  (
-    ensureP5ModuleInitializedAndGetExports,
-    ensureP5ModuleInitializedAndRetrieveExports,
-  ) =>
-  () => {
-    if (!ensureP5ModuleInitializedAndRetrieveExports) {
-      ensureP5ModuleInitializedAndGetExports(
-        (ensureP5ModuleInitializedAndRetrieveExports = {
+  setDefaultPropertyIfMissing in defineOrSetDefaultProperty
+    ? Object.defineProperty(
+        defineOrSetDefaultProperty,
+        setDefaultPropertyIfMissing,
+        {
+          enumerable: true,
+          configurable: true,
+          writable: true,
+          value: defaultValueForProperty,
+        },
+      )
+    : (defineOrSetDefaultProperty[setDefaultPropertyIfMissing] =
+        defaultValueForProperty);
+var initializeP5ModuleAndFetchExports =
+  (setupAndRetrieveP5Exports, setupAndRetrieveP5ExportsIfNeeded) => () => {
+    if (!setupAndRetrieveP5ExportsIfNeeded) {
+      setupAndRetrieveP5Exports(
+        (setupAndRetrieveP5ExportsIfNeeded = {
           exports: {},
         }).exports,
-        ensureP5ModuleInitializedAndRetrieveExports,
+        setupAndRetrieveP5ExportsIfNeeded,
       );
     }
-    return ensureP5ModuleInitializedAndRetrieveExports.exports;
+    return setupAndRetrieveP5ExportsIfNeeded.exports;
   };
-var definePropertiesSafelyFromSource = (
-  generatePropertyAccessor,
-  inheritAccessorProperties,
-  excludedPropertyName,
-  getAccessorPropertyDescriptor,
+var defineAccessorProperties = (
+  createProxyAccessorFromSource,
+  copyAccessorPropertiesToProxy,
+  excludedAccessorPropertyName,
+  getAccessorDescriptor,
 ) => {
   if (
-    (inheritAccessorProperties &&
-      typeof inheritAccessorProperties == "object") ||
-    typeof inheritAccessorProperties == "function"
+    (copyAccessorPropertiesToProxy &&
+      typeof copyAccessorPropertiesToProxy == "object") ||
+    typeof copyAccessorPropertiesToProxy == "function"
   ) {
-    for (let inheritanceAccessorPropertyName of Object.getOwnPropertyNames(
-      inheritAccessorProperties,
+    for (let copyAccessorPropertyToProxy of Object.getOwnPropertyNames(
+      copyAccessorPropertiesToProxy,
     )) {
       if (
         !Object.prototype.hasOwnProperty.call(
-          generatePropertyAccessor,
-          inheritanceAccessorPropertyName,
+          createProxyAccessorFromSource,
+          copyAccessorPropertyToProxy,
         ) &&
-        inheritanceAccessorPropertyName !== excludedPropertyName
+        copyAccessorPropertyToProxy !== excludedAccessorPropertyName
       ) {
         Object.defineProperty(
-          generatePropertyAccessor,
-          inheritanceAccessorPropertyName,
+          createProxyAccessorFromSource,
+          copyAccessorPropertyToProxy,
           {
             get: () =>
-              inheritAccessorProperties[inheritanceAccessorPropertyName],
+              copyAccessorPropertiesToProxy[copyAccessorPropertyToProxy],
             enumerable:
-              !(getAccessorPropertyDescriptor = Object.getOwnPropertyDescriptor(
-                inheritAccessorProperties,
-                inheritanceAccessorPropertyName,
-              )) || getAccessorPropertyDescriptor.enumerable,
+              !(getAccessorDescriptor = Object.getOwnPropertyDescriptor(
+                copyAccessorPropertiesToProxy,
+                copyAccessorPropertyToProxy,
+              )) || getAccessorDescriptor.enumerable,
           },
         );
       }
     }
   }
-  return generatePropertyAccessor;
+  return createProxyAccessorFromSource;
 };
-var initializePrototypeWithProperties = (
+var definePrototypeWithAccessorProperties = (
   sourceObjectOrModule,
-  sourcePropertiesForPrototype,
-  initializePrototype,
+  accessorPropertiesToDefine,
+  initializePrototypeFromSource,
 ) => {
   if (sourceObjectOrModule != null) {
-    initializePrototype = Object.create(
+    initializePrototypeFromSource = Object.create(
       Object.getPrototypeOf(sourceObjectOrModule),
     );
   } else {
-    initializePrototype = {};
+    initializePrototypeFromSource = {};
   }
-  return definePropertiesSafelyFromSource(
-    sourcePropertiesForPrototype ||
+  return defineAccessorProperties(
+    accessorPropertiesToDefine ||
       !sourceObjectOrModule ||
       !sourceObjectOrModule.__esModule
-      ? Object.defineProperty(initializePrototype, "default", {
+      ? Object.defineProperty(initializePrototypeFromSource, "default", {
           value: sourceObjectOrModule,
           enumerable: true,
         })
-      : initializePrototype,
+      : initializePrototypeFromSource,
     sourceObjectOrModule,
   );
 };
-var assignAndReturnPropertyConfig = (
-  assignPropertyConfig,
-  assignPropertyName,
-  propertySettings,
+var applyPropertyConfigurationSettings = (
+  setUpPropertyConfiguration,
+  configurePropertySettings,
+  propertyDescriptor,
 ) => {
-  assignPropertyIfDefined(
-    assignPropertyConfig,
-    typeof assignPropertyName != "symbol"
-      ? assignPropertyName + ""
-      : assignPropertyName,
-    propertySettings,
+  defineAndSetPropertyIfExists(
+    setUpPropertyConfiguration,
+    typeof configurePropertySettings != "symbol"
+      ? configurePropertySettings + ""
+      : configurePropertySettings,
+    propertyDescriptor,
   );
-  return propertySettings;
+  return propertyDescriptor;
 };
-var initializeAndExportZeroPaddedSubstringModule = initializeP5ModuleIfRequired(
-  (
-    generateZeroPaddedSubstringWithLength,
-    _generateZeroPaddedSubstringWithLength,
-  ) => {
-    _generateZeroPaddedSubstringWithLength.exports = function (
+var generateZeroPaddedSubstring = initializeP5ModuleAndFetchExports(
+  (createZeroPaddedSubstring, createZeroPaddedString) => {
+    createZeroPaddedString.exports = function (
+      generateFormattedPaddedString,
       _generateZeroPaddedSubstring,
-      substringPaddingLength,
     ) {
-      var getZeroPaddedSubstring = "000000000" + _generateZeroPaddedSubstring;
-      return getZeroPaddedSubstring.substr(
-        getZeroPaddedSubstring.length - substringPaddingLength,
+      var generateZeroPaddedString =
+        "000000000" + generateFormattedPaddedString;
+      return generateZeroPaddedString.substr(
+        generateZeroPaddedString.length - _generateZeroPaddedSubstring,
       );
     };
   },
 );
-var setupAndReportGlobalExecutionContextInfo = initializeP5ModuleIfRequired(
-  (initializeAndExposeUserAgentInfo, _initializeAndExposeUserAgentInfo) => {
-    var initializeAndExposeUserAgentInfoData =
-      initializeAndExportZeroPaddedSubstringModule();
-    var getGlobalContext = typeof window == "object" ? window : self;
-    var globalContextPropertyCount = Object.keys(getGlobalContext).length;
-    var mimeTypeCount = navigator.mimeTypes ? navigator.mimeTypes.length : 0;
-    var userAgentContextInfo = initializeAndExposeUserAgentInfoData(
-      (mimeTypeCount + navigator.userAgent.length).toString(36) +
-        globalContextPropertyCount.toString(36),
+var initializeUserAgentMetricsReporting = initializeP5ModuleAndFetchExports(
+  (
+    initializeAndExportUserAgentMetricsSummary,
+    _initializeAndExportUserAgentMetricsSummary,
+  ) => {
+    var initializeAndRetrieveUserAgentMetrics = generateZeroPaddedSubstring();
+    var retrieveGlobalExecutionContext =
+      typeof window == "object" ? window : self;
+    var globalExecutionContextKeysCount = Object.keys(
+      retrieveGlobalExecutionContext,
+    ).length;
+    var getMimeTypesCountFromNavigator = navigator.mimeTypes
+      ? navigator.mimeTypes.length
+      : 0;
+    var generateUserAgentMetricsSummary = initializeAndRetrieveUserAgentMetrics(
+      (getMimeTypesCountFromNavigator + navigator.userAgent.length).toString(
+        36,
+      ) + globalExecutionContextKeysCount.toString(36),
       4,
     );
-    _initializeAndExposeUserAgentInfo.exports = function () {
-      return userAgentContextInfo;
+    _initializeAndExportUserAgentMetricsSummary.exports = function () {
+      return generateUserAgentMetricsSummary;
     };
   },
 );
-var setupCryptoUtilitiesAndExpose = initializeP5ModuleIfRequired(
+var setupAndExposeSecureRandomUtilities = initializeP5ModuleAndFetchExports(
   (
-    initializeSecureRandomFloatGenerator,
     _initializeSecureRandomFloatGenerator,
+    __initializeSecureRandomFloatGenerator,
   ) => {
-    var createSecureRandomFloatGenerator;
-    var isCryptoAPIAvailable =
+    var createSecureRandomFloat;
+    var isCryptographySupported =
       (typeof window !== "undefined" && (window.crypto || window.msCrypto)) ||
       (typeof self !== "undefined" && self.crypto);
-    if (isCryptoAPIAvailable) {
-      maxUint32SecureRandomValue = Math.pow(2, 32) - 1;
-      createSecureRandomFloatGenerator = function () {
+    if (isCryptographySupported) {
+      maxSecureRandomUint32 = Math.pow(2, 32) - 1;
+      createSecureRandomFloat = function () {
         return Math.abs(
-          isCryptoAPIAvailable.getRandomValues(new Uint32Array(1))[0] /
-            maxUint32SecureRandomValue,
+          isCryptographySupported.getRandomValues(new Uint32Array(1))[0] /
+            maxSecureRandomUint32,
         );
       };
     } else {
-      createSecureRandomFloatGenerator = Math.random;
+      createSecureRandomFloat = Math.random;
     }
-    var maxUint32SecureRandomValue;
-    _initializeSecureRandomFloatGenerator.exports =
-      createSecureRandomFloatGenerator;
+    var maxSecureRandomUint32;
+    __initializeSecureRandomFloatGenerator.exports = createSecureRandomFloat;
   },
 );
-var initializeAndExposeSlugGenerator = initializeP5ModuleIfRequired(
-  (createUniqueSlugIdentifier, _createUniqueSlugIdentifier) => {
-    var setupAndExportSlugContext = setupAndReportGlobalExecutionContextInfo();
-    var generateZeroPaddedSlug = initializeAndExportZeroPaddedSubstringModule();
-    var setupAndExportCryptoUtilities = setupCryptoUtilitiesAndExpose();
-    var slugGenerationIndex = 0;
-    var maxSlugCharacterLength = 4;
-    var base36Radix = 36;
-    var maxSlugGenerationCount = Math.pow(base36Radix, maxSlugCharacterLength);
-    function generateCryptoValueSlug() {
-      return generateZeroPaddedSlug(
-        (
-          (setupAndExportCryptoUtilities() * maxSlugGenerationCount) <<
-          0
-        ).toString(base36Radix),
-        maxSlugCharacterLength,
+var initializeAndConfigureSlugGenerationUtilities =
+  initializeP5ModuleAndFetchExports(
+    (createUniqueCryptoSlug, generateUniqueSlugFromRandomCryptoValue) => {
+      var setupUserAgentMetricsForSlug = initializeUserAgentMetricsReporting();
+      var generatePaddedCryptoSlug = generateZeroPaddedSubstring();
+      var setupAndExposeUniqueSlugGenerator =
+        setupAndExposeSecureRandomUtilities();
+      var currentUniqueSlugIndex = 0;
+      var maxSlugLength = 4;
+      var baseForSlugGeneration = 36;
+      var maxUniqueSlugsBasedOnLength = Math.pow(
+        baseForSlugGeneration,
+        maxSlugLength,
       );
-    }
-    function incrementSlugIndexWithWrapAround() {
-      if (slugGenerationIndex < maxSlugGenerationCount) {
-        slugGenerationIndex = slugGenerationIndex;
-      } else {
-        slugGenerationIndex = 0;
+      function generateUniqueSlugFromCrypto() {
+        return generatePaddedCryptoSlug(
+          (
+            (setupAndExposeUniqueSlugGenerator() *
+              maxUniqueSlugsBasedOnLength) <<
+            0
+          ).toString(baseForSlugGeneration),
+          maxSlugLength,
+        );
       }
-      slugGenerationIndex++;
-      return slugGenerationIndex - 1;
-    }
-    function generateUniqueSlugIdentifier() {
-      var slugIdentifierPrefix = "c";
-      var timestampBase36 = new Date().getTime().toString(base36Radix);
-      var _generateZeroPaddedSlug = generateZeroPaddedSlug(
-        incrementSlugIndexWithWrapAround().toString(base36Radix),
-        maxSlugCharacterLength,
-      );
-      var slugContextForIdentifier = setupAndExportSlugContext();
-      var cryptoBasedUniqueIdComponent =
-        generateCryptoValueSlug() + generateCryptoValueSlug();
-      return (
-        slugIdentifierPrefix +
-        timestampBase36 +
-        _generateZeroPaddedSlug +
-        slugContextForIdentifier +
-        cryptoBasedUniqueIdComponent
-      );
-    }
-    generateUniqueSlugIdentifier.slug = function () {
-      var base36Timestamp = new Date().getTime().toString(36);
-      var incrementedCounterLastFourChars = incrementSlugIndexWithWrapAround()
-        .toString(36)
-        .slice(-4);
-      var getFirstAndLastCharactersFromSlugContext =
-        setupAndExportSlugContext().slice(0, 1) +
-        setupAndExportSlugContext().slice(-1);
-      var getLastTwoCharsFromGeneratedSlug =
-        generateCryptoValueSlug().slice(-2);
-      return (
-        base36Timestamp.slice(-2) +
-        incrementedCounterLastFourChars +
-        getFirstAndLastCharactersFromSlugContext +
-        getLastTwoCharsFromGeneratedSlug
-      );
-    };
-    generateUniqueSlugIdentifier.isCuid = function (validateSlugFormat) {
-      if (typeof validateSlugFormat != "string") {
-        return false;
-      } else {
-        return !!validateSlugFormat.startsWith("c");
+      function incrementUniqueSlugCounter() {
+        if (currentUniqueSlugIndex < maxUniqueSlugsBasedOnLength) {
+          currentUniqueSlugIndex = currentUniqueSlugIndex;
+        } else {
+          currentUniqueSlugIndex = 0;
+        }
+        currentUniqueSlugIndex++;
+        return currentUniqueSlugIndex - 1;
       }
-    };
-    generateUniqueSlugIdentifier.isSlug = function (
-      generateSlugUniqueIdentifier,
-    ) {
-      if (typeof generateSlugUniqueIdentifier != "string") {
-        return false;
+      function generateUniqueIdentifierSlug() {
+        var defaultCharacterForSlug = "c";
+        var timestampBase36ForUniqueSlug = new Date()
+          .getTime()
+          .toString(baseForSlugGeneration);
+        var generatePaddedSlugIndex = generatePaddedCryptoSlug(
+          incrementUniqueSlugCounter().toString(baseForSlugGeneration),
+          maxSlugLength,
+        );
+        var userDeviceMetricsForSlugGeneration = setupUserAgentMetricsForSlug();
+        var generateSlugWithTimestampAndMetrics =
+          generateUniqueSlugFromCrypto() + generateUniqueSlugFromCrypto();
+        return (
+          defaultCharacterForSlug +
+          timestampBase36ForUniqueSlug +
+          generatePaddedSlugIndex +
+          userDeviceMetricsForSlugGeneration +
+          generateSlugWithTimestampAndMetrics
+        );
       }
-      var slugIdentifierLength = generateSlugUniqueIdentifier.length;
-      return slugIdentifierLength >= 7 && slugIdentifierLength <= 10;
-    };
-    generateUniqueSlugIdentifier.fingerprint = setupAndExportSlugContext;
-    _createUniqueSlugIdentifier.exports = generateUniqueSlugIdentifier;
-  },
-);
-var initializeAndExposeRandomNumberProperties =
-  initializePrototypeWithProperties(initializeAndExposeSlugGenerator());
-var createDetailedErrorFromInput = (createErrorWithContextFromInput) => {
-  let createErrorWithDetailedContext = new Error(
-    createErrorWithContextFromInput.message,
+      generateUniqueIdentifierSlug.slug = function () {
+        var generateUniqueSlugWithTimestamp = new Date().getTime().toString(36);
+        var generateNextUniqueSlugWithWrapAround = incrementUniqueSlugCounter()
+          .toString(36)
+          .slice(-4);
+        var getUserAgentSlugBoundaryChars =
+          setupUserAgentMetricsForSlug().slice(0, 1) +
+          setupUserAgentMetricsForSlug().slice(-1);
+        var getLastTwoCharsFromCryptoSlug =
+          generateUniqueSlugFromCrypto().slice(-2);
+        return (
+          generateUniqueSlugWithTimestamp.slice(-2) +
+          generateNextUniqueSlugWithWrapAround +
+          getUserAgentSlugBoundaryChars +
+          getLastTwoCharsFromCryptoSlug
+        );
+      };
+      generateUniqueIdentifierSlug.isCuid = function (isCuidStringValid) {
+        if (typeof isCuidStringValid != "string") {
+          return false;
+        } else {
+          return !!isCuidStringValid.startsWith("c");
+        }
+      };
+      generateUniqueIdentifierSlug.isSlug = function (isSlugFormatValid) {
+        if (typeof isSlugFormatValid != "string") {
+          return false;
+        }
+        var getSlugCharacterCount = isSlugFormatValid.length;
+        return getSlugCharacterCount >= 7 && getSlugCharacterCount <= 10;
+      };
+      generateUniqueIdentifierSlug.fingerprint = setupUserAgentMetricsForSlug;
+      generateUniqueSlugFromRandomCryptoValue.exports =
+        generateUniqueIdentifierSlug;
+    },
   );
-  for (let errorDetailKeyNames of Object.keys(
-    createErrorWithContextFromInput,
+var initializeRandomNumberPropertiesForSlugGeneration =
+  definePrototypeWithAccessorProperties(
+    initializeAndConfigureSlugGenerationUtilities(),
+  );
+var createDetailedErrorFromOriginal = (generateErrorWithDetailedInfo) => {
+  let _createDetailedErrorFromOriginal = new Error(
+    generateErrorWithDetailedInfo.message,
+  );
+  for (let errorDetailPropertyKeys of Object.keys(
+    generateErrorWithDetailedInfo,
   )) {
-    createErrorWithDetailedContext[errorDetailKeyNames] =
-      createErrorWithContextFromInput[errorDetailKeyNames];
+    _createDetailedErrorFromOriginal[errorDetailPropertyKeys] =
+      generateErrorWithDetailedInfo[errorDetailPropertyKeys];
   }
-  return createErrorWithDetailedContext;
+  return _createDetailedErrorFromOriginal;
 };
-var getAndIncrementCounterForPreview = "preview-manager";
-var generateUniqueSlugForPreview = "preview/runtime-response";
-var initializeAndInvokeUniqueIdentifier = "INJECT_AND_INVOKE";
-var createBaseFormatTimestampIndicator = "HAS_PREVIEW_LOADED";
-var generateUniqueSlugForPreviewStatus = "PREVIEW_LOADED";
-var generateModuleActivationIdentifier = "INJECT_SUCCESS";
-function isIdentifierObjectTypeValid(_isValidIdentifierObjectType) {
+var previewManagerIdentifier = "preview-manager";
+var previewRuntimeResponse = "preview/runtime-response";
+var invokeTemplateFunctionKey = "INJECT_AND_INVOKE";
+var hasPreviewBeenLoaded = "HAS_PREVIEW_LOADED";
+var previewLoadStatusKey = "PREVIEW_LOADED";
+var injectionSuccessMessage = "INJECT_SUCCESS";
+function isStringTypeIdentifierValid(isValidStringTypeIdentifier) {
   return (
-    _isValidIdentifierObjectType &&
-    typeof _isValidIdentifierObjectType.type == "string"
+    isValidStringTypeIdentifier &&
+    typeof isValidStringTypeIdentifier.type == "string"
   );
 }
-function generateErrorHandlingWrapper(generateErrorFunctionForHandling) {
+function generateModuleErrorHandlingWrapper(createErrorHandlingWrapper) {
   return (
     "(function $csb$eval(module, exports) {" +
-    generateErrorFunctionForHandling +
+    createErrorHandlingWrapper +
     "\n})"
   );
 }
-function setupModuleByUniqueId(initializeModuleWithUniqueIdentifier) {
-  let initializeAndRunModuleWithErrorHandling = generateErrorHandlingWrapper(
-    initializeModuleWithUniqueIdentifier,
-  );
-  let moduleExecutionScope = {
+function initializeAndExecuteModuleWithErrorHandlingAndReturnActivation(
+  initializeAndExecuteModuleWithErrorHandlingAndHandleErrors,
+) {
+  let executeAndHandleModuleActivationWithErrors =
+    generateModuleErrorHandlingWrapper(
+      initializeAndExecuteModuleWithErrorHandlingAndHandleErrors,
+    );
+  let moduleExecutionContext = {
     exports: {},
   };
-  (0, eval)(initializeAndRunModuleWithErrorHandling).apply(this, [
-    moduleExecutionScope,
-    moduleExecutionScope.exports,
+  (0, eval)(executeAndHandleModuleActivationWithErrors).apply(this, [
+    moduleExecutionContext,
+    moduleExecutionContext.exports,
   ]);
-  return moduleExecutionScope.exports.activate;
+  return moduleExecutionContext.exports.activate;
 }
-var IncomingMessageIdentifierHandler = class {
+var MessageEventHandler = class {
   origin = null;
   constructor() {
     window.addEventListener("message", (processIncomingMessageEvent) => {
       let messageEventData = processIncomingMessageEvent.data;
-      if (isIdentifierObjectTypeValid(messageEventData)) {
+      if (isStringTypeIdentifierValid(messageEventData)) {
         switch (messageEventData.type) {
-          case initializeAndInvokeUniqueIdentifier: {
+          case invokeTemplateFunctionKey: {
             this.origin = processIncomingMessageEvent.origin;
             this.handleCodeInjection(messageEventData);
             return;
           }
-          case createBaseFormatTimestampIndicator: {
+          case hasPreviewBeenLoaded: {
             this.sendOutgoingMessage({
-              type: generateUniqueSlugForPreviewStatus,
+              type: previewLoadStatusKey,
             });
             return;
           }
           default:
             if (messageEventData.type) {
-              let messageTypeListeners =
+              let incomingMessageListeners =
                 this.messageListeners[messageEventData.type];
-              if (messageTypeListeners) {
-                messageTypeListeners.forEach((_processIncomingMessageEvent) =>
-                  _processIncomingMessageEvent(messageEventData),
+              if (incomingMessageListeners) {
+                incomingMessageListeners.forEach(
+                  (processIncomingMessageEventData) =>
+                    processIncomingMessageEventData(messageEventData),
                 );
               }
             }
@@ -332,171 +351,185 @@ var IncomingMessageIdentifierHandler = class {
   }
   injectedCodeBlocks = new Set();
   messageListeners = {};
-  handleCodeInjection(processInjectedCode) {
-    if (this.injectedCodeBlocks.has(processInjectedCode.code)) {
+  handleCodeInjection(executeInjectedCode) {
+    if (this.injectedCodeBlocks.has(executeInjectedCode.code)) {
       return;
     }
-    this.injectedCodeBlocks.add(processInjectedCode.code);
-    setupModuleByUniqueId(processInjectedCode.code)({
+    this.injectedCodeBlocks.add(executeInjectedCode.code);
+    initializeAndExecuteModuleWithErrorHandlingAndReturnActivation(
+      executeInjectedCode.code,
+    )({
       previewWindow: window,
       previewProtocol: this,
-      scope: processInjectedCode.scope,
+      scope: executeInjectedCode.scope,
     });
     this.sendOutgoingMessage({
-      type: generateModuleActivationIdentifier,
-      uid: processInjectedCode.uid,
+      type: injectionSuccessMessage,
+      uid: executeInjectedCode.uid,
     });
   }
-  async sendOutgoingMessage(outgoingMessageData) {
-    window.parent.postMessage(outgoingMessageData, "*");
+  async sendOutgoingMessage(prepareAndSendMessage) {
+    window.parent.postMessage(prepareAndSendMessage, "*");
   }
-  handleIncomingMessage(messageTypeForListener, registerMessageListener) {
-    if (this.messageListeners[messageTypeForListener]) {
-      this.messageListeners[messageTypeForListener]?.push(
-        registerMessageListener,
+  handleIncomingMessage(
+    subscribeToMessageHandler,
+    registerMessageListenerForSubscriptionType,
+  ) {
+    if (this.messageListeners[subscribeToMessageHandler]) {
+      this.messageListeners[subscribeToMessageHandler]?.push(
+        registerMessageListenerForSubscriptionType,
       );
     } else {
-      this.messageListeners[messageTypeForListener] = [registerMessageListener];
+      this.messageListeners[subscribeToMessageHandler] = [
+        registerMessageListenerForSubscriptionType,
+      ];
     }
   }
-  addListener(handleIncomingMessageListener, processIncomingMessage) {
+  addListener(registerIncomingMessageHandler, registerIncomingMessageListener) {
     this.handleIncomingMessage(
-      handleIncomingMessageListener,
-      processIncomingMessage,
+      registerIncomingMessageHandler,
+      registerIncomingMessageListener,
     );
   }
-  sendMessage(messageToSend) {
-    this.sendOutgoingMessage(messageToSend);
+  sendMessage(outgoingMessage) {
+    this.sendOutgoingMessage(outgoingMessage);
   }
 };
-function extractPortNumberFromCode(extractPortFromCodeString) {
-  let extractPortNumberFromCodeString = +extractPortFromCodeString
+function _extractPortNumberFromCodeString(extractPortNumberFromCodeString) {
+  let __extractPortNumberFromCodeString = +extractPortNumberFromCodeString
     .split(".")[0]
     .split("-")[1];
-  if (isNaN(extractPortNumberFromCodeString)) {
+  if (isNaN(__extractPortNumberFromCodeString)) {
     throw new Error("Invalid port");
   }
-  return extractPortNumberFromCodeString;
+  return __extractPortNumberFromCodeString;
 }
-function extractValidCodeSegmentsFromUserInput(sanitizeUserInputForInjection) {
-  let splitSanitizedUserInputForCodeSegments =
-    sanitizeUserInputForInjection.split(".");
-  splitSanitizedUserInputForCodeSegments.shift();
-  return splitSanitizedUserInputForCodeSegments.join(".");
+function extractCodeSegmentsFromSanitizedInput(
+  getCleanedCodeSegmentsFromSanitizedInput,
+) {
+  let extractCodeSegments = getCleanedCodeSegmentsFromSanitizedInput.split(".");
+  extractCodeSegments.shift();
+  return extractCodeSegments.join(".");
 }
-var isWebSocketPatched = Symbol("isPatched");
-if (window.WebSocket[isWebSocketPatched]) {
+var isWebSocketAlreadyPatchedSymbol = Symbol("isPatched");
+if (window.WebSocket[isWebSocketAlreadyPatchedSymbol]) {
   throw new Error("Failed to patch WebSocket: class already patched");
 }
-var getPortIfLocalhostOrLocalIP = ["127.0.0.1", "localhost"];
-var retrievePortFromHostnameIfLocal = (getPortForRequestedHostname) => {
+var allowedLocalhostAndReservedIPs = ["127.0.0.1", "localhost"];
+var getPortIfLocalhostOrReserved = (_retrievePortForValidHost) => {
   if (
-    getPortIfLocalhostOrLocalIP.includes(getPortForRequestedHostname.hostname)
+    allowedLocalhostAndReservedIPs.includes(_retrievePortForValidHost.hostname)
   ) {
-    return +getPortForRequestedHostname.port;
+    return +_retrievePortForValidHost.port;
   }
-  let getPortForValidHostname = extractValidCodeSegmentsFromUserInput(
+  let getPortForAllowedHost = extractCodeSegmentsFromSanitizedInput(
     window.location.hostname,
   );
-  let getPortForHostnameBasedOnRequest = extractValidCodeSegmentsFromUserInput(
-    getPortForRequestedHostname.hostname,
+  let retrievePortForValidatedHostname = extractCodeSegmentsFromSanitizedInput(
+    _retrievePortForValidHost.hostname,
   );
   return 8000;
 };
-var WebSocketMessageQueueProcessor = class {
+var WebSocketMessagesQueueProcessor = class {
   _channel = null;
   messages = [];
   isProcessing = false;
-  setChannel(setCurrentChannel) {
-    this._channel = setCurrentChannel;
+  setChannel(setChannelAndStartProcessing) {
+    this._channel = setChannelAndStartProcessing;
     this.process();
   }
   process() {
     if (this.isProcessing || !this._channel) {
       return;
     }
-    let nextMessageToProcess = this.messages.shift();
-    if (nextMessageToProcess) {
+    let retrieveNextMessageFromQueue = this.messages.shift();
+    if (retrieveNextMessageFromQueue) {
       this.isProcessing = true;
-      this._channel.port1.postMessage(nextMessageToProcess);
+      this._channel.port1.postMessage(retrieveNextMessageFromQueue);
       this.isProcessing = false;
       this.process();
     }
   }
-  push(enqueueMessageForProcessing) {
-    this.messages.push(enqueueMessageForProcessing);
+  push(enqueueMessageAndProcessQueue) {
+    this.messages.push(enqueueMessageAndProcessQueue);
     this.process();
   }
 };
-var webSocketMessageQueue = new Map();
-var webSocketIncomingMessageHandler = new WebSocketMessageQueueProcessor();
-function initializeServiceWorkerMessageCommunication() {
+var webSocketMessageHandlerRegistry = new Map();
+var webSocketMessagesQueueProcessor = new WebSocketMessagesQueueProcessor();
+function initializeServiceWorkerMessageChannel() {
   if (!navigator.serviceWorker.controller) {
     console.error("Service worker not registered");
     return;
   }
-  let serviceWorkerMessagePortChannel = new MessageChannel();
-  serviceWorkerMessagePortChannel.port1.addEventListener(
+  let serviceWorkerMessageChannel = new MessageChannel();
+  serviceWorkerMessageChannel.port1.addEventListener(
     "message",
-    (processIncomingWebSocketMessage) => {
-      let handleWebSocketMessage = processIncomingWebSocketMessage.data;
-      if (handleWebSocketMessage) {
-        if (handleWebSocketMessage.type === "ready") {
-          webSocketIncomingMessageHandler.setChannel(
-            serviceWorkerMessagePortChannel,
+    (processWebSocketIncomingMessages) => {
+      let processIncomingWebSocketMessage =
+        processWebSocketIncomingMessages.data;
+      if (processIncomingWebSocketMessage) {
+        if (processIncomingWebSocketMessage.type === "ready") {
+          webSocketMessagesQueueProcessor.setChannel(
+            serviceWorkerMessageChannel,
           );
           return;
         }
         if (
-          handleWebSocketMessage.$channel_name ===
-            getAndIncrementCounterForPreview &&
-          handleWebSocketMessage.$type === generateUniqueSlugForPreview
+          processIncomingWebSocketMessage.$channel_name ===
+            previewManagerIdentifier &&
+          processIncomingWebSocketMessage.$type === previewRuntimeResponse
         ) {
-          let webSocketMessage = handleWebSocketMessage.data;
-          switch (webSocketMessage.type) {
+          let receivedWebSocketMessage = processIncomingWebSocketMessage.data;
+          switch (receivedWebSocketMessage.type) {
             case "websocket/opened": {
-              let activeSocketConnection = webSocketMessageQueue.get(
-                webSocketMessage.wsId,
-              );
-              if (!activeSocketConnection) {
-                console.error("Websocket not found", webSocketMessage);
+              let __currentWebSocketHandler =
+                webSocketMessageHandlerRegistry.get(
+                  receivedWebSocketMessage.wsId,
+                );
+              if (!__currentWebSocketHandler) {
+                console.error("Websocket not found", receivedWebSocketMessage);
                 break;
               }
-              activeSocketConnection._emitOpen(webSocketMessage);
+              __currentWebSocketHandler._emitOpen(receivedWebSocketMessage);
               break;
             }
             case "websocket/closed": {
-              let currentWebSocketConnection = webSocketMessageQueue.get(
-                webSocketMessage.wsId,
-              );
-              if (!currentWebSocketConnection) {
-                console.error("Websocket not found", webSocketMessage);
+              let retrieveWebSocketConnectionById =
+                webSocketMessageHandlerRegistry.get(
+                  receivedWebSocketMessage.wsId,
+                );
+              if (!retrieveWebSocketConnectionById) {
+                console.error("Websocket not found", receivedWebSocketMessage);
                 break;
               }
-              currentWebSocketConnection._emitClose(webSocketMessage);
+              retrieveWebSocketConnectionById._emitClose(
+                receivedWebSocketMessage,
+              );
               break;
             }
             case "websocket/data": {
-              let currentWebSocketSession = webSocketMessageQueue.get(
-                webSocketMessage.wsId,
+              let currentWebSocketHandler = webSocketMessageHandlerRegistry.get(
+                receivedWebSocketMessage.wsId,
               );
-              if (!currentWebSocketSession) {
-                console.error("Websocket not found", webSocketMessage);
+              if (!currentWebSocketHandler) {
+                console.error("Websocket not found", receivedWebSocketMessage);
                 break;
               }
-              let _webSocketMessageData = webSocketMessage.data;
-              currentWebSocketSession._emitData(_webSocketMessageData);
+              let webSocketMessageData = receivedWebSocketMessage.data;
+              currentWebSocketHandler._emitData(webSocketMessageData);
               break;
             }
             case "websocket/error": {
-              let _currentWebSocketConnection = webSocketMessageQueue.get(
-                webSocketMessage.wsId,
-              );
-              if (!_currentWebSocketConnection) {
-                console.error("Websocket not found", webSocketMessage);
+              let _currentWebSocketHandler =
+                webSocketMessageHandlerRegistry.get(
+                  receivedWebSocketMessage.wsId,
+                );
+              if (!_currentWebSocketHandler) {
+                console.error("Websocket not found", receivedWebSocketMessage);
                 break;
               }
-              _currentWebSocketConnection._emitError(webSocketMessage);
+              _currentWebSocketHandler._emitError(receivedWebSocketMessage);
               break;
             }
           }
@@ -504,138 +537,136 @@ function initializeServiceWorkerMessageCommunication() {
       }
     },
   );
-  serviceWorkerMessagePortChannel.port1.start();
+  serviceWorkerMessageChannel.port1.start();
   navigator.serviceWorker.controller.postMessage(
     {
       type: "runtime-init",
     },
-    [serviceWorkerMessagePortChannel.port2],
+    [serviceWorkerMessageChannel.port2],
   );
 }
-function addWebSocketIncomingMessageHandler(
-  registerWebSocketIncomingMessageHandler,
-) {
-  webSocketIncomingMessageHandler.push(registerWebSocketIncomingMessageHandler);
+function enqueueWebSocketMessageHandler(addMessageToWebSocketMessageQueue) {
+  webSocketMessagesQueueProcessor.push(addMessageToWebSocketMessageQueue);
 }
-async function _processIncomingWebSocketMessage(processWebSocketMessage) {
-  if (typeof processWebSocketMessage == "string") {
-    return processWebSocketMessage;
-  } else if (processWebSocketMessage instanceof Blob) {
-    return processWebSocketMessage.arrayBuffer();
-  } else if ("buffer" in processWebSocketMessage) {
-    return processWebSocketMessage.buffer;
+async function handleReceivedWebSocketData(processReceivedWebSocketMessage) {
+  if (typeof processReceivedWebSocketMessage == "string") {
+    return processReceivedWebSocketMessage;
+  } else if (processReceivedWebSocketMessage instanceof Blob) {
+    return processReceivedWebSocketMessage.arrayBuffer();
+  } else if ("buffer" in processReceivedWebSocketMessage) {
+    return processReceivedWebSocketMessage.buffer;
   } else {
-    return processWebSocketMessage;
+    return processReceivedWebSocketMessage;
   }
 }
-var WebSocketMessageProcessor = class extends EventTarget {
+var CustomWebSocketClient = class extends EventTarget {
   CONNECTING = 0;
   OPEN = 1;
   CLOSING = 2;
   CLOSED = 3;
   ws;
-  _id = (0, initializeAndExposeRandomNumberProperties.default)();
+  _id = (0, initializeRandomNumberPropertiesForSlugGeneration.default)();
   _bufferedAmount = 0;
   _extensions = "";
   _protocol = "";
   _url;
   _binaryType = "blob";
-  _readyState = WebSocketMessageProcessor.CONNECTING;
+  _readyState = CustomWebSocketClient.CONNECTING;
   onmessage = null;
   onclose = null;
   onerror = null;
   onopen = null;
-  constructor(webSocketUrl, supportedWebSocketProtocols) {
+  constructor(initialWebSocketUrl, webSocketSubprotocols) {
     super();
     let resolvedWebSocketUrl =
-      webSocketUrl instanceof URL
-        ? webSocketUrl
-        : new URL(webSocketUrl, window.location.href);
-    let localPortNumber = retrievePortFromHostnameIfLocal(resolvedWebSocketUrl);
-    let resolvedPathname = resolvedWebSocketUrl.pathname;
+      initialWebSocketUrl instanceof URL
+        ? initialWebSocketUrl
+        : new URL(initialWebSocketUrl, window.location.href);
+    let localhostPortIfApplicable =
+      getPortIfLocalhostOrReserved(resolvedWebSocketUrl);
+    let webSocketRequestPath = resolvedWebSocketUrl.pathname;
     this._url = resolvedWebSocketUrl.href;
-    if (localPortNumber !== null) {
-      webSocketMessageQueue.set(this._id, this);
-      let createWebSocketConnectionPayload = {
+    if (localhostPortIfApplicable !== null) {
+      webSocketMessageHandlerRegistry.set(this._id, this);
+      let createWebSocketOpenRequest = {
         type: "websocket/open",
         wsId: this._id,
-        port: localPortNumber,
-        pathname: resolvedPathname,
-        protocols: supportedWebSocketProtocols,
+        port: localhostPortIfApplicable,
+        pathname: webSocketRequestPath,
+        protocols: webSocketSubprotocols,
       };
-      addWebSocketIncomingMessageHandler(createWebSocketConnectionPayload);
+      enqueueWebSocketMessageHandler(createWebSocketOpenRequest);
     } else {
       this.ws = new window.OriginalWebSocket(
-        webSocketUrl,
-        supportedWebSocketProtocols,
+        initialWebSocketUrl,
+        webSocketSubprotocols,
       );
-      this.ws.addEventListener("message", (customEventData) => {
-        let dispatchAndNotifyCustomEvent = new customEventData.constructor(
-          customEventData.type,
-          customEventData,
+      this.ws.addEventListener("message", (payloadEvent) => {
+        let initializeAndDispatchPayloadEvent = new payloadEvent.constructor(
+          payloadEvent.type,
+          payloadEvent,
         );
         if (this.onmessage) {
-          this.onmessage(customEventData);
+          this.onmessage(payloadEvent);
         }
-        this.dispatchEvent(dispatchAndNotifyCustomEvent);
+        this.dispatchEvent(initializeAndDispatchPayloadEvent);
       });
-      this.ws.addEventListener("close", (closeEventDetails) => {
-        let generateCloseEventPayload = new closeEventDetails.constructor(
-          closeEventDetails.type,
-          closeEventDetails,
+      this.ws.addEventListener("close", (dispatchCloseEvent) => {
+        let _createAndDispatchCloseEvent = new dispatchCloseEvent.constructor(
+          dispatchCloseEvent.type,
+          dispatchCloseEvent,
         );
         if (this.onclose) {
-          this.onclose(closeEventDetails);
+          this.onclose(dispatchCloseEvent);
         }
-        this.dispatchEvent(generateCloseEventPayload);
+        this.dispatchEvent(_createAndDispatchCloseEvent);
       });
-      this.ws.addEventListener("error", (processEventError) => {
-        let createAndDispatchEventErrorResponse =
-          new processEventError.constructor(
-            processEventError.type,
-            processEventError,
+      this.ws.addEventListener("error", (_createAndDispatchErrorResponse) => {
+        let handleErrorResponseAndDispatch =
+          new _createAndDispatchErrorResponse.constructor(
+            _createAndDispatchErrorResponse.type,
+            _createAndDispatchErrorResponse,
           );
         if (this.onerror) {
-          this.onerror(processEventError);
+          this.onerror(_createAndDispatchErrorResponse);
         }
-        this.dispatchEvent(createAndDispatchEventErrorResponse);
+        this.dispatchEvent(handleErrorResponseAndDispatch);
       });
-      this.ws.addEventListener("open", (processAndDispatchOpenEvent) => {
-        let handleOpenEventAndDispatch =
-          new processAndDispatchOpenEvent.constructor(
-            processAndDispatchOpenEvent.type,
-            processAndDispatchOpenEvent,
-          );
+      this.ws.addEventListener("open", (createAndDispatchOpenEvent) => {
+        let dispatchOpenEvent = new createAndDispatchOpenEvent.constructor(
+          createAndDispatchOpenEvent.type,
+          createAndDispatchOpenEvent,
+        );
         if (this.onopen) {
-          this.onopen(processAndDispatchOpenEvent);
+          this.onopen(createAndDispatchOpenEvent);
         }
-        this.dispatchEvent(handleOpenEventAndDispatch);
+        this.dispatchEvent(dispatchOpenEvent);
       });
     }
   }
-  _emitOpen(openConnectionExtensions) {
+  _emitOpen(handleConnectionExtensions) {
     this._readyState = this.OPEN;
-    this._extensions = openConnectionExtensions.extensions ?? "";
-    let emitOpenConnectionEvent = new Event("open");
+    this._extensions = handleConnectionExtensions.extensions ?? "";
+    let createAndDispatchOpenEvent = new Event("open");
     if (this.onopen) {
-      this.onopen(emitOpenConnectionEvent);
+      this.onopen(createAndDispatchOpenEvent);
     }
-    this.dispatchEvent(emitOpenConnectionEvent);
+    this.dispatchEvent(createAndDispatchOpenEvent);
   }
-  _emitClose(generateCloseEventFromDetails) {
+  _emitClose(retrieveCloseEventDetails) {
     this._readyState = this.CLOSED;
     let createAndDispatchCloseEvent = new CloseEvent("close", {
-      code: generateCloseEventFromDetails.code,
-      reason: generateCloseEventFromDetails.reason,
+      code: retrieveCloseEventDetails.code,
+      reason: retrieveCloseEventDetails.reason,
     });
     if (this.onclose) {
       this.onclose(createAndDispatchCloseEvent);
     }
     this.dispatchEvent(createAndDispatchCloseEvent);
   }
-  _emitError(processAndDispatchErrorEvent) {
-    let generateDetailedErrorFromEvent = createDetailedErrorFromInput(
-      processAndDispatchErrorEvent.error,
+  _emitError(createAndDispatchDetailedErrorEvent) {
+    let generateDetailedErrorFromEvent = createDetailedErrorFromOriginal(
+      createAndDispatchDetailedErrorEvent.error,
     );
     let createAndDispatchErrorEvent = new ErrorEvent("error", {
       error: generateDetailedErrorFromEvent,
@@ -645,21 +676,21 @@ var WebSocketMessageProcessor = class extends EventTarget {
     }
     this.dispatchEvent(createAndDispatchErrorEvent);
   }
-  _emitData(prepareAndDispatchMessageEvent) {
-    let formattedMessageData = prepareAndDispatchMessageEvent;
+  _emitData(prepareAndSendMessage) {
+    let preparedMessageData = prepareAndSendMessage;
     if (
-      typeof prepareAndDispatchMessageEvent != "string" &&
+      typeof prepareAndSendMessage != "string" &&
       this._binaryType !== "arraybuffer"
     ) {
-      formattedMessageData = new Blob([prepareAndDispatchMessageEvent]);
+      preparedMessageData = new Blob([prepareAndSendMessage]);
     }
-    let dispatchMessageEvent = new MessageEvent("message", {
-      data: formattedMessageData,
+    let createAndDispatchMessageEvent = new MessageEvent("message", {
+      data: preparedMessageData,
     });
     if (this.onmessage) {
-      this.onmessage(dispatchMessageEvent);
+      this.onmessage(createAndDispatchMessageEvent);
     }
-    this.dispatchEvent(dispatchMessageEvent);
+    this.dispatchEvent(createAndDispatchMessageEvent);
   }
   set binaryType(updateWebSocketBinaryType) {
     if (this.ws) {
@@ -703,47 +734,49 @@ var WebSocketMessageProcessor = class extends EventTarget {
       return this._url;
     }
   }
-  close(webSocketCloseStatusCode, closeReason) {
+  close(webSocketCloseCode, closureDescription) {
     if (this.ws) {
-      this.ws.close(webSocketCloseStatusCode, closeReason);
+      this.ws.close(webSocketCloseCode, closureDescription);
     } else {
       this._readyState = this.CLOSING;
-      let generateWebSocketClosingEvent = {
+      let generateWebSocketClosureEvent = {
         type: "websocket/close",
         wsId: this._id,
-        code: webSocketCloseStatusCode,
-        reason: closeReason,
+        code: webSocketCloseCode,
+        reason: closureDescription,
       };
-      addWebSocketIncomingMessageHandler(generateWebSocketClosingEvent);
+      enqueueWebSocketMessageHandler(generateWebSocketClosureEvent);
     }
   }
-  send(webSocketMessageData) {
+  send(webSocketMessage) {
     if (this.ws) {
-      this.ws.send(webSocketMessageData);
+      this.ws.send(webSocketMessage);
     } else {
-      _processIncomingWebSocketMessage(webSocketMessageData)
-        .then((createAndSendWebSocketDataMessage) => {
-          let prepareAndSendWebSocketDataMessage = {
+      handleReceivedWebSocketData(webSocketMessage)
+        .then((_createAndQueueWebSocketDataMessage) => {
+          let prepareWebSocketMessageAndQueue = {
             type: "websocket/data",
             wsId: this._id,
-            data: createAndSendWebSocketDataMessage,
+            data: _createAndQueueWebSocketDataMessage,
           };
-          addWebSocketIncomingMessageHandler(
-            prepareAndSendWebSocketDataMessage,
-          );
+          enqueueWebSocketMessageHandler(prepareWebSocketMessageAndQueue);
         })
-        .catch((reportErrorToConsole) => {
-          console.error(reportErrorToConsole);
+        .catch((printErrorMessageToConsole) => {
+          console.error(printErrorMessageToConsole);
         });
     }
   }
 };
-var _WebSocketMessageProcessor = WebSocketMessageProcessor;
-assignAndReturnPropertyConfig(_WebSocketMessageProcessor, "CONNECTING", 0);
-assignAndReturnPropertyConfig(_WebSocketMessageProcessor, "OPEN", 1);
-assignAndReturnPropertyConfig(_WebSocketMessageProcessor, "CLOSING", 2);
-assignAndReturnPropertyConfig(_WebSocketMessageProcessor, "CLOSED", 3);
+var CustomWebSocketClientHandler = CustomWebSocketClient;
+applyPropertyConfigurationSettings(
+  CustomWebSocketClientHandler,
+  "CONNECTING",
+  0,
+);
+applyPropertyConfigurationSettings(CustomWebSocketClientHandler, "OPEN", 1);
+applyPropertyConfigurationSettings(CustomWebSocketClientHandler, "CLOSING", 2);
+applyPropertyConfigurationSettings(CustomWebSocketClientHandler, "CLOSED", 3);
 window.OriginalWebSocket = window.WebSocket;
-window.WebSocket = _WebSocketMessageProcessor;
-initializeServiceWorkerMessageCommunication();
-window.__CSB_PREVIEW_PROTOCOL = new IncomingMessageIdentifierHandler();
+window.WebSocket = CustomWebSocketClientHandler;
+initializeServiceWorkerMessageChannel();
+window.__CSB_PREVIEW_PROTOCOL = new MessageEventHandler();
