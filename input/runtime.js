@@ -121,7 +121,7 @@ var vVF34 = vF3((p30, p31) => {
     }
     var v18 = v15.call(arguments, 1);
     var v19;
-    function vF10() {
+    var vF10 = function () {
       if (this instanceof v19) {
         var v20 = vThis.apply(this, v18.concat(v15.call(arguments)));
         if (Object(v20) === v20) {
@@ -132,7 +132,7 @@ var vVF34 = vF3((p30, p31) => {
       } else {
         return vThis.apply(p32, v18.concat(v15.call(arguments)));
       }
-    }
+    };
     for (var v21 = Math.max(0, vThis.length - v18.length), v22 = [], v23 = 0; v23 < v21; v23++) {
       v22.push("$" + v23);
     }
@@ -9219,7 +9219,7 @@ var vVF3100 = vF3(p1435 => {
       return "utf8";
     }
     var v831;
-    while (true) {
+    for (;;) {
       switch (p1437) {
         case "utf8":
         case "utf-8":

@@ -3539,7 +3539,7 @@ var vVF413 = vF4((p514, p515) => {
     }
     var v440 = v437.call(arguments, 1);
     var v441;
-    function vF20() {
+    var vF20 = function () {
       if (this instanceof v441) {
         var v442 = vThis.apply(this, v440.concat(v437.call(arguments)));
         if (Object(v442) === v442) {
@@ -3550,7 +3550,7 @@ var vVF413 = vF4((p514, p515) => {
       } else {
         return vThis.apply(p516, v440.concat(v437.call(arguments)));
       }
-    }
+    };
     for (var v443 = Math.max(0, vThis.length - v440.length), v444 = [], v445 = 0; v445 < v443; v445++) {
       v444.push("$" + v445);
     }
@@ -5809,7 +5809,7 @@ var vVF432 = vF4((p743, p744) => {
               return v682.decode(p797.subarray(p798, vP798));
             }
             var v684 = "";
-            while (p798 < vP798) {
+            for (; p798 < vP798;) {
               var v685 = p797[p798++];
               if (v685 & 128) {
                 var v686 = p797[p798++] & 63;
@@ -9315,7 +9315,7 @@ var vVF449 = vF4(p1268 => {
       return "utf8";
     }
     var v967;
-    while (true) {
+    for (;;) {
       switch (p1270) {
         case "utf8":
         case "utf-8":
@@ -30856,7 +30856,7 @@ var vVF4147 = vF4((p4011, p4012) => {
       v2978.entry = v2975;
       var v2979 = 0;
       var v2980 = true;
-      while (v2975) {
+      for (; v2975;) {
         v2977[v2979] = v2975;
         if (!v2975.isBuf) {
           v2980 = false;
@@ -34515,7 +34515,7 @@ var vVF4192 = vF4(p4616 => {
   p4616.encrypt = function (p4620, p4621, p4622) {
     var v3406 = v3404.allocUnsafe(0);
     var v3407;
-    while (p4621.length) {
+    for (; p4621.length;) {
       if (p4620._cache.length === 0) {
         p4620._cache = p4620._cipher.encryptBlock(p4620._prev);
         p4620._prev = v3404.allocUnsafe(0);
@@ -35067,7 +35067,7 @@ var vVF4201 = vF4((p4667, p4668) => {
   f1278.prototype.update = function (p4673) {
     this.cache = v3489.concat([this.cache, p4673]);
     var v3498;
-    while (this.cache.length >= 16) {
+    for (; this.cache.length >= 16;) {
       v3498 = this.cache.slice(0, 16);
       this.cache = this.cache.slice(16);
       this.ghash(v3498);
@@ -37614,14 +37614,12 @@ var vVF4211 = vF4((p4742, p4743) => {
       var v3846 = new f1302(0);
       var v3847 = new f1302(1);
       var v3848 = 0;
-      while (vThis19.isEven() && v3843.isEven()) {
+      for (; vThis19.isEven() && v3843.isEven();) {
         vThis19.iushrn(1);
         v3843.iushrn(1);
         ++v3848;
       }
-      var v3849 = v3843.clone();
-      var v3850 = vThis19.clone();
-      for (; !vThis19.isZero();) {
+      for (var v3849 = v3843.clone(), v3850 = vThis19.clone(); !vThis19.isZero();) {
         for (var v3851 = 0, v3852 = 1; (vThis19.words[0] & v3852) === 0 && v3851 < 26; v3852 <<= 1) {
           ++v3851;
         }
@@ -37674,10 +37672,7 @@ var vVF4211 = vF4((p4742, p4743) => {
       } else {
         vThis20 = vThis20.clone();
       }
-      var v3856 = new f1302(1);
-      var v3857 = new f1302(0);
-      var v3858 = v3855.clone();
-      for (; vThis20.cmpn(1) > 0 && v3855.cmpn(1) > 0;) {
+      for (var v3856 = new f1302(1), v3857 = new f1302(0), v3858 = v3855.clone(); vThis20.cmpn(1) > 0 && v3855.cmpn(1) > 0;) {
         for (var v3859 = 0, v3860 = 1; (vThis20.words[0] & v3860) === 0 && v3859 < 26; v3860 <<= 1) {
           ++v3859;
         }
@@ -40925,14 +40920,12 @@ var vVF4218 = vF4((p5041, p5042) => {
       var v4317 = new f1335(0);
       var v4318 = new f1335(1);
       var v4319 = 0;
-      while (vThis22.isEven() && v4314.isEven()) {
+      for (; vThis22.isEven() && v4314.isEven();) {
         vThis22.iushrn(1);
         v4314.iushrn(1);
         ++v4319;
       }
-      var v4320 = v4314.clone();
-      var v4321 = vThis22.clone();
-      for (; !vThis22.isZero();) {
+      for (var v4320 = v4314.clone(), v4321 = vThis22.clone(); !vThis22.isZero();) {
         for (var v4322 = 0, v4323 = 1; (vThis22.words[0] & v4323) === 0 && v4322 < 26; v4323 <<= 1) {
           ++v4322;
         }
@@ -40985,10 +40978,7 @@ var vVF4218 = vF4((p5041, p5042) => {
       } else {
         vThis23 = vThis23.clone();
       }
-      var v4327 = new f1335(1);
-      var v4328 = new f1335(0);
-      var v4329 = v4326.clone();
-      for (; vThis23.cmpn(1) > 0 && v4326.cmpn(1) > 0;) {
+      for (var v4327 = new f1335(1), v4328 = new f1335(0), v4329 = v4326.clone(); vThis23.cmpn(1) > 0 && v4326.cmpn(1) > 0;) {
         for (var v4330 = 0, v4331 = 1; (vThis23.words[0] & v4331) === 0 && v4330 < 26; v4331 <<= 1) {
           ++v4330;
         }
@@ -42082,7 +42072,7 @@ var vVF4223 = vF4((p5321, p5322) => {
     var v4475 = this._wnafT4;
     for (v4465 = v4464; v4465 >= 0; v4465--) {
       var v4476 = 0;
-      while (v4465 >= 0) {
+      for (; v4465 >= 0;) {
         var v4477 = true;
         for (v4466 = 0; v4466 < p5332; v4466++) {
           v4475[v4466] = v4463[v4466][v4465] | 0;
@@ -47080,10 +47070,7 @@ var vVF4271 = vF4((p5984, p5985) => {
     var v5254 = p5994.params.p;
     var v5255 = p5994.params.q;
     var v5256 = p5994.params.g;
-    var v5257 = new vVVF42182(0);
-    var v5258;
-    var v5259 = f1473(p5993, v5255).mod(v5255);
-    for (var v5260 = false, v_0x3c014b = f1472(v5253, v5255, p5993, p5995); v5260 === false;) {
+    for (var v5257 = new vVVF42182(0), v5258, v5259 = f1473(p5993, v5255).mod(v5255), v5260 = false, v_0x3c014b = f1472(v5253, v5255, p5993, p5995); v5260 === false;) {
       v5258 = f1475(v5255, v_0x3c014b, p5995);
       v5257 = f1476(v5256, v5258, v5254, v5255);
       v5260 = v5258.invm(v5255).imul(v5259.add(v5253.mul(v5257))).mod(v5255);
@@ -48546,7 +48533,7 @@ var vVF4286 = vF4((p6220, p6221) => {
     var v5473 = p6222 & 65535 | 0;
     var v5474 = p6222 >>> 16 & 65535 | 0;
     var v5475 = 0;
-    while (p6224 !== 0) {
+    for (; p6224 !== 0;) {
       v5475 = p6224 > 2000 ? 2000 : p6224;
       p6224 -= v5475;
       do {
@@ -49030,7 +49017,7 @@ var vVF4289 = vF4(p6234 => {
   }
   function f1549(p6261, p6262) {
     var v5560;
-    while (true) {
+    for (;;) {
       if (p6261.lookahead === 0 && (f1544(p6261), p6261.lookahead === 0)) {
         if (p6262 === v5481) {
           return v5520;
